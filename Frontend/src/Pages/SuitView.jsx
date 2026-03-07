@@ -292,24 +292,6 @@ const SuitView = () => {
                     </li>
                   );
                 })}
-
-                <li className="saree-review-item">
-                  <div className="saree-review-stars">⭐⭐⭐⭐⭐</div>
-                  <p className="saree-review-text">
-                    Beautiful saree, very elegant look and great quality fabric.
-                  </p>
-                  <span className="saree-review-author">
-                    — Anjali (Verified Buyer)
-                  </span>
-                </li>
-                <li className="saree-review-item">
-                  <div className="saree-review-stars">⭐⭐⭐⭐</div>
-                  <p className="saree-review-text">
-                    The zari work is subtle and classy. Perfect for festive
-                    wear.
-                  </p>
-                  <span className="saree-review-author">— Meena</span>
-                </li>
               </ul>
               <button className="address-btn" onClick={addRevBtn}>
                 Add a Review

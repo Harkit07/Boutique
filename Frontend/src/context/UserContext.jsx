@@ -1,6 +1,7 @@
-import React, { createContext, use, useMemo, useState } from "react";
+import React, { createContext, useMemo, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
+import Skeleton from "../components/Skeleton";
 
 export const UserDataContext = createContext();
 
@@ -131,7 +132,7 @@ const UsersContext = ({ children }) => {
   };
 
   if (loading) {
-    return <div>Loading</div>;
+    return <Skeleton />;
   }
 
   return (

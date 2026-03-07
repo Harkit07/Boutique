@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
+import Skeleton from "./Skeleton";
 
 const UserProtectedWrapper = ({ children }) => {
   const token = localStorage.getItem("token");
@@ -35,7 +36,7 @@ const UserProtectedWrapper = ({ children }) => {
   }, [token]);
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <Skeleton />;
   }
 
   return <>{children}</>;
