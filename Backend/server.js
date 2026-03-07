@@ -19,7 +19,7 @@ main()
   });
 
 async function main() {
-  await mongoose.connect(process.env.MONGO_URL);
+  await mongoose.connect(process.env.DB_URL);
 }
 
 app.use(cors());

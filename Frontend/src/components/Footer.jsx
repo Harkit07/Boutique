@@ -25,14 +25,14 @@ const sections = [
       { label: "Return Policy", path: "/returnpolicy" },
     ],
   },
-  {
-    title: "Best Sellers",
-    links: [
-      { label: "Sarees", path: "#" },
-      { label: "Lehengas", path: "#" },
-      { label: "Kurtas", path: "#" },
-    ],
-  },
+  // {
+  //   title: "Best Sellers",
+  //   links: [
+  //     { label: "Sarees", path: "#" },
+  //     { label: "Lehengas", path: "#" },
+  //     { label: "Kurtas", path: "#" },
+  //   ],
+  // },
 ];
 
 const Footer = () => {
