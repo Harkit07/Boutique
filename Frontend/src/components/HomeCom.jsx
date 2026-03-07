@@ -2,9 +2,10 @@ import "../styles/Home.css";
 import dummy from "../assets/dummy.png";
 import logovideo from "../assets/logovideo.mp4";
 import HomeReview from "./HomeReview";
+import AARIworksuit from "../assets/AARIwork.jpg";
+import Handwork from "../assets/Handwork.jpg";
+import Machinework from "../assets/Machinework.jpg";
 import dummy1 from "../assets/dummy1.jpg";
-import dummy2 from "../assets/dummy2.jpg";
-import dummy3 from "../assets/dummy3.jpg";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
@@ -91,7 +92,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("Handwork")}`);
             }}
           >
-            <img src={dummy1} alt="Best Sellers" />
+            <img src={Handwork} alt="Best Sellers" />
             <div className="moment-label">HAND WORK</div>
           </div>
           <div
@@ -101,7 +102,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("Machine Work")}`);
             }}
           >
-            <img src={dummy2} alt="Dinu's Collections" />
+            <img src={Machinework} alt="Dinu's Collections" />
             <div className="moment-label">MACHINE WORK</div>
           </div>
           <div
@@ -111,7 +112,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("AARI Work")}`);
             }}
           >
-            <img src={dummy1} alt="Premium Collections" />
+            <img src={AARIworksuit} alt="Premium Collections" />
             <div className="moment-label">AARI WORK</div>
           </div>
           <div
@@ -121,7 +122,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("All")}`);
             }}
           >
-            <img src={dummy3} alt="New Arrivals" />
+            <img src={dummy1} alt="New Arrivals" />
             <div className="moment-label">NEW ARRIVALS</div>
           </div>
         </div>

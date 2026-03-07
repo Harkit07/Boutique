@@ -1,43 +1,40 @@
 import React, { useState } from "react";
 import "../styles/ImageCom.css";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import img1 from "../assets/img1.jpg";
-import img2 from "../assets/img2.jpg";
-import img3 from "../assets/img3.jpg";
-import img4 from "../assets/img4.jpg";
+
 import { UserDataContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
-const sampleProducts = [
-  {
-    name: "Line Weaved Viscose Tissue Organza Saree",
-    sku: "NN118",
-    price: 1499,
-    image: img1,
-    preOrder: false,
-  },
-  {
-    name: "Traditional Elephant Motifs Design Semi Silk Saree",
-    sku: "SSN166",
-    price: 1399,
-    image: img2,
-    preOrder: true,
-  },
-  {
-    name: "Designer Embroidered Saree",
-    sku: "DSR201",
-    price: 1599,
-    image: img3,
-    preOrder: true,
-  },
-  {
-    name: "Classic Red Saree",
-    sku: "CRS301",
-    price: 1299,
-    image: img4,
-    preOrder: false,
-  },
-];
+// const sampleProducts = [
+//   {
+//     name: "Line Weaved Viscose Tissue Organza Saree",
+//     sku: "NN118",
+//     price: 1499,
+//     image: img1,
+//     preOrder: false,
+//   },
+//   {
+//     name: "Traditional Elephant Motifs Design Semi Silk Saree",
+//     sku: "SSN166",
+//     price: 1399,
+//     image: img2,
+//     preOrder: true,
+//   },
+//   {
+//     name: "Designer Embroidered Saree",
+//     sku: "DSR201",
+//     price: 1599,
+//     image: img3,
+//     preOrder: true,
+//   },
+//   {
+//     name: "Classic Red Saree",
+//     sku: "CRS301",
+//     price: 1299,
+//     image: img4,
+//     preOrder: false,
+//   },
+// ];
 
 const DataCard = ({
   id,
