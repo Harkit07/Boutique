@@ -1,0 +1,239 @@
+.saree-slider-section {
+  width: 100%;
+  max-width: 420px;
+  padding: 20px;
+}
+
+.saree-slider-wrapper {
+  overflow: hidden;
+  border-radius: 12px;
+  touch-action: pan-y;
+  cursor: grab;
+}
+
+.saree-slider-track {
+  display: flex;
+  transition: transform 0.35s ease-in-out;
+}
+
+.breadcrumb > b {
+  font-size: 18px;
+}
+
+.saree-slider-image {
+  width: 100%;
+  flex-shrink: 0;
+  height: 520px;
+  object-fit: cover;
+}
+
+.saree-slider-dots {
+  display: flex;
+  justify-content: center;
+  margin-top: 10px;
+  gap: 8px;
+}
+
+.saree-slider-dot {
+  width: 8px;
+  height: 8px;
+  background: #ccc;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.saree-slider-dot.active {
+  background: #000;
+}
+
+.saree-product-info {
+  padding: 16px 0;
+}
+
+.saree-product-title {
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.saree-product-price {
+  margin-top: 20px;
+  font-size: 25px;
+  font-weight: 600;
+  color: #d0473e;
+  margin-bottom: 8px;
+}
+
+.saree-product-viewing {
+  font-size: 13px;
+  color: #444;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.saree-product-actions {
+  margin-top: 20px;
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.saree-product-link {
+  background: none;
+  border: none;
+  color: #555;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.saree-product-cart {
+  margin-top: 25px;
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.saree-qty-box {
+  height: 50px;
+  display: flex;
+  align-items: center;
+  border: 1px solid #ddd;
+  border-radius: 20px;
+  overflow: hidden;
+}
+
+.saree-qty-box button {
+  border: none;
+  background: none;
+  padding: 8px 12px;
+  cursor: pointer;
+}
+
+.saree-qty-box span {
+  padding: 0 12px;
+}
+
+.saree-add-cart {
+  height: 50px;
+  font-size: 16px;
+  flex: 1;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 20px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.saree-buy-now {
+  height: 50px;
+  font-size: 17px;
+  width: 100%;
+  background: #d6453d;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.saree-del-now {
+  margin-top: 5px;
+  height: 50px;
+  font-size: 17px;
+  width: 100%;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 24px;
+  padding: 10px;
+  font-size: 15px;
+  cursor: pointer;
+}
+
+.saree-product-description {
+  padding: 16px 0;
+  border-top: 1px solid #eee;
+  margin-top: 20px;
+}
+
+.saree-desc-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.saree-desc-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 6px;
+}
+
+.saree-desc-list {
+  padding-left: 18px;
+  font-size: 13px;
+  color: #444;
+}
+
+.saree-desc-list li {
+  margin-bottom: 6px;
+  line-height: 1.5;
+}
+
+.saree-review-section {
+  padding: 16px 0;
+  border-top: 1px solid #eee;
+  margin-top: 20px;
+}
+
+.saree-review-title {
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.saree-review-subtitle {
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 10px;
+}
+
+.saree-review-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.saree-review-item {
+  padding: 12px;
+  border: 1px solid #eee;
+  border-radius: 10px;
+  margin-bottom: 12px;
+}
+
+.saree-review-stars {
+  display: flex;
+  font-size: 13px;
+  margin-bottom: 6px;
+}
+
+.saree-review-stars > button {
+  margin-left: 50px;
+}
+
+.saree-review-text {
+  font-size: 13px;
+  color: #444;
+  line-height: 1.5;
+  margin-bottom: 6px;
+}
+
+.saree-review-author {
+  font-size: 12px;
+  color: #666;
+}

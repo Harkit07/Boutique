@@ -1,0 +1,92 @@
+.product-toolbar-ux {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background-color: transparent;
+  border-radius: 8px;
+}
+
+.product-toolbar-left {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.toolbar-filter-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  background: #000;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.toolbar-sort-select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+}
+
+.view-toggle-btn {
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  background: #fff;
+  cursor: pointer;
+}
+
+.view-toggle-btn.active {
+  background: #000;
+  color: #fff;
+}
+
+.filter-icon {
+    background-color: transparent;
+    color: #fff;
+}
+
+/* Overlay */
+.sort-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+}
+
+.sort-trigger-btn {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  font-size: 18px;
+}
+
+/* Bottom Sheet */
+.sort-dropdown-sheet {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background: #fff;
+  border-radius: 16px 16px 0 0;
+  padding: 12px 0;
+  margin-bottom: 15px;
+}
+
+/* Options */
+.sort-option {
+  padding: 14px 20px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.sort-option:hover {
+  background: #f5f5f5;
+}
+
+.sort-option.active {
+  font-weight: 600;
+}

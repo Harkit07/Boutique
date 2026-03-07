@@ -1,0 +1,216 @@
+/* New Customer Section */
+.new-customer-section {
+  background: #fff;
+  max-width: 500px;
+  margin: 12px 0 40px;
+  border-radius: 1.5rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  padding: 12px 28px 36px 28px;
+  text-align: left;
+}
+
+.new-customer-title {
+  font-size: 2rem;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.new-customer-desc {
+  font-size: 1.15rem;
+  color: #444;
+  margin-bottom: 12px;
+  line-height: 1.6;
+}
+
+.new-customer-btn {
+  width: 100%;
+  padding: 18px 0;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  font-size: 1.25rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+  display: block;
+}
+.new-customer-btn:active {
+  background: #daa520;
+  color: #111;
+}
+
+.error {
+  color: rgb(202, 51, 51);
+  font-size: 0.85rem;
+  margin-top: -12px;
+  margin-bottom: 12px;
+  display: block;
+  text-align: center;
+}
+
+.login-bg-container {
+  position: relative;
+  min-height: 60vh;
+  width: 100vw;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.login-bg-video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: 0;
+  opacity: 0.4;
+  pointer-events: none;
+  border-radius: 0.5rem;
+}
+
+.login-content {
+  position: relative;
+  z-index: 1;
+  background: transparent;
+  border-radius: 0.5rem;
+  max-width: 420px;
+  width: 100%;
+  margin: 20px 0;
+  padding: 20px 32px 32px 32px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  overflow: hidden;
+}
+
+.login-breadcrumb {
+  color: #383636;
+  font-size: 1rem;
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.login-breadcrumb .dot {
+  font-size: 1.2em;
+  color: #bbb;
+}
+.login-breadcrumb .active {
+  font-weight: 500;
+}
+
+.login-title {
+  font-size: 2.3rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+
+.login-desc {
+  color: #555;
+  font-size: 1.1rem;
+  margin-bottom: 28px;
+  line-height: 1.5;
+}
+
+.mail-btn {
+  text-align: center;
+}
+
+.mail-btn:active {
+  background-color: #daa520;
+}
+
+.login-form {
+  text-align: left;
+  margin-top: 12px;
+}
+
+.login-form-title {
+  font-size: 1.3rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+.login-input {
+  width: 100%;
+  padding: 18px 20px;
+  margin-bottom: 16px;
+  border: 2px solid grey;
+  border-radius: 2rem;
+  font-size: 1.1rem;
+  background: #fff;
+  outline: none;
+  transition: border 0.2s;
+}
+.login-input:focus {
+  border: 1.5px solid #daa520;
+}
+
+.login-forgot {
+  margin-bottom: 22px;
+  text-align: left;
+}
+.login-forgot a {
+  color: #222;
+  text-decoration: none;
+  font-size: 1rem;
+  transition: color 0.2s;
+}
+.login-forgot a:hover {
+  color: #daa520;
+}
+
+.login-btn {
+  width: 100%;
+  padding: 16px 0;
+  background: #111;
+  color: #fff;
+  border: none;
+  border-radius: 2rem;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+  transition: background 0.2s;
+}
+.login-btn:hover {
+  background: #daa520;
+  color: #111;
+}
+
+.password-wrapper {
+  position: relative; /* This makes icon fixed to this box */
+  width: 100%;
+  background-color: transparent;
+}
+
+#password {
+  background-color: transparent;
+}
+
+.eye {
+  position: absolute;
+  right: 20px;
+  top: 42%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #333;
+  background-color: transparent;
+}
+
+@media (max-width: 600px) {
+  .login-content {
+    padding: 8px 8px 24px 8px;
+    max-width: 98vw;
+  }
+  .login-title {
+    font-size: 1.5rem;
+  }
+}

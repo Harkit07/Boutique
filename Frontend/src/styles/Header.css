@@ -1,0 +1,47 @@
+.header {
+  height: 4.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 12px;
+  border-bottom: 1px solid #eee;
+  box-shadow: 2px 4px 10px #efefdd;
+  position: sticky;
+  top: 0;
+  background-color: #fff;
+  z-index: 100;
+}
+
+.box {
+  flex: 1;
+}
+
+.menu-icon {
+  height: 2rem;
+  font-size: 2rem;
+}
+
+.logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Center Logo */
+.logo img {
+  height: 3.2rem;
+  border-radius: 5%;
+}
+
+/* Right Icons */
+.icons {
+  display: flex;
+  justify-content: end;
+  gap: 8px;
+}
+
+.hover:active {
+  color: #ede5b9;
+  transform: scale(1.2);
+  cursor: pointer;
+}
