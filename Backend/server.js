@@ -48,7 +48,7 @@ app.use("/suit/:id", reviewRouter);
 app.use(express.static(path.join(__dirname, "../Frontend/dist")));
 
 // ✅ Catch-all LAST — fixed path
-app.get("/{*splat}", (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
 });
 
