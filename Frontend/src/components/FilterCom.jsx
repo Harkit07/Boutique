@@ -6,7 +6,8 @@ import { UserDataContext } from "../context/UserContext";
 const FilterCom = () => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("Featured");
-  const { setSortType } = React.useContext(UserDataContext);
+  const { setSortType, filterSuitsByCategory } =
+    React.useContext(UserDataContext);
 
   const options = [
     "All",
@@ -20,9 +21,13 @@ const FilterCom = () => {
 
   const handleSelect = (option) => {
     setSelected(option);
-    setSortType(option === "All" ? "" : option);
+    if (option === "All") {
+      setSortType("");
+      filterSuitsByCategory("All");
+    } else {
+      setSortType(option);
+    }
     setOpen(false);
-    // 👉 trigger sorting logic here
   };
 
   return (

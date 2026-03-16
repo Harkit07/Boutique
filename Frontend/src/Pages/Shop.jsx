@@ -3,7 +3,7 @@ import BottomNav from "../components/BottomNav";
 import ImageCom from "../components/ImageCom";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
-import React from "react";
+import React, { useEffect } from "react";
 import FilterCom from "../components/FilterCom";
 import Skeleton from "../components/Skeleton";
 
