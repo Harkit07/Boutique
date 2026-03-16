@@ -9,6 +9,7 @@ import Skeleton from "../components/Skeleton";
 const ReturnPolicy = () => {
   const { setActiveTab, loading } = React.useContext(UserDataContext);
 
+  //skeleton
   if (loading) {
     return <Skeleton />;
   }
