@@ -44,14 +44,6 @@ app.use("/users", userRouter);
 app.use("/suit", suitRouter);
 app.use("/suit/:id", reviewRouter);
 
-// Serve React build
-app.use(express.static(path.join(__dirname, "../Frontend/dist")));
-
-// ✅ Catch-all LAST — fixed path
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
-});
-
 // Error handler
 app.use((err, req, res, next) => {
   console.error(err.stack);
