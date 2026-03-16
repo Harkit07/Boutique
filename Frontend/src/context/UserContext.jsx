@@ -12,16 +12,7 @@ const UsersContext = ({ children }) => {
   const [filteredSuit, setFilteredSuit] = useState([]); // suits after category filter
   const [sortType, setSortType] = useState("");
 
-  const [user, setUser] = React.useState({
-    email: "",
-    fullName: {
-      firstName: "",
-      lastName: "",
-      address: "",
-      city: "",
-      phone: "",
-    },
-  });
+  const [user, setUser] = React.useState(null);
 
   useEffect(() => {
     const fetchData = async () => {

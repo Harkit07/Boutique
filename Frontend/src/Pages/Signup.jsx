@@ -67,7 +67,7 @@ const Signup = () => {
           },
         );
 
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success("Signup successful!");
           const data = response.data;
           setUser(data.user);

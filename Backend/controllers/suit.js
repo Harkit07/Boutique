@@ -35,7 +35,7 @@ module.exports.uploadNewSuit = async (req, res) => {
 
   await suit.save();
 
-  res.status(201).json({
+  res.status(200).json({
     message: "Suit uploaded successfully",
     suit,
   });
@@ -55,7 +55,7 @@ module.exports.getSuit = async (req, res) => {
       path: "author",
     },
   });
-  res.status(201).json({ message: "Suit found successful", suit });
+  res.status(200).json({ message: "Suit found successful", suit });
 };
 
 module.exports.delSuit = async (req, res) => {

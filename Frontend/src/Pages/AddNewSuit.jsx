@@ -17,7 +17,7 @@ const validate = (values) => {
 
   if (!values.name) {
     errors.name = "Required";
-  } else if (values.name.length <= 5) {
+  } else if (values.name.length <= 3) {
     errors.name = "Enter a valid name";
   }
 
@@ -90,7 +90,7 @@ const AddNewSuit = () => {
             },
           },
         );
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success("Suit Added successful!");
           navigate("/shop");
         }

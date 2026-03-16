@@ -10,13 +10,13 @@ module.exports.authUser = async (req, res, next) => {
     return res.status(401).json({ message: "Unauthorized" });
   }
 
-  // Check if token is blacklisted
-  const isBlacklisted = await BlacklistToken.findOne({ token: token });
-  if (isBlacklisted) {
-    return res.status(401).json({ message: "Unauthorized" });
-  }
-
   try {
+    // Check if token is blacklisted
+    const isBlacklisted = await BlacklistToken.findOne({ token: token });
+    if (isBlacklisted) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
+
     // Verify JWT
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
     const user = await User.findById(decoded._id);

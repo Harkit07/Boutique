@@ -36,7 +36,7 @@ module.exports.signupUser = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
-  res.status(201).json({ token, user });
+  res.status(200).json({ token, user });
 };
 
 module.exports.loginUser = async (req, res) => {
@@ -65,7 +65,7 @@ module.exports.loginUser = async (req, res) => {
     maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
   });
 
-  res.status(201).json({ token, user });
+  res.status(200).json({ token, user });
 };
 
 module.exports.logoutUser = async (req, res) => {
@@ -125,7 +125,7 @@ module.exports.forgotPassword = async (req, res) => {
   res.status(201).json({ message: "OTP sent to email" });
 };
 
-exports.resetPassword = async (req, res) => {
+module.exports.resetPassword = async (req, res) => {
   try {
     const { email, otp, password } = req.body;
 
@@ -164,7 +164,7 @@ exports.resetPassword = async (req, res) => {
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
 
-    res.status(201).json({ message: "Password reset successful", user, token });
+    res.status(200).json({ message: "Password reset successful", user, token });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

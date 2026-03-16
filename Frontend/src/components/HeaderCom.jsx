@@ -1,5 +1,4 @@
 import "../styles/Header.css";
-import logo from "../assets/logo.jpg";
 import MenuIcon from "@mui/icons-material/Menu";
 import SearchIcon from "@mui/icons-material/Search";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
@@ -18,7 +17,7 @@ const Menu = () => {
       </div>
       <div className="logo box">
         <Link to="/" className="nav-link">
-          <img src={logo} alt="Image" />
+          <img src="/logo.jpg" alt="Image" />
         </Link>
       </div>
       <div className="icons box">

@@ -1,12 +1,6 @@
 import "../styles/Home.css";
 import "../styles/ImageCom.css";
-import dummy from "../assets/dummy.png";
-import logovideo from "../assets/logovideo.mp4";
 import HomeReview from "./HomeReview";
-import AARIworksuit from "../assets/AARIwork.jpg";
-import Handwork from "../assets/Handwork.jpg";
-import Machinework from "../assets/Machinework.jpg";
-import dummy1 from "../assets/dummy1.jpg";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
@@ -23,7 +17,7 @@ const Home = () => {
     {
       id: 1,
       name: "Sarees",
-      image: dummy1,
+      image: "/dummy1.jpg",
     },
     {
       id: 2,
@@ -52,7 +46,7 @@ const Home = () => {
       {/* Premium Banner Section */}
       <section className="premium-banner">
         <div className="banner-image">
-          <img src={dummy} alt="Premium Collection" />
+          <img src="/dummy.png" alt="Premium Collection" />
         </div>
       </section>
 
@@ -93,7 +87,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("Handwork")}`);
             }}
           >
-            <img src={Handwork} alt="Best Sellers" loading="lazy" />
+            <img src="/Handwork.jpg" alt="Best Sellers" loading="lazy" />
             <div className="moment-label">HAND WORK</div>
           </div>
           <div
@@ -103,7 +97,11 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("Machine Work")}`);
             }}
           >
-            <img src={Machinework} alt="Dinu's Collections" loading="lazy" />
+            <img
+              src="/Machinework.jpg"
+              alt="Dinu's Collections"
+              loading="lazy"
+            />
             <div className="moment-label">MACHINE WORK</div>
           </div>
           <div
@@ -113,7 +111,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("AARI Work")}`);
             }}
           >
-            <img src={AARIworksuit} alt="Premium Collections" loading="lazy" />
+            <img src="/AARIwork.jpg" alt="Premium Collections" loading="lazy" />
             <div className="moment-label">AARI WORK</div>
           </div>
           <div
@@ -123,7 +121,7 @@ const Home = () => {
               navigate(`/shop?category=${encodeURIComponent("All")}`);
             }}
           >
-            <img src={dummy1} alt="New Arrivals" loading="lazy" />
+            <img src="/dummy1.jpg" alt="New Arrivals" loading="lazy" />
             <div className="moment-label">NEW ARRIVALS</div>
           </div>
         </div>
@@ -250,7 +248,7 @@ const Home = () => {
           playsInline
           controls={false}
         >
-          <source src={logovideo} type="video/mp4" />
+          <source src="/logovideo.mp4" type="video/mp4" />
         </video>
         <div className="inside-ravneet-container">
           <div className="ravneet-text-section">

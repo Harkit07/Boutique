@@ -96,7 +96,7 @@ const ResetPass = () => {
             password: values.password,
           },
         );
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success("Password Reset successful!");
           const data = response.data;
           setUser(data.user);

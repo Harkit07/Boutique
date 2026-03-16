@@ -2,7 +2,6 @@ import React from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import logo from "../assets/logo.jpg";
 import { UserDataContext } from "../context/UserContext";
 import "../styles/About.css";
 import Skeleton from "../components/Skeleton";
@@ -21,7 +20,7 @@ const About = () => {
       <section className="about-section">
         <div className="about-card">
           <div className="about-logo-wrapper">
-            <img src={logo} alt="Ravneet Boutique Logo" />
+            <img src="/logo.jpg" alt="Ravneet Boutique Logo" />
           </div>
 
           <h1 className="about-title">Ravneet Boutique</h1>

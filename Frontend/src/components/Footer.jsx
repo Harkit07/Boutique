@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import "../styles/Footer.css";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
-import logo from "../assets/logo.jpg";
 import { Link } from "react-router-dom";
 
 const sections = [
@@ -47,7 +46,7 @@ const Footer = () => {
       <div className="footer-logo-block">
         <div className="logo-img">
           <span className="logo-circle">
-            <img src={logo} alt="Logo" />
+            <img src="/logo.jpg" alt="Logo" />
           </span>
           <div className="logo-text">Ravneet Boutique</div>
         </div>

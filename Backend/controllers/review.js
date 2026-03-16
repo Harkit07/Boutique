@@ -53,7 +53,7 @@ module.exports.delSuitReview = async (req, res) => {
 
   await Review.findByIdAndDelete(revId);
 
-  res.status(201).json({ message: "Review Deleted successful" });
+  res.status(200).json({ message: "Review Deleted successful" });
 };
 
 module.exports.addToCart = async (req, res) => {
@@ -119,7 +119,7 @@ module.exports.removeFromCart = async (req, res) => {
 };
 
 module.exports.decCartCount = async (req, res) => {
-  const { id } = req.params; // suit id
+  const { id } = req.params; // user id
 
   const user = await User.findById(req.user._id);
 

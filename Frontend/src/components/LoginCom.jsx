@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import "../styles/Login.css";
-import logovideo from "../assets/logovideo.mp4";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
@@ -46,7 +45,7 @@ const Login = () => {
             password: values.password,
           },
         );
-        if (response.status === 201) {
+        if (response.status === 200) {
           toast.success("Login successful!");
           const data = response.data;
           setUser(data.user);
@@ -67,14 +66,9 @@ const Login = () => {
     <>
       <div className="login-bg-container">
         <div className="login-content">
-          <video
-            className="login-bg-video"
-            src={logovideo}
-            autoPlay
-            loop
-            muted
-            playsInline
-          />
+          <vidoe className="login-bg-video" autoPlay loop muted playsInline>
+            <source src="/logovideo.mp4" type="video/mp4" />
+          </vidoe>
           <nav className="login-breadcrumb">
             <span>Home</span>
             <span className="dot">•</span>

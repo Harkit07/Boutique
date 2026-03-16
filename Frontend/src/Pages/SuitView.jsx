@@ -1,4 +1,3 @@
-import HomeCom from "../components/HomeCom";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
@@ -31,7 +30,7 @@ const SuitView = () => {
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/suit/${id}`,
       );
-      if (response.status === 201) {
+      if (response.status === 200) {
         setLoading(false);
         const data = response.data;
         setSuit(data.suit);
@@ -65,7 +64,7 @@ const SuitView = () => {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
-      if (response.status === 201) {
+      if (response.status === 200) {
         toast.success("Review Deleted Successful!");
         fetchSuitDetails();
         const data = response.data;

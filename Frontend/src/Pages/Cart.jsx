@@ -138,69 +138,71 @@ const Cart = () => {
           {!user || !user.cart || user.cart.length == 0 ? (
             <div>No Item in the Cart</div>
           ) : (
-            user.cart.map((item) => {
-              const quantity = item.quantity;
-              const inCart = quantity > 0;
-              const type = item.suit.file?.[0].mediaType;
+            user.cart
+              // .filter((item) => item.suit != null)
+              .map((item) => {
+                const quantity = item.quantity;
+                const inCart = quantity > 0;
+                const type = item.suit.file?.[0]?.mediaType;
 
-              return (
-                <div
-                  className="uc-cart-item"
-                  key={item._id}
-                  onClick={() => navigate(`/suit/${item.suit._id}`)}
-                >
-                  {type === "image" ? (
-                    <img
-                      src={item.suit.file?.[0]?.url}
-                      alt={item.suit.name}
-                      className="uc-product-img"
-                      loading="lazy"
-                    />
-                  ) : (
-                    <LazyVideo src={item.suit.file?.[0]?.url} />
-                  )}
-
-                  <div className="uc-product-info">
-                    <h3 className="uc-product-name">{item.suit.name}</h3>
-                    <p className="uc-product-size">Size: M</p>
-                    <p className="uc-product-price">
-                      Rs. {item.suit?.price?.toLocaleString?.() ?? "0"}.00
-                    </p>
-                  </div>
-
+                return (
                   <div
-                    className="cart-count"
-                    onClick={(e) => e.stopPropagation()}
+                    className="uc-cart-item"
+                    key={item._id}
+                    onClick={() => navigate(`/suit/${item.suit._id}`)}
                   >
-                    <Button
-                      onClick={() => removeToCart(item.suit)}
-                      variant="outlined"
-                      color="error"
-                      size="small"
-                      startIcon={<DeleteIcon />}
+                    {type === "image" ? (
+                      <img
+                        src={item.suit.file?.[0]?.url}
+                        alt={item.suit.name}
+                        className="uc-product-img"
+                        loading="lazy"
+                      />
+                    ) : (
+                      <LazyVideo src={item.suit.file?.[0]?.url} />
+                    )}
+
+                    <div className="uc-product-info">
+                      <h3 className="uc-product-name">{item.suit.name}</h3>
+                      <p className="uc-product-size">Size: M</p>
+                      <p className="uc-product-price">
+                        Rs. {item.suit?.price?.toLocaleString?.() ?? "0"}.00
+                      </p>
+                    </div>
+
+                    <div
+                      className="cart-count"
+                      onClick={(e) => e.stopPropagation()}
                     >
-                      Delete
-                    </Button>
-                    <div className="uc-qty-control">
-                      <button
-                        className="uc-qty-btn"
-                        onClick={() => decCartCount(item.suit)}
-                        disabled={!inCart || quantity <= 1}
+                      <Button
+                        onClick={() => removeToCart(item.suit)}
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        startIcon={<DeleteIcon />}
                       >
-                        -
-                      </button>
-                      <span>{quantity}</span>
-                      <button
-                        className="uc-qty-btn"
-                        onClick={() => addToCart(item.suit)}
-                      >
-                        +
-                      </button>
+                        Delete
+                      </Button>
+                      <div className="uc-qty-control">
+                        <button
+                          className="uc-qty-btn"
+                          onClick={() => decCartCount(item.suit)}
+                          disabled={!inCart || quantity <= 1}
+                        >
+                          -
+                        </button>
+                        <span>{quantity}</span>
+                        <button
+                          className="uc-qty-btn"
+                          onClick={() => addToCart(item.suit)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })
+                );
+              })
           )}
 
           <div className="ud-info-wrapper">

@@ -9,6 +9,7 @@ const mongoose = require("mongoose");
 const userRouter = require("./routes/user.js");
 const suitRouter = require("./routes/suit.js");
 const reviewRouter = require("./routes/review.js");
+const path = require("path");
 
 main()
   .then(() => {
@@ -22,14 +23,15 @@ async function main() {
   await mongoose.connect(process.env.DB_URL);
 }
 
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://localhost:5173", process.env.CLIENT_URL],
+    credentials: true,
+  }),
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-
-app.get("/", (req, res) => {
-  res.send("hello world");
-});
 
 app.use((err, req, res, next) => {
   console.error(err.stack);
@@ -41,6 +43,22 @@ app.use((err, req, res, next) => {
 app.use("/users", userRouter);
 app.use("/suit", suitRouter);
 app.use("/suit/:id", reviewRouter);
+
+// Serve React build
+app.use(express.static(path.join(__dirname, "../Frontend/dist")));
+
+// ✅ Catch-all LAST — fixed path
+app.get("/{*splat}", (req, res) => {
+  res.sendFile(path.join(__dirname, "../Frontend/dist", "index.html"));
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res
+    .status(err.status || 500)
+    .json({ message: err.message || "Something went wrong" });
+});
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);

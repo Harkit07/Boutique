@@ -1,7 +1,6 @@
 import React from "react";
 import "../styles/ShopCom.css";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import design1 from "../assets/design1.jpg";
 
 const bestSellers = [
   {
@@ -68,7 +67,7 @@ const ShopCom = () => {
                 )}
                 <div className="product-image-wrapper">
                   <img
-                    src={design1}
+                    src="/design1.jpg"
                     alt={product.name}
                     className="product-image"
                   />
