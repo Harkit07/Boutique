@@ -1,9 +1,43 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "../styles/ImageCom.css";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 
 import { UserDataContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
+
+// Plays video ONLY when it enters the viewport
+const LazyVideo = ({ src }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {}); // play when visible
+        } else {
+          video.pause(); // pause when scrolled away
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      className="data-card-img"
+      src={src}
+      muted
+      loop
+      playsInline
+      preload="none" // don't download until visible
+    />
+  );
+};
 
 // const sampleProducts = [
 //   {
@@ -52,12 +86,13 @@ const DataCard = ({
       <div className="data-card-img-wrapper">
         {preOrder && <span className="data-card-preorder">Pre-Order</span>}
         {mediaType === "video" ? (
-          <video className="data-card-img" src={image} autoPlay muted loop />
+          <LazyVideo src={image} />
         ) : (
           <img
             src={image || "Suit IMG"}
             alt="Image"
             className="data-card-img"
+            loading="lazy"
           />
         )}
 

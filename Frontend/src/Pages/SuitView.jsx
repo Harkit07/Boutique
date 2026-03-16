@@ -20,6 +20,7 @@ const SuitView = () => {
   const navigate = useNavigate();
   const { user, setUser, setAllSuit, allSuit, setFilteredSuit, setActiveTab } =
     React.useContext(UserDataContext);
+
   const [loading, setLoading] = useState(true);
   const [suit, setSuit] = useState("");
   const [reviewForm, setReviewForm] = useState(false);
@@ -44,7 +45,7 @@ const SuitView = () => {
 
   useEffect(() => {
     fetchSuitDetails();
-  }, []);
+  }, [id]);
 
   const cartItem = user?.cart?.find(
     (item) => item.suit?._id?.toString() === suit?._id?.toString(),
@@ -177,7 +178,7 @@ const SuitView = () => {
     return (
       <div>
         {Array.from({ length: max }, (_, i) => (
-          <span key={i}>{i < rating ? "⭐" : null}</span>
+          <span key={i}>{i < rating ? "\u2B50" : null}</span>
         ))}
       </div>
     );

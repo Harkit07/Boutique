@@ -58,6 +58,7 @@ const SuitImgCom = ({ files = [] }) => {
                   src={file.url}
                   alt={`Suit view ${index + 1}`}
                   className="saree-slider-image"
+                  loading={index === 0 ? "eager" : "lazy"}
                 />
               )}
             </div>

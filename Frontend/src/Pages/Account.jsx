@@ -6,11 +6,17 @@ import "../styles/Account.css";
 import { Link } from "react-router-dom";
 import AccountForm from "../components/AccountForm";
 import { UserDataContext } from "../context/UserContext";
+import Skeleton from "../components/Skeleton";
 
 const Account = () => {
-  const { user, setActiveTab } = React.useContext(UserDataContext);
+  const { user, setActiveTab, loading } = React.useContext(UserDataContext);
   const [address, setAddress] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
+
+  if (loading) {
+    return <Skeleton />;
+  }
+
 
   return (
     <>

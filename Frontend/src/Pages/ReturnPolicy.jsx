@@ -4,9 +4,14 @@ import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
 import "../styles/Policy.css";
+import Skeleton from "../components/Skeleton";
 
 const ReturnPolicy = () => {
-  const { setActiveTab } = React.useContext(UserDataContext);
+  const { setActiveTab, loading } = React.useContext(UserDataContext);
+
+  if (loading) {
+    return <Skeleton />;
+  }
 
   return (
     <>
@@ -20,7 +25,7 @@ const ReturnPolicy = () => {
           </p>
 
           <div className="policy-divider"></div>
-          
+
           {/* Privacy Policy */}
           <div className="policy-block">
             <h2>Privacy Policy</h2>

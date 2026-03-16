@@ -1,42 +1,26 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import Skeleton from "./Skeleton";
 
 const UserProtectedWrapper = ({ children }) => {
-  const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const { user, setUser } = React.useContext(UserDataContext);
-  const [isLoading, setIsLoading] = useState(true);
+  const { user, loading } = React.useContext(UserDataContext);
 
   useEffect(() => {
-    if (!token) {
+    if (!loading && !user) {
       toast.warning("Please Login First");
       navigate("/login");
     }
+  }, [loading, user]);
 
-    axios
-      .get(`${import.meta.env.VITE_BASE_URL}/users/profile`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      .then((response) => {
-        if (response.status === 200) {
-          setUser(response.data.user);
-          setIsLoading(false);
-        }
-      })
-      .catch((err) => {
-        localStorage.removeItem("token");
-        navigate("/login");
-      });
-  }, [token]);
-
-  if (isLoading) {
+  if (loading) {
     return <Skeleton />;
+  }
+
+  if (!user) {
+    return null;
   }
 
   return <>{children}</>;

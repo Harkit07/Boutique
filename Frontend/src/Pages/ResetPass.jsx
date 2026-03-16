@@ -8,6 +8,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import React, { useEffect, useState } from "react";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
+import Skeleton from "../components/Skeleton";
 
 const validate = (values) => {
   const errors = {};
@@ -28,7 +29,12 @@ const validate = (values) => {
 };
 
 const ResetPass = () => {
-  const { setUser } = React.useContext(UserDataContext);
+  const { setUser, loading } = React.useContext(UserDataContext);
+
+  if (loading) {
+    return <Skeleton />;
+  }
+
   const [showPassword, setShowPassword] = useState(false);
   const [sendMail, setSendMail] = useState(true);
   const [sendingMail, setSendingMail] = useState(false);

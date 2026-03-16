@@ -37,6 +37,8 @@ const HomeReview = () => {
   };
 
   useEffect(() => {
+    if (reviews.length === 0) return;
+
     const interval = setInterval(() => {
       setIsTransitioning(true);
       setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);

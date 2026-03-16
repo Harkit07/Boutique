@@ -5,9 +5,14 @@ import Footer from "../components/Footer";
 import logo from "../assets/logo.jpg";
 import { UserDataContext } from "../context/UserContext";
 import "../styles/About.css";
+import Skeleton from "../components/Skeleton";
 
 const About = () => {
-  const { setActiveTab } = React.useContext(UserDataContext);
+  const { setActiveTab, loading } = React.useContext(UserDataContext);
+
+  if (loading) {
+    return <Skeleton />;
+  }
 
   return (
     <>

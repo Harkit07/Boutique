@@ -7,6 +7,7 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Skeleton from "../components/Skeleton";
 
 const validate = (values) => {
   const errors = {};
@@ -42,9 +43,14 @@ const validate = (values) => {
 const AddNewSuit = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const { activeTab, setActiveTab } = React.useContext(UserDataContext);
+  const { activeTab, setActiveTab, loading } =
+    React.useContext(UserDataContext);
   const [isOpen, setIsOpen] = React.useState(false);
   const [uploadBtn, setUploadBtn] = React.useState("Upload Suit Design");
+
+  if (loading) {
+    return <Skeleton />;
+  }
 
   const categories = [
     "AARI Work",

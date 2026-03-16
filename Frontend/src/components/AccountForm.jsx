@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 const AccountForm = () => {
   const token = localStorage.getItem("token");
   const { user, setUser } = React.useContext(UserDataContext);
+  const [updateBtn, setUpdateBtn] = useState("Update Address");
   const [formData, setFormData] = useState({
     firstname: user.fullname.firstname,
     lastname: user.fullname.lastname || "",
@@ -25,6 +26,7 @@ const AccountForm = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setUpdateBtn("Updating...");
     const response = await axios.post(
       `${import.meta.env.VITE_BASE_URL}/users/updateuser`,
       {
@@ -43,10 +45,8 @@ const AccountForm = () => {
       },
     );
     if (response.status === 200) {
-      toast.success("Account updated successful!");
-      const data = response.data;
-      setUser(data.user);
-      window.location.reload();
+      toast.success("Account updated!");
+      setUser(response.data.user);
     }
   };
 
@@ -129,7 +129,7 @@ const AccountForm = () => {
           />
         </div>
         <button type="submit" className="login-btn">
-          Update Address
+          {updateBtn}
         </button>
       </form>
     </div>

@@ -1,7 +1,6 @@
-import React, { createContext, useMemo, useState } from "react";
+import React, { createContext, useCallback, useMemo, useState } from "react";
 import { useEffect } from "react";
 import axios from "axios";
-import Skeleton from "../components/Skeleton";
 
 export const UserDataContext = createContext();
 
@@ -63,14 +62,17 @@ const UsersContext = ({ children }) => {
   }, [token]);
 
   // Filter suits by category (frontend only)
-  const filterSuitsByCategory = (category) => {
-    if (category === "All" || !category) {
-      setFilteredSuit(allSuit);
-    } else {
-      const filtered = allSuit.filter((suit) => suit.category === category);
-      setFilteredSuit(filtered);
-    }
-  };
+  const filterSuitsByCategory = useCallback(
+    (category) => {
+      if (category === "All" || !category) {
+        setFilteredSuit(allSuit);
+      } else {
+        const filtered = allSuit.filter((suit) => suit.category === category);
+        setFilteredSuit(filtered);
+      }
+    },
+    [allSuit],
+  );
 
   // Filter suits by price range
   const filterSuitsByPrice = (min, max) => {
@@ -113,7 +115,7 @@ const UsersContext = ({ children }) => {
       default:
         return suits;
     }
-  }, [activeTab, user, allSuit, filteredSuit, sortType]);
+  }, [filteredSuit, sortType]);
 
   const value = {
     activeTab,
@@ -129,11 +131,8 @@ const UsersContext = ({ children }) => {
     setSortType,
     sortedSuits,
     filterSuitsByPrice,
+    loading,
   };
-
-  if (loading) {
-    return <Skeleton />;
-  }
 
   return (
     <UserDataContext.Provider value={value}>

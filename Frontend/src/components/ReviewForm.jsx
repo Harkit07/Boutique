@@ -4,9 +4,7 @@ import { useFormik } from "formik";
 import { UserDataContext } from "../context/UserContext";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
-import UserProtectedWrapper from "../components/UserProtectedWrapper";
 import { toast } from "react-toastify";
-import { replace, useNavigate } from "react-router-dom";
 
 const validate = (values) => {
   const errors = {};

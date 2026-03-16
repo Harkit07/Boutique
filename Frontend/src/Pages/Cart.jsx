@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import { UserDataContext } from "../context/UserContext";
@@ -9,10 +9,49 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
+import Skeleton from "../components/Skeleton";
+
+// Plays video ONLY when it enters the viewport
+const LazyVideo = ({ src }) => {
+  const videoRef = useRef(null);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          video.play().catch(() => {}); // play when visible
+        } else {
+          video.pause(); // pause when scrolled away
+        }
+      },
+      { threshold: 0.5 },
+    );
+    observer.observe(video);
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <video
+      ref={videoRef}
+      className="uc-product-img"
+      src={src}
+      muted
+      loop
+      playsInline
+      preload="none" // don't download until visible
+    />
+  );
+};
 
 const Cart = () => {
-  const { user, setUser, activeTab, setActiveTab } =
+  const { user, setUser, activeTab, setActiveTab, loading } =
     React.useContext(UserDataContext);
+
+  if (loading) {
+    return <Skeleton />;
+  }
 
   const navigate = useNavigate();
 
@@ -113,17 +152,12 @@ const Cart = () => {
                   {type === "image" ? (
                     <img
                       src={item.suit.file?.[0]?.url}
-                      alt="Product"
+                      alt={item.suit.name}
                       className="uc-product-img"
+                      loading="lazy"
                     />
                   ) : (
-                    <video
-                      className="uc-product-img"
-                      src={item.suit.file?.[0]?.url}
-                      autoPlay
-                      muted
-                      loop
-                    />
+                    <LazyVideo src={item.suit.file?.[0]?.url} />
                   )}
 
                   <div className="uc-product-info">
