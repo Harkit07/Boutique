@@ -25,10 +25,23 @@ async function main() {
 
 app.use(
   cors({
-    origin: ["http://localhost:5173", process.env.CLIENT_URL],
+    origin: function (origin, callback) {
+      const allowed = [
+        "http://localhost:5173",
+        "https://boutiquefrontend-ymww.onrender.com",
+        process.env.CLIENT_URL,
+      ];
+      // allow requests with no origin (mobile apps, postman)
+      if (!origin || allowed.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
   }),
 );
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
