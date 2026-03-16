@@ -1,4 +1,3 @@
-import logovideo from "../assets/logovideo.mp4";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import { Link, useNavigate } from "react-router-dom";
@@ -92,7 +91,7 @@ const Signup = () => {
           <div className="login-content">
             <video
               className="login-bg-video"
-              src={logovideo}
+              src="/logovideo.mp4"
               autoPlay
               loop
               muted

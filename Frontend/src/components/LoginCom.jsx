@@ -66,9 +66,14 @@ const Login = () => {
     <>
       <div className="login-bg-container">
         <div className="login-content">
-          <vidoe className="login-bg-video" autoPlay loop muted playsInline>
-            <source src="/logovideo.mp4" type="video/mp4" />
-          </vidoe>
+          <video
+            className="login-bg-video"
+            src="/logovideo.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
           <nav className="login-breadcrumb">
             <span>Home</span>
             <span className="dot">•</span>
