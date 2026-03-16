@@ -23,24 +23,14 @@ async function main() {
   await mongoose.connect(process.env.DB_URL);
 }
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      const allowed = [
-        "http://localhost:5173",
-        "https://boutiquefrontend-ymww.onrender.com",
-        process.env.CLIENT_URL,
-      ];
-      // allow requests with no origin (mobile apps, postman)
-      if (!origin || allowed.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  }),
-);
+app.use(cors());
+
+// app.use(
+//   cors({
+//     origin: ["http://localhost:5173", process.env.CLIENT_URL],
+//     credentials: true,
+//   }),
+// );
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
