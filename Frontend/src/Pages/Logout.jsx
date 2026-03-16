@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import "../styles/Skeleton.css";
 
 const Logout = () => {
   const navigate = useNavigate();
@@ -30,7 +31,27 @@ const Logout = () => {
     logoutUser();
   }, [navigate, token]);
 
-  return <div>Logging out...</div>;
+  return (
+    <div className="rxo-skeleton-wrapper">
+      {/* Header */}
+      <div className="rxo-skeleton-header">
+        <div className="rxo-skeleton-menu"></div>
+        <div className="rxo-skeleton-menu"></div>
+        <div className="rxo-skeleton-cart"></div>
+      </div>
+
+      {/* Banner */}
+      <div className="rxo-skeleton-banner"></div>
+
+      {/* Bottom Nav */}
+      <div className="rxo-skeleton-nav">
+        <div className="rxo-skeleton-menu"></div>
+        <div className="rxo-skeleton-menu"></div>
+        <div className="rxo-skeleton-menu"></div>
+        <div className="rxo-skeleton-menu"></div>
+      </div>
+    </div>
+  );
 };
 
 export default Logout;

@@ -12,15 +12,22 @@ import { useEffect } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import { toast } from "react-toastify";
+import Skeleton from "@mui/material/Skeleton";
 
 const SuitView = () => {
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const { user, setUser, setAllSuit, allSuit, setFilteredSuit, setActiveTab } =
-    React.useContext(UserDataContext);
+  const {
+    user,
+    setUser,
+    setAllSuit,
+    allSuit,
+    setFilteredSuit,
+    setActiveTab,
+    loading,
+  } = React.useContext(UserDataContext);
 
-  const [loading, setLoading] = useState(true);
   const [suit, setSuit] = useState("");
   const [reviewForm, setReviewForm] = useState(false);
   const [delSuitBtn, setDelSuitBtn] = useState("Delete Suit");
@@ -53,7 +60,7 @@ const SuitView = () => {
   const inCart = !!cartItem;
 
   if (loading) {
-    return <div>Loading</div>;
+    return <Skeleton />;
   }
 
   const deleteReviw = async (revId) => {
@@ -248,7 +255,7 @@ const SuitView = () => {
               <button className="saree-buy-now">Buy It Now</button>
               {user.role === "admin" ? (
                 <button className="saree-del-now" onClick={deleteSuit}>
-                  Delete Suit
+                  {delSuitBtn}
                 </button>
               ) : null}
             </div>

@@ -16,7 +16,6 @@ const Policy = () => {
   return (
     <>
       <HeaderCom />
-
       <section className="policy-section">
         <div className="policy-card">
           <h1 className="policy-title">Policies</h1>
