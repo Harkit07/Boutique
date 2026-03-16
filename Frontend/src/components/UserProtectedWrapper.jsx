@@ -6,14 +6,22 @@ import Skeleton from "./Skeleton";
 
 const UserProtectedWrapper = ({ children }) => {
   const navigate = useNavigate();
-  const { user } = React.useContext(UserDataContext);
+  const { user, loading } = React.useContext(UserDataContext);
 
   useEffect(() => {
-    if (!user) {
+    if (!loading && !user) {
       toast.warning("Please Login First");
       navigate("/login");
     }
-  }, [user]);
+  }, [loading, user]);
+
+  if (loading) {
+    return <Skeleton />;
+  }
+
+  if (!user) {
+    return null;
+  }
 
   return <>{children}</>;
 };
