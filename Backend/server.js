@@ -9,7 +9,7 @@ const mongoose = require("mongoose");
 const userRouter = require("./routes/user.js");
 const suitRouter = require("./routes/suit.js");
 const reviewRouter = require("./routes/review.js");
-const path = require("path");
+const https = require("https");
 
 main()
   .then(() => {
@@ -34,6 +34,11 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+// ✅ Health check endpoint (required for keep-alive ping)
+app.get("/health", (req, res) => {
+  res.status(200).json({ status: "alive", uptime: process.uptime() });
+});
+
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res
@@ -52,6 +57,28 @@ app.use((err, req, res, next) => {
     .status(err.status || 500)
     .json({ message: err.message || "Something went wrong" });
 });
+
+// ✅ Keep-alive self-ping function (prevents Render sleep)
+const keepAlive = () => {
+  const url = process.env.RENDER_URL || `http://localhost:${port}/health`;
+
+  // Only ping in production
+  if (process.env.NODE_ENV === "production") {
+    setInterval(
+      () => {
+        https
+          .get(url, (res) => {
+            console.log(`Keep-alive ping: ${res.statusCode}`);
+          })
+          .on("error", (err) => {
+            console.log("Keep-alive error:", err.message);
+          });
+      },
+      10 * 60 * 1000,
+    ); // ping every 10 minutes
+    console.log("Keep-alive started ✅");
+  }
+};
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
