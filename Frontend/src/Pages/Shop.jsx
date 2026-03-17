@@ -6,6 +6,7 @@ import { UserDataContext } from "../context/UserContext";
 import React, { useEffect } from "react";
 import FilterCom from "../components/FilterCom";
 import Skeleton from "../components/Skeleton";
+import "../styles/Cart.css";
 
 const Shop = () => {
   const { setActiveTab, loading } = React.useContext(UserDataContext);

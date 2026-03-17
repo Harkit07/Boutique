@@ -1,3 +1,4 @@
+import "../styles/SuitView.css";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
@@ -5,7 +6,6 @@ import { UserDataContext } from "../context/UserContext";
 import React, { useState } from "react";
 import SuitImgCom from "../components/SuitImgCom";
 import DeleteIcon from "@mui/icons-material/Delete";
-import "../styles/SuitView.css";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ReviewForm from "../components/ReviewForm";
 import { useEffect } from "react";
@@ -18,17 +18,11 @@ const SuitView = () => {
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const {
-    user,
-    setUser,
-    setAllSuit,
-    allSuit,
-    setFilteredSuit,
-    setActiveTab,
-    loading,
-  } = React.useContext(UserDataContext);
+  const { user, setUser, setAllSuit, allSuit, setFilteredSuit, setActiveTab } =
+    React.useContext(UserDataContext);
 
-  const [suit, setSuit] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [suit, setSuit] = useState(null);
   const [reviewForm, setReviewForm] = useState(false);
   const [delSuitBtn, setDelSuitBtn] = useState("Delete Suit");
 
@@ -38,6 +32,7 @@ const SuitView = () => {
         `${import.meta.env.VITE_BASE_URL}/suit/${id}`,
       );
       if (response.status === 200) {
+        setLoading(false);
         const data = response.data;
         setSuit(data.suit);
         setReviewForm(false);
@@ -213,7 +208,7 @@ const SuitView = () => {
               <h2 className="saree-product-title">{suit.name}</h2>
 
               <p className="saree-product-price">
-                Rs.{suit.price.toLocaleString()}.00
+                Rs.{suit?.price?.toLocaleString()}.00
               </p>
 
               <div className="saree-product-viewing">
@@ -252,7 +247,7 @@ const SuitView = () => {
               </div>
 
               <button className="saree-buy-now">Buy It Now</button>
-              {user.role === "admin" ? (
+              {user && user.role === "admin" ? (
                 <button className="saree-del-now" onClick={deleteSuit}>
                   {delSuitBtn}
                 </button>
