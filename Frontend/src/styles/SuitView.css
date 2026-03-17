@@ -1,3 +1,31 @@
+.uc-cart-wrapper {
+  padding: 8px 12px;
+  background-color: #fff;
+  text-align: center;
+}
+
+.uc-breadcrumb {
+  font-size: 13px;
+  color: #777;
+  margin-bottom: 8px;
+}
+
+.uc-breadcrumb span {
+  font-weight: 600;
+  color: #000;
+}
+
+.uc-cart-title {
+  font-size: 24px;
+  margin: 8px 0;
+}
+
+.uc-cart-subtitle {
+  font-size: 14px;
+  color: #555;
+  padding-bottom: 30px;
+}
+
 .saree-slider-section {
   width: 100%;
   max-width: 420px;

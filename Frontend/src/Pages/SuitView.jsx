@@ -38,7 +38,6 @@ const SuitView = () => {
         `${import.meta.env.VITE_BASE_URL}/suit/${id}`,
       );
       if (response.status === 200) {
-        setLoading(false);
         const data = response.data;
         setSuit(data.suit);
         setReviewForm(false);
