@@ -77,6 +77,11 @@ const SuitView = () => {
   };
 
   const addToCart = async () => {
+    if (!user) {
+      toast.warning("Please Login First");
+      navigate("/login");
+      return;
+    }
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cart`,
@@ -98,6 +103,11 @@ const SuitView = () => {
   };
 
   const removeToCart = async () => {
+    if (!user) {
+      toast.warning("Please Login First");
+      navigate("/login");
+      return;
+    }
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cart`,
@@ -118,6 +128,11 @@ const SuitView = () => {
   };
 
   const decCartCount = async () => {
+    if (!user) {
+      toast.warning("Please Login First");
+      navigate("/login");
+      return;
+    }
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cartitem`,
@@ -167,11 +182,11 @@ const SuitView = () => {
   };
 
   const addRevBtn = () => {
-    setReviewForm(!reviewForm);
     if (!user) {
       toast.warning("Please Login First");
       navigate("/login");
     }
+    setReviewForm(!reviewForm);
   };
 
   const StarRating = ({ rating, max = 5 }) => {
