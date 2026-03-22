@@ -274,52 +274,6 @@ const SuitImgCom = ({ files = [] }) => {
     [scale, pan],
   );
 
-  const handleTouchMove = useCallback(
-    (e) => {
-      const el = containerRef.current;
-      if (!el) return;
-
-      if (e.touches.length === 2) {
-        e.preventDefault();
-        const dx = e.touches[0].clientX - e.touches[1].clientX;
-        const dy = e.touches[0].clientY - e.touches[1].clientY;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-
-        if (lastPinchDist.current !== null) {
-          const rect = el.getBoundingClientRect();
-          const mid = {
-            x: (e.touches[0].clientX + e.touches[1].clientX) / 2,
-            y: (e.touches[0].clientY + e.touches[1].clientY) / 2,
-          };
-          const pinchX = mid.x - rect.left - rect.width / 2;
-          const pinchY = mid.y - rect.top - rect.height / 2;
-          const ratio = dist / lastPinchDist.current;
-
-          setScale((prev) => {
-            const next = Math.min(4, Math.max(1, prev * ratio));
-            if (next === 1) {
-              setPan({ x: 0, y: 0 });
-            } else {
-              setPan((p) => {
-                const nx = pinchX - (pinchX - p.x) * (next / prev);
-                const ny = pinchY - (pinchY - p.y) * (next / prev);
-                return clampPan(nx, ny, next, el);
-              });
-            }
-            return next;
-          });
-        }
-        lastPinchDist.current = dist;
-      } else if (e.touches.length === 1 && isPanning.current && scale > 1) {
-        e.preventDefault();
-        const nx = e.touches[0].clientX - panStart.current.x;
-        const ny = e.touches[0].clientY - panStart.current.y;
-        setPan(clampPan(nx, ny, scale, el));
-      }
-    },
-    [scale, clampPan],
-  );
-
   const handleTouchEnd = useCallback(
     (e) => {
       lastPinchDist.current = null;
@@ -391,7 +345,6 @@ const SuitImgCom = ({ files = [] }) => {
           onMouseUp={handleMouseUp}
           onMouseLeave={handleMouseUp}
           onTouchStart={handleTouchStart}
-          // onTouchMove={handleTouchMove}
           onTouchEnd={handleTouchEndDbl}
         >
           <div

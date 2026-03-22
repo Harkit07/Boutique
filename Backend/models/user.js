@@ -1,5 +1,6 @@
 const mongoose = require("mongoose");
 const { Schema } = mongoose;
+const Review = require("./review.js");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -76,6 +77,12 @@ userSchema.methods.comparePassword = async function (password) {
 userSchema.statics.hashPassword = async function (password) {
   return await bcrypt.hash(password, 10);
 };
+
+userSchema.post("findOneAndDelete", async (user) => {
+  if (user) {
+    await Review.deleteMany({ author: user._id });
+  }
+});
 
 const User = mongoose.model("user", userSchema);
 

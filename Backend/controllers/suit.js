@@ -79,12 +79,6 @@ module.exports.delSuit = async (req, res) => {
       .json({ message: "Not authorized to delete this suit" });
   }
 
-  // Delete all reviews related to this suit
-  if (suit.review && suit.review.length > 0) {
-    const reviewIds = suit.review.map((rev) => rev._id);
-    await Review.deleteMany({ _id: { $in: reviewIds } });
-  }
-
   // Delete the suit itself
   await Suit.findByIdAndDelete(id);
 
