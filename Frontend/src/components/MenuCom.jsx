@@ -65,12 +65,20 @@ const MenuCom = ({ isOpen, setIsOpen }) => {
             </a>
           </li>
           {user != null ? (
-            <Link to="/account" className="nav-link">
-              <li id="ba-menu-footer">
-                <PersonIcon id="ba-person-icon" />
-                {`${user.fullname.firstname} ${user.fullname.lastname}`}
-              </li>
-            </Link>
+            <>
+              <Link to="/account" className="nav-link">
+                <li id="ba-menu-footer">
+                  <PersonIcon id="ba-person-icon" />
+                  {`${user.fullname.firstname} ${user.fullname.lastname}`}
+                </li>
+              </Link>
+              <Link to="/logout" className="nav-link">
+                <li id="ba-menu-footer">
+                  <PersonIcon id="ba-person-icon" />
+                  Log Out
+                </li>
+              </Link>
+            </>
           ) : (
             <Link to="/login" className="nav-link">
               <li id="ba-menu-footer">
@@ -79,13 +87,6 @@ const MenuCom = ({ isOpen, setIsOpen }) => {
               </li>
             </Link>
           )}
-
-          <Link to="/logout" className="nav-link">
-            <li id="ba-menu-footer">
-              <PersonIcon id="ba-person-icon" />
-              Log Out
-            </li>
-          </Link>
         </ul>
       </div>
     </>
