@@ -10,6 +10,7 @@ const UserProtectedWrapper = ({ children }) => {
 
   useEffect(() => {
     if (!loading && !user) {
+      localStorage.removeItem("token");
       toast.warning("Please Login First");
       navigate("/login");
     }
