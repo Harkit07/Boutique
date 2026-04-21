@@ -62,7 +62,7 @@ app.use((err, req, res, next) => {
 const keepAlive = () => {
   const url = process.env.RENDER_URL || `http://localhost:${port}/health`;
 
-  // Only ping in production
+  // Only ping in production to Alive
   if (process.env.NODE_ENV === "production") {
     setInterval(
       () => {
