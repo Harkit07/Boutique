@@ -1,6 +1,8 @@
-# 🌍 Wanderlust
+# 🛍️ Boutique — Full Stack E-Commerce Platform
 
-A full-stack travel listing web application inspired by Airbnb, built with Node.js, Express, EJS, and MongoDB. Users can browse, create, and review property listings across various categories — complete with interactive maps powered by Mapbox.
+A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image storage, and a fully responsive UI — deployed independently on Render.
+
+🔗 **Live Demo:** [boutiquefrontend-ymww.onrender.com](https://boutiquefrontend-ymww.onrender.com/) · **GitHub:** [github.com/Harkit07/Boutique](https://github.com/Harkit07/Boutique.git)
 
 ---
 
@@ -11,93 +13,97 @@ A full-stack travel listing web application inspired by Airbnb, built with Node.
 - [Project Structure](#project-structure)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-  - [Seed the Database](#seed-the-database)
+  - [Backend Setup](#backend-setup)
+  - [Frontend Setup](#frontend-setup)
 - [Environment Variables](#environment-variables)
 - [API Routes](#api-routes)
-- [Listing Categories](#listing-categories)
-- [Contributing](#contributing)
+- [Deployment](#deployment)
 
 ---
 
 ## ✨ Features
 
-- 🗺️ **Interactive Maps** — Mapbox-powered geocoding and map display on each listing's detail page
-- 🏠 **Listing CRUD** — Create, view, edit, and delete property listings with image uploads
-- 📂 **Category Filtering** — Browse listings by category (Trending, Mountains, Castles, Camping, etc.)
-- ⭐ **Reviews** — Authenticated users can post and delete star-rated reviews on any listing
-- 🔐 **Authentication** — Signup, login, and logout using Passport.js local strategy with session persistence
-- 🛡️ **Authorization** — Only the listing owner can edit or delete their listing; only review authors can delete their review
-- 🖼️ **Image Uploads** — Listing images stored on Cloudinary via Multer
-- 🗄️ **Session Storage** — Sessions persisted in MongoDB using `connect-mongo`
-- 💬 **Flash Messages** — Success and error feedback messages across all user actions
-- ✅ **Server-side Validation** — Request body validated with Joi schemas
-- ♻️ **Keep-Alive Ping** — Self-pinging in production to prevent Render free-tier sleep
+- 🔐 **JWT Authentication** — Secure signup, login, and session handling with JSON Web Tokens
+- 🔑 **Password Reset Flow** — Email-based password reset for reliable account recovery
+- 👤 **Profile Management** — Users can update their profile details and avatar
+- 🛒 **Shopping Cart** — Dynamic cart with real-time state updates and quantity management
+- 📦 **Product Management** — Full CRUD for products with multi-image upload support
+- ⭐ **Customer Reviews** — Authenticated users can post and manage reviews on products
+- 🖼️ **Cloud Image Storage** — Product images stored and served via Cloudinary
+- 📱 **Fully Responsive UI** — Optimized for mobile, tablet, and desktop devices
+- 🛡️ **Protected API Routes** — Backend routes secured with JWT middleware
+- 🚀 **Independent Deployment** — Frontend and backend deployed separately on Render
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Technology | Purpose |
-|---|---|
-| Node.js + Express 4 | Web server & routing |
-| MongoDB + Mongoose | Database & ODM |
-| EJS + EJS-Mate | Server-side templating with layouts |
-| Passport.js | Authentication (local strategy) |
-| passport-local-mongoose | User model plugin for auth |
-| express-session + connect-mongo | Session management with MongoDB store |
-| Mapbox SDK | Forward geocoding & map rendering |
-| Cloudinary + Multer | Image upload & cloud storage |
-| connect-flash | Flash messaging |
-| Joi | Server-side schema validation |
-| method-override | Support for PUT/DELETE in HTML forms |
+### Frontend
+
+| Technology        | Purpose                     |
+| ----------------- | --------------------------- |
+| React.js          | UI framework                |
+| Material UI       | Component library & styling |
+| Tailwind CSS      | Utility-first CSS           |
+| Formik            | Form handling & validation  |
+| React Context API | Global state management     |
+| Axios             | HTTP client for API calls   |
+
+### Backend
+
+| Technology             | Purpose                          |
+| ---------------------- | -------------------------------- |
+| Node.js + Express.js   | Web server & REST API            |
+| MongoDB + Mongoose ODM | Database & schema modeling       |
+| JWT (jsonwebtoken)     | Authentication & authorization   |
+| Bcrypt                 | Password hashing                 |
+| Cloudinary + Multer    | Image upload & cloud storage     |
+| Nodemailer             | Email service for password reset |
 
 ---
 
 ## 📁 Project Structure
 
 ```
-Wanderlust/
-├── controllers/
-│   ├── listings.js      # Listing CRUD logic + geocoding
-│   ├── reviews.js       # Review create & delete
-│   ├── users.js         # Signup, login, logout
-│   └── category.js      # Category filter logic
+Boutique/
+├── Backend/
+│   ├── controllers/
+│   │   ├── auth.js          # Signup, login, password reset
+│   │   ├── products.js      # Product CRUD
+│   │   ├── cart.js          # Cart operations
+│   │   ├── reviews.js       # Review create & delete
+│   │   └── user.js          # Profile management
+│   │
+│   ├── models/
+│   │   ├── user.js          # User schema (hashed password, profile)
+│   │   ├── product.js       # Product schema (images, category, price)
+│   │   ├── cart.js          # Cart schema (items, quantities)
+│   │   └── review.js        # Review schema (rating, comment, author)
+│   │
+│   ├── routes/
+│   │   ├── auth.js          # /api/auth routes
+│   │   ├── products.js      # /api/products routes
+│   │   ├── cart.js          # /api/cart routes
+│   │   ├── reviews.js       # /api/reviews routes
+│   │   └── user.js          # /api/user routes
+│   │
+│   ├── middleware/
+│   │   └── auth.js          # JWT verification middleware
+│   │
+│   ├── config/
+│   │   └── cloudinary.js    # Cloudinary & Multer config
+│   │
+│   └── app.js               # Express app entry point
 │
-├── models/
-│   ├── listing.js       # Listing schema (with GeoJSON geometry)
-│   ├── reviews.js       # Review schema (rating, comment, author)
-│   └── user.js          # User schema with passport-local-mongoose
-│
-├── routes/
-│   ├── listing.js       # /listings routes
-│   ├── review.js        # /listings/:id/reviews routes
-│   ├── user.js          # /signup, /login, /logout routes
-│   └── category.js      # /listings/category/:category routes
-│
-├── views/
-│   ├── listings/        # home, show, new, edit EJS templates
-│   ├── users/           # signup, login EJS templates
-│   ├── includes/        # navbar, footer, flash partials
-│   ├── layouts/         # boilerplate EJS-Mate layout
-│   └── error.ejs        # Error page
-│
-├── public/
-│   ├── css/             # Custom stylesheets
-│   └── js/              # Client-side scripts (map rendering)
-│
-├── init/
-│   ├── data.js          # Sample listing seed data
-│   └── index.js         # DB seed script
-│
-├── utils/
-│   ├── ExpressError.js  # Custom error class
-│   └── wrapAsync.js     # Async error handler wrapper
-│
-├── middleware.js         # isLoggedIn, isOwner, isReviewAuthor, validate*
-├── cloudConfig.js        # Cloudinary & Multer storage config
-├── schema.js             # Joi validation schemas
-└── app.js                # Express app entry point
+└── Frontend/
+    ├── src/
+    │   ├── components/      # Reusable UI components
+    │   ├── pages/           # Route-level page components
+    │   ├── context/         # React Context for auth & cart state
+    │   ├── api/             # Axios instance & API helpers
+    │   └── main.jsx         # React DOM entry point
+    │
+    └── index.html
 ```
 
 ---
@@ -106,20 +112,19 @@ Wanderlust/
 
 ### Prerequisites
 
-- **Node.js** v20.18.0 (see `engines` in `package.json`)
+- **Node.js** v18+
 - **npm** v9+
-- A **MongoDB** database (local or [MongoDB Atlas](https://www.mongodb.com/atlas))
+- A **MongoDB** database ([MongoDB Atlas](https://www.mongodb.com/atlas) recommended)
 - A **Cloudinary** account for image uploads
-- A **Mapbox** account for geocoding and maps
+- An email account / SMTP service for password reset emails
 
 ---
 
-### Installation
+### Backend Setup
 
 ```bash
-# 1. Clone the repository
-git clone https://github.com/Harkit07/Wanderlust.git
-cd Wanderlust
+# 1. Navigate to the backend directory
+cd Backend
 
 # 2. Install dependencies
 npm install
@@ -128,117 +133,131 @@ npm install
 touch .env
 # Fill in the required variables (see Environment Variables below)
 
-# 4. Start the server
+# 4. Start the backend server
 node app.js
 ```
 
-The app will be available at `http://localhost:8080`.
+Backend will be available at `http://localhost:5000`.
 
 ---
 
-### Seed the Database
-
-To populate the database with sample listings:
+### Frontend Setup
 
 ```bash
-node init/index.js
+# 1. Navigate to the frontend directory
+cd Frontend
+
+# 2. Install dependencies
+npm install
+
+# 3. Create your environment file
+touch .env
+# Set VITE_API_URL to your backend URL
+
+# 4. Start the development server
+npm run dev
 ```
 
-This will insert all sample listings from `init/data.js` into your MongoDB database.
+Frontend will be available at `http://localhost:5173`.
 
 ---
 
 ## 🔐 Environment Variables
 
-Create a `.env` file in the root directory with the following:
+### Backend `.env`
 
 ```env
 # MongoDB
-ATLASDB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/wanderlust
+MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/boutique
 
-# Session
-SECRET=your_session_secret_key
+# JWT
+JWT_SECRET=your_jwt_secret_key
+JWT_EXPIRES_IN=7d
 
 # Cloudinary
 CLOUD_NAME=your_cloud_name
 CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
-# Mapbox
-MAP_TOKEN=your_mapbox_public_access_token
+# Email (for password reset)
+EMAIL_HOST=smtp.gmail.com
+EMAIL_PORT=587
+EMAIL_USER=your_email@gmail.com
+EMAIL_PASS=your_email_app_password
 
-# Keep-alive (your deployed backend URL on Render)
-RENDER_URL=https://your-app-name.onrender.com
+# Server
+PORT=5000
+```
+
+### Frontend `.env`
+
+```env
+VITE_API_URL=http://localhost:5000/api
 ```
 
 ---
 
 ## 📡 API Routes
 
-### Listings — `/listings`
+### Auth — `/api/auth`
 
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `GET` | `/listings` | ❌ | Browse all listings |
-| `GET` | `/listings/new` | ✅ | Render new listing form |
-| `POST` | `/listings` | ✅ | Create a new listing |
-| `GET` | `/listings/:id` | ❌ | View a single listing with map & reviews |
-| `GET` | `/listings/:id/edit` | ✅ Owner | Render edit form |
-| `PUT` | `/listings/:id` | ✅ Owner | Update a listing |
-| `DELETE` | `/listings/:id` | ✅ Owner | Delete a listing |
+| Method | Route                             | Auth | Description               |
+| ------ | --------------------------------- | ---- | ------------------------- |
+| `POST` | `/api/auth/signup`                | ❌   | Register a new user       |
+| `POST` | `/api/auth/login`                 | ❌   | Login and receive JWT     |
+| `POST` | `/api/auth/forgot-password`       | ❌   | Send password reset email |
+| `POST` | `/api/auth/reset-password/:token` | ❌   | Reset password with token |
 
-### Categories — `/listings/category`
+### User — `/api/user`
 
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `GET` | `/listings/category/:category` | ❌ | Filter listings by category |
+| Method | Route               | Auth | Description              |
+| ------ | ------------------- | ---- | ------------------------ |
+| `GET`  | `/api/user/profile` | ✅   | Get current user profile |
+| `PUT`  | `/api/user/profile` | ✅   | Update profile details   |
 
-### Reviews — `/listings/:id/reviews`
+### Products — `/api/products`
 
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `POST` | `/listings/:id/reviews` | ✅ | Post a review on a listing |
-| `DELETE` | `/listings/:id/reviews/:reviewId` | ✅ Author | Delete a review |
+| Method   | Route               | Auth | Description          |
+| -------- | ------------------- | ---- | -------------------- |
+| `GET`    | `/api/products`     | ❌   | Get all products     |
+| `GET`    | `/api/products/:id` | ❌   | Get a single product |
+| `POST`   | `/api/products`     | ✅   | Create a new product |
+| `PUT`    | `/api/products/:id` | ✅   | Update a product     |
+| `DELETE` | `/api/products/:id` | ✅   | Delete a product     |
 
-### Users
+### Cart — `/api/cart`
 
-| Method | Route | Auth | Description |
-|--------|-------|------|-------------|
-| `GET` | `/signup` | ❌ | Render signup form |
-| `POST` | `/signup` | ❌ | Register a new user |
-| `GET` | `/login` | ❌ | Render login form |
-| `POST` | `/login` | ❌ | Authenticate and login |
-| `GET` | `/logout` | ✅ | Logout current user |
+| Method   | Route               | Auth | Description             |
+| -------- | ------------------- | ---- | ----------------------- |
+| `GET`    | `/api/cart`         | ✅   | Get current user's cart |
+| `POST`   | `/api/cart`         | ✅   | Add item to cart        |
+| `PUT`    | `/api/cart/:itemId` | ✅   | Update item quantity    |
+| `DELETE` | `/api/cart/:itemId` | ✅   | Remove item from cart   |
 
----
+### Reviews — `/api/reviews`
 
-## 📂 Listing Categories
-
-Listings can be tagged with one of the following categories:
-
-| Category | Description |
-|---|---|
-| Trending | Currently popular listings |
-| Rooms | Private room stays |
-| Iconic Cities | Urban stays in famous cities |
-| Mountain | High-altitude retreats |
-| Castles | Historic castle properties |
-| Amazing Pools | Listings with standout pools |
-| Camping | Outdoor and tent stays |
-| Farms | Rural farmstay experiences |
-| Arctic | Cold-weather and snow destinations |
-| Domes | Unique geodesic dome stays |
-| Boats | Houseboat or yacht stays |
+| Method   | Route                     | Auth      | Description     |
+| -------- | ------------------------- | --------- | --------------- |
+| `POST`   | `/api/reviews/:productId` | ✅        | Post a review   |
+| `DELETE` | `/api/reviews/:reviewId`  | ✅ Author | Delete a review |
 
 ---
 
-## 🤝 Contributing
+## 🚢 Deployment
 
-1. Fork the repository
-2. Create a new branch: `git checkout -b feature/your-feature-name`
-3. Commit your changes: `git commit -m 'Add some feature'`
-4. Push to the branch: `git push origin feature/your-feature-name`
-5. Open a Pull Request
+Frontend and backend are deployed independently on **Render**.
+
+**Backend (Web Service)**
+
+- Build command: `npm install`
+- Start command: `node app.js`
+- Add all backend environment variables in Render dashboard
+
+**Frontend (Static Site)**
+
+- Build command: `npm run build`
+- Publish directory: `dist`
+- Set `VITE_API_URL` to your deployed backend URL
 
 ---
 
@@ -246,8 +265,13 @@ Listings can be tagged with one of the following categories:
 
 **Harkit Singh**
 
+- 📧 harkitsinghsran9584@gmail.com
+- 📞 +91-8890436710
+- 🌐 [Portfolio](https://portfolio-8zov.onrender.com)
+- 🐙 [github.com/Harkit07](https://github.com/Harkit07)
+
 ---
 
 ## 📝 License
 
-This project is open source and available under the **ISC License**.
+This project is open source and free to use.
