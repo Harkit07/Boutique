@@ -269,6 +269,7 @@ Frontend and backend are deployed independently on **Render**.
 - 📞 +91-8890436710
 - 🌐 [Portfolio](https://portfolio-8zov.onrender.com)
 - 🐙 [github.com/Harkit07](https://github.com/Harkit07)
+- 🐙 [boutique.com](https://boutiquefrontend-ymww.onrender.com)
 
 ---
 
