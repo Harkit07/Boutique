@@ -42,8 +42,11 @@ const UsersContext = ({ children }) => {
           setUser(null); // logged out user
         }
       } catch (err) {
-        console.log(err);
+        if (err.response?.status === 401) {
+          localStorage.removeItem("token"); // clear bad token
+        }
         setUser(null);
+        console.log(err);
       } finally {
         setLoading(false);
       }
