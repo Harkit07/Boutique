@@ -1,6 +1,6 @@
 # 🛍️ Boutique — Full Stack E-Commerce Platform
 
-A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image storage, and a fully responsive UI — deployed independently on Render.
+A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image storage, and a fully responsive UI — frontend deployed on Render, backend deployed on Vercel.
 
 🔗 **Live Demo:** [boutiquefrontend-ymww.onrender.com](https://boutiquefrontend-ymww.onrender.com/) · **GitHub:** [github.com/Harkit07/Boutique](https://github.com/Harkit07/Boutique.git)
 
@@ -32,7 +32,7 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 - 🖼️ **Cloud Image Storage** — Product images stored and served via Cloudinary
 - 📱 **Fully Responsive UI** — Optimized for mobile, tablet, and desktop devices
 - 🛡️ **Protected API Routes** — Backend routes secured with JWT middleware
-- 🚀 **Independent Deployment** — Frontend and backend deployed separately on Render
+- 🚀 **Independent Deployment** — Frontend deployed on Render, backend deployed on Vercel (serverless)
 
 ---
 
@@ -93,7 +93,11 @@ Boutique/
 │   ├── config/
 │   │   └── cloudinary.js    # Cloudinary & Multer config
 │   │
-│   └── app.js               # Express app entry point
+│   ├── api/
+│   │   └── index.js         # Vercel serverless entry point (wraps app.js)
+│   │
+│   ├── vercel.json          # Vercel routing config
+│   └── app.js               # Express app (exported, no app.listen)
 │
 └── Frontend/
     ├── src/
@@ -192,7 +196,7 @@ PORT=5000
 ### Frontend `.env`
 
 ```env
-VITE_API_URL=http://localhost:5000/api
+VITE_API_URL=https://your-vercel-project.vercel.app/api
 ```
 
 ---
@@ -245,19 +249,51 @@ VITE_API_URL=http://localhost:5000/api
 
 ## 🚢 Deployment
 
-Frontend and backend are deployed independently on **Render**.
+Frontend and backend are deployed independently — frontend on **Render**, backend on **Vercel**.
 
-**Backend (Web Service)**
+**Backend (Vercel — Serverless)**
 
-- Build command: `npm install`
-- Start command: `node app.js`
-- Add all backend environment variables in Render dashboard
+Vercel runs Express as a serverless function. Three small additions are needed:
 
-**Frontend (Static Site)**
+1. **`api/index.js`** — Create this file inside `Backend/api/`:
+
+```js
+const app = require("../app");
+module.exports = app;
+```
+
+2. **`app.js`** — Export the app and guard the `listen` call:
+
+```js
+// Replace app.listen(...) with:
+if (require.main === module) {
+  app.listen(process.env.PORT || 5000);
+}
+module.exports = app;
+```
+
+3. **`vercel.json`** — Place in `Backend/` root:
+
+```json
+{
+  "version": 2,
+  "builds": [{ "src": "api/index.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "api/index.js" }]
+}
+```
+
+- Add all backend environment variables in **Vercel Dashboard → Project Settings → Environment Variables**
+- Deploy by connecting your GitHub repo to Vercel and setting the **Root Directory** to `Backend/`
+
+**Frontend (Render — Static Site)**
 
 - Build command: `npm run build`
 - Publish directory: `dist`
-- Set `VITE_API_URL` to your deployed backend URL
+- Set `VITE_API_URL` to your deployed Vercel backend URL:
+
+```env
+VITE_API_URL=https://your-vercel-project.vercel.app/api
+```
 
 ---
 
@@ -269,7 +305,7 @@ Frontend and backend are deployed independently on **Render**.
 - 📞 +91-8890436710
 - 🌐 [Portfolio](https://portfolio-8zov.onrender.com)
 - 🐙 [github.com/Harkit07](https://github.com/Harkit07)
-- 🐙 [boutique.com](https://boutiquefrontend-ymww.onrender.com)
+- 🔗 [boutique.com](https://boutiquefrontend-ymww.onrender.com)
 
 ---
 
