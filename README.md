@@ -68,43 +68,42 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 Boutique/
 ├── Backend/
 │   ├── controllers/
-│   │   ├── auth.js          # Signup, login, password reset
-│   │   ├── products.js      # Product CRUD
-│   │   ├── cart.js          # Cart operations
+│   │   ├── suit.js          # suit operations
 │   │   ├── reviews.js       # Review create & delete
 │   │   └── user.js          # Profile management
 │   │
 │   ├── models/
 │   │   ├── user.js          # User schema (hashed password, profile)
-│   │   ├── product.js       # Product schema (images, category, price)
-│   │   ├── cart.js          # Cart schema (items, quantities)
+│   │   ├── blacklistToekn.js       # Blacklist Token
+│   │   ├── suit.js          # Suit schema (items, quantities)
 │   │   └── review.js        # Review schema (rating, comment, author)
 │   │
 │   ├── routes/
-│   │   ├── auth.js          # /api/auth routes
-│   │   ├── products.js      # /api/products routes
-│   │   ├── cart.js          # /api/cart routes
+│   │   ├── suit.js          # /api/suit routes
 │   │   ├── reviews.js       # /api/reviews routes
 │   │   └── user.js          # /api/user routes
 │   │
 │   ├── middleware/
 │   │   └── auth.js          # JWT verification middleware
 │   │
-│   ├── config/
-│   │   └── cloudinary.js    # Cloudinary & Multer config
+│   ├── services/
+│   │   ├── couldConfig.js            # Cloudinary & Multer config
+│   │   ├── user.js                   # Create User
+│   │   ├── validationResult.js       # Express validation
+│   │   └── cloudinary.js             # Cloudinary & Multer config
 │   │
-│   ├── api/
-│   │   └── index.js         # Vercel serverless entry point (wraps app.js)
+│   ├── middleware.js          # Auth routing config
 │   │
 │   ├── vercel.json          # Vercel routing config
-│   └── app.js               # Express app (exported, no app.listen)
+│   │
+│   └── server.js               # Express app
 │
 └── Frontend/
     ├── src/
     │   ├── components/      # Reusable UI components
     │   ├── pages/           # Route-level page components
     │   ├── context/         # React Context for auth & cart state
-    │   ├── api/             # Axios instance & API helpers
+    │   ├── styles/          # React Css Styling
     │   └── main.jsx         # React DOM entry point
     │
     └── index.html
@@ -141,7 +140,7 @@ touch .env
 node app.js
 ```
 
-Backend will be available at `http://localhost:5000`.
+Backend will be available at `http://localhost:4000`.
 
 ---
 
@@ -176,7 +175,6 @@ MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/boutique
 
 # JWT
 JWT_SECRET=your_jwt_secret_key
-JWT_EXPIRES_IN=7d
 
 # Cloudinary
 CLOUD_NAME=your_cloud_name
@@ -184,13 +182,11 @@ CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
 # Email (for password reset)
-EMAIL_HOST=smtp.gmail.com
-EMAIL_PORT=587
 EMAIL_USER=your_email@gmail.com
 EMAIL_PASS=your_email_app_password
 
 # Server
-PORT=5000
+PORT=4000
 ```
 
 ### Frontend `.env`
@@ -255,7 +251,7 @@ Frontend and backend are deployed independently — frontend on **Render**, back
 
 Vercel runs Express as a serverless function. Three small additions are needed:
 
-1. **`api/index.js`** — Create this file inside `Backend/api/`:
+1. **`api/server.js`** — Create this file inside `Backend/api/`:
 
 ```js
 const app = require("../app");
@@ -277,8 +273,8 @@ module.exports = app;
 ```json
 {
   "version": 2,
-  "builds": [{ "src": "api/index.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "api/index.js" }]
+  "builds": [{ "src": "api/server.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "api/server.js" }]
 }
 ```
 
