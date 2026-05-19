@@ -74,7 +74,7 @@ Boutique/
 │   │
 │   ├── models/
 │   │   ├── user.js          # User schema (hashed password, profile)
-│   │   ├── blacklistToekn.js       # Blacklist Token
+│   │   ├── blacklistToken.js       # Blacklist Token
 │   │   ├── suit.js          # Suit schema (items, quantities)
 │   │   └── review.js        # Review schema (rating, comment, author)
 │   │
@@ -87,7 +87,7 @@ Boutique/
 │   │   └── auth.js          # JWT verification middleware
 │   │
 │   ├── services/
-│   │   ├── couldConfig.js            # Cloudinary & Multer config
+│   │   ├── cloudConfig.js            # Cloudinary & Multer config
 │   │   ├── user.js                   # Create User
 │   │   ├── validationResult.js       # Express validation
 │   │   └── cloudinary.js             # Cloudinary & Multer config
@@ -137,7 +137,7 @@ touch .env
 # Fill in the required variables (see Environment Variables below)
 
 # 4. Start the backend server
-node app.js
+node server.js
 ```
 
 Backend will be available at `http://localhost:4000`.
@@ -199,47 +199,37 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 ## 📡 API Routes
 
-### Auth — `/api/auth`
+### Auth — `/user`
 
-| Method | Route                             | Auth | Description               |
-| ------ | --------------------------------- | ---- | ------------------------- |
-| `POST` | `/api/auth/signup`                | ❌   | Register a new user       |
-| `POST` | `/api/auth/login`                 | ❌   | Login and receive JWT     |
-| `POST` | `/api/auth/forgot-password`       | ❌   | Send password reset email |
-| `POST` | `/api/auth/reset-password/:token` | ❌   | Reset password with token |
+| Method | Route                   | Auth | Description               |
+| ------ | ----------------------- | ---- | ------------------------- |
+| `POST` | `/users/signup`         | ❌   | Register a new user       |
+| `POST` | `/users/login`          | ❌   | Login and receive JWT     |
+| `POST` | `/users/forgotpassword` | ❌   | Send password reset email |
+| `POST` | `/users/resetpassword`  | ❌   | Reset password with token |
+| `GET`  | `/user/profile`         | ✅   | Get current user profile  |
+| `POST` | `/user/updateuser`      | ✅   | Update profile details    |
+| `POST` | `/user/logout`          | ✅   | Logout current user       |
 
-### User — `/api/user`
+### Suits(Product) — `/suit`
 
-| Method | Route               | Auth | Description              |
-| ------ | ------------------- | ---- | ------------------------ |
-| `GET`  | `/api/user/profile` | ✅   | Get current user profile |
-| `PUT`  | `/api/user/profile` | ✅   | Update profile details   |
+| Method   | Route              | Auth | Description          |
+| -------- | ------------------ | ---- | -------------------- |
+| `POST`   | `/suit/new`        | ✅   | Upload new suit      |
+| `GET`    | `/suit/all`        | ❌   | Get all suit details |
+| `GET`    | `/suit/homeReview` | ❌   | Homepage reviews     |
+| `GET`    | `/suit/:id`        | ❌   | Get a single suit    |
+| `DELETE` | `/suit/:id`        | ✅   | Delete a suit        |
 
-### Products — `/api/products`
+### Review — `/suit/:id`
 
-| Method   | Route               | Auth | Description          |
-| -------- | ------------------- | ---- | -------------------- |
-| `GET`    | `/api/products`     | ❌   | Get all products     |
-| `GET`    | `/api/products/:id` | ❌   | Get a single product |
-| `POST`   | `/api/products`     | ✅   | Create a new product |
-| `PUT`    | `/api/products/:id` | ✅   | Update a product     |
-| `DELETE` | `/api/products/:id` | ✅   | Delete a product     |
-
-### Cart — `/api/cart`
-
-| Method   | Route               | Auth | Description             |
-| -------- | ------------------- | ---- | ----------------------- |
-| `GET`    | `/api/cart`         | ✅   | Get current user's cart |
-| `POST`   | `/api/cart`         | ✅   | Add item to cart        |
-| `PUT`    | `/api/cart/:itemId` | ✅   | Update item quantity    |
-| `DELETE` | `/api/cart/:itemId` | ✅   | Remove item from cart   |
-
-### Reviews — `/api/reviews`
-
-| Method   | Route                     | Auth      | Description     |
-| -------- | ------------------------- | --------- | --------------- |
-| `POST`   | `/api/reviews/:productId` | ✅        | Post a review   |
-| `DELETE` | `/api/reviews/:reviewId`  | ✅ Author | Delete a review |
+| Method   | Route                     | Auth | Description             |
+| -------- | ------------------------- | ---- | ----------------------- |
+| `POST`   | `/suit/:id/review`        | ✅   | Post a review           |
+| `DELETE` | `/suit/:id/review/:revId` | ✅   | Delete a review         |
+| `POST`   | `/suit/:id/cart`          | ✅   | Add/Update item to Cart |
+| `DELETE` | `/suit/:id/cart`          | ✅   | Remove item from cart   |
+| `DELETE` | `/suit/:id/cartitem`      | ✅   | Decrease item from cart |
 
 ---
 
@@ -251,19 +241,18 @@ Frontend and backend are deployed independently — frontend on **Render**, back
 
 Vercel runs Express as a serverless function. Three small additions are needed:
 
-1. **`api/server.js`** — Create this file inside `Backend/api/`:
+1. **`server.js`** — Create this file inside `Backend/`:
 
 ```js
 const app = require("../app");
 module.exports = app;
 ```
 
-2. **`app.js`** — Export the app and guard the `listen` call:
+2. **`server.js`** — Export the app and guard the `listen` call:
 
 ```js
-// Replace app.listen(...) with:
 if (require.main === module) {
-  app.listen(process.env.PORT || 5000);
+  app.listen(process.env.PORT || 4000);
 }
 module.exports = app;
 ```
@@ -273,8 +262,8 @@ module.exports = app;
 ```json
 {
   "version": 2,
-  "builds": [{ "src": "api/server.js", "use": "@vercel/node" }],
-  "routes": [{ "src": "/(.*)", "dest": "api/server.js" }]
+  "builds": [{ "src": "server.js", "use": "@vercel/node" }],
+  "routes": [{ "src": "/(.*)", "dest": "server.js" }]
 }
 ```
 
@@ -301,7 +290,7 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 - 📞 +91-8890436710
 - 🌐 [Portfolio](https://portfolio-8zov.onrender.com)
 - 🐙 [github.com/Harkit07](https://github.com/Harkit07)
-- 🔗 [boutique.com](https://boutiquefrontend-ymww.onrender.com)
+- 🔗 [Live Demo](https://boutiquefrontend-ymww.onrender.com)
 
 ---
 
