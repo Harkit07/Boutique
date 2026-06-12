@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import axios from "axios";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 
 const AccountForm = () => {
   const token = localStorage.getItem("token");
-  const { user, setUser } = React.useContext(UserDataContext);
+  const { user, setUser } = useContext(UserDataContext);
   const [updateBtn, setUpdateBtn] = useState("Update Address");
   const [formData, setFormData] = useState({
     firstname: user.fullname.firstname,
@@ -27,8 +27,8 @@ const AccountForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setUpdateBtn("Updating...");
-    const response = await axios.post(
-      `${import.meta.env.VITE_BASE_URL}/users/updateuser`,
+    const response = await axios.patch(
+      `${import.meta.env.VITE_BASE_URL}/users/me`,
       {
         fullname: {
           firstname: formData.firstname,
@@ -64,13 +64,14 @@ const AccountForm = () => {
             id="firstname"
             name="firstname"
             type="text"
+            aria-label="First name"
             onChange={handleChange}
             value={formData.firstname}
           />
         </div>
 
         <div className="ea-field">
-          <label className="ea-label" htmlFor="lastName">
+          <label className="ea-label" htmlFor="lastname">
             Last name
           </label>
           <input
@@ -79,6 +80,7 @@ const AccountForm = () => {
             name="lastname"
             type="text"
             placeholder="Your last name"
+            aria-label="Last name"
             onChange={handleChange}
             value={formData.lastname}
           />
@@ -94,6 +96,7 @@ const AccountForm = () => {
             name="address"
             type="text"
             placeholder="your address"
+            aria-label="Street address"
             onChange={handleChange}
             value={formData.address}
           />
@@ -109,6 +112,7 @@ const AccountForm = () => {
             name="city"
             type="text"
             placeholder="your city"
+            aria-label="City"
             onChange={handleChange}
             value={formData.city}
           />
@@ -124,6 +128,7 @@ const AccountForm = () => {
             name="phone"
             type="number"
             placeholder="your phone"
+            aria-label="Phone number"
             onChange={handleChange}
             value={formData.phone}
           />

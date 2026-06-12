@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import { UserDataContext } from "../context/UserContext";
@@ -11,8 +11,12 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import Skeleton from "../components/Skeleton";
 
+const handleCheckout = () => {
+  toast.info("Checkout functionality coming soon!");
+};
+
 // Plays video ONLY when it enters the viewport
-const LazyVideo = ({ src }) => {
+const LazyVideo = ({ src, name = "Product" }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -21,9 +25,9 @@ const LazyVideo = ({ src }) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().catch(() => {}); // play when visible
+          video.play().catch(() => {});
         } else {
-          video.pause(); // pause when scrolled away
+          video.pause();
         }
       },
       { threshold: 0.5 },
@@ -40,38 +44,33 @@ const LazyVideo = ({ src }) => {
       muted
       loop
       playsInline
-      preload="none" // don't download until visible
+      preload="none"
+      aria-label={`Video preview of ${name}`}
     />
   );
 };
 
 const Cart = () => {
   const { user, setUser, activeTab, setActiveTab, loading } =
-    React.useContext(UserDataContext);
+    useContext(UserDataContext);
+
+  const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   if (loading) {
     return <Skeleton />;
   }
 
-  const navigate = useNavigate();
-
-  const token = localStorage.getItem("token");
-
   const addToCart = async (suit) => {
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cart`,
+        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
         null,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
-        setUser((prev) => ({
-          ...prev,
-          cart: response.data.user.cart,
-        }));
-        toast.success("Added to Cart!");
+        setUser((prev) => ({ ...prev, cart: response.data.user.cart }));
+        toast.success("Added to cart!");
       }
     } catch (error) {
       console.log(error);
@@ -81,17 +80,12 @@ const Cart = () => {
   const removeToCart = async (suit) => {
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cart`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
-        setUser((prev) => ({
-          ...prev,
-          cart: response.data.user.cart,
-        }));
-        toast.success("Removed to Cart!");
+        setUser((prev) => ({ ...prev, cart: response.data.user.cart }));
+        toast.success("Removed from cart!");
       }
     } catch (error) {
       console.log(error);
@@ -100,22 +94,23 @@ const Cart = () => {
 
   const decCartCount = async (suit) => {
     try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cartitem`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}/decrement`,
+        {},
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
-        // console.log("Cart from backend:", response.data.user.cart);
-        setUser((prev) => ({
-          ...prev,
-          cart: response.data.user.cart,
-        }));
-        toast.success("Removed to Cart!");
+        setUser((prev) => ({ ...prev, cart: response.data.user.cart }));
+        toast.success("Quantity decreased!");
       }
     } catch (error) {
       console.log(error);
+    }
+  };
+
+  const handleItemKeyDown = (e, suitId) => {
+    if (e.key === "Enter" || e.key === " ") {
+      navigate(`/suit/${suitId}`);
     }
   };
 
@@ -135,20 +130,20 @@ const Cart = () => {
             Enjoy a seamless shopping experience!
           </p>
 
-          {!user || !user.cart || user.cart.length == 0 ? (
+          {!user || !user.cart || user.cart.length === 0 ? (
             <div>No Item in the Cart</div>
           ) : (
-            user.cart
-              // .filter((item) => item.suit != null)
-              .map((item) => {
-                const quantity = item.quantity;
-                const inCart = quantity > 0;
-                const type = item.suit.file?.[0]?.mediaType;
+            user.cart.map((item) => {
+              const quantity = item.quantity;
+              const inCart = quantity > 0;
+              const type = item.suit.file?.[0]?.mediaType;
 
-                return (
-                  <div
-                    className="uc-cart-item"
-                    key={item._id}
+              return (
+                <div key={item._id} className="uc-cart-item">
+                  <button
+                    type="button"
+                    className="uc-cart-item-preview"
+                    aria-label={`View details for ${item.suit.name}`}
                     onClick={() => navigate(`/suit/${item.suit._id}`)}
                   >
                     {type === "image" ? (
@@ -159,7 +154,10 @@ const Cart = () => {
                         loading="lazy"
                       />
                     ) : (
-                      <LazyVideo src={item.suit.file?.[0]?.url} />
+                      <LazyVideo
+                        src={item.suit.file?.[0]?.url}
+                        name={item.suit.name}
+                      />
                     )}
 
                     <div className="uc-product-info">
@@ -169,48 +167,50 @@ const Cart = () => {
                         Rs. {item.suit?.price?.toLocaleString?.() ?? "0"}.00
                       </p>
                     </div>
+                  </button>
 
-                    <div
-                      className="cart-count"
-                      onClick={(e) => e.stopPropagation()}
+                  <div className="cart-count">
+                    <Button
+                      onClick={() => removeToCart(item.suit)}
+                      variant="outlined"
+                      color="error"
+                      size="small"
+                      startIcon={<DeleteIcon />}
                     >
-                      <Button
-                        onClick={() => removeToCart(item.suit)}
-                        variant="outlined"
-                        color="error"
-                        size="small"
-                        startIcon={<DeleteIcon />}
+                      Delete
+                    </Button>
+                    <div className="uc-qty-control">
+                      <button
+                        type="button"
+                        className="uc-qty-btn"
+                        onClick={() => decCartCount(item.suit)}
+                        disabled={!inCart || quantity <= 1}
+                        aria-label="Decrease quantity"
                       >
-                        Delete
-                      </Button>
-                      <div className="uc-qty-control">
-                        <button
-                          className="uc-qty-btn"
-                          onClick={() => decCartCount(item.suit)}
-                          disabled={!inCart || quantity <= 1}
-                        >
-                          -
-                        </button>
-                        <span>{quantity}</span>
-                        <button
-                          className="uc-qty-btn"
-                          onClick={() => addToCart(item.suit)}
-                        >
-                          +
-                        </button>
-                      </div>
+                        -
+                      </button>
+                      <span>{quantity}</span>
+                      <button
+                        type="button"
+                        className="uc-qty-btn"
+                        onClick={() => addToCart(item.suit)}
+                        aria-label="Increase quantity"
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
-                );
-              })
+                </div>
+              );
+            })
           )}
 
           <div className="ud-info-wrapper">
             <div className="ud-info-section">
               <h3 className="ud-info-heading">Delivery Information</h3>
               <p className="ud-info-text">
-                We process orders within 1-3 business days. Domestic deliveries
-                take 3-7 business days, while international shipping times may
+                We process orders within 1–3 business days. Domestic deliveries
+                take 3–7 business days, while international shipping times may
                 vary. Please allow extra time for remote locations.
               </p>
             </div>

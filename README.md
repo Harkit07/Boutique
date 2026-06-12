@@ -199,37 +199,66 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 ## 📡 API Routes
 
-### Auth — `/user`
+## Auth — `/auth`
+
+> Session and credential operations. No authentication required unless noted.
 
 | Method | Route                   | Auth | Description               |
 | ------ | ----------------------- | ---- | ------------------------- |
-| `POST` | `/users/signup`         | ❌   | Register a new user       |
-| `POST` | `/users/login`          | ❌   | Login and receive JWT     |
-| `POST` | `/users/forgotpassword` | ❌   | Send password reset email |
-| `POST` | `/users/resetpassword`  | ❌   | Reset password with token |
-| `GET`  | `/user/profile`         | ✅   | Get current user profile  |
-| `POST` | `/user/updateuser`      | ✅   | Update profile details    |
-| `POST` | `/user/logout`          | ✅   | Logout current user       |
+| `POST` | `/auth/signup`          | ❌   | Register a new user       |
+| `POST` | `/auth/login`           | ❌   | Login and receive JWT     |
+| `POST` | `/auth/logout`          | ✅   | Logout current user       |
+| `POST` | `/auth/forgot-password` | ❌   | Send password reset email |
+| `POST` | `/auth/reset-password`  | ❌   | Reset password with token |
 
-### Suits(Product) — `/suit`
+---
 
-| Method   | Route              | Auth | Description          |
-| -------- | ------------------ | ---- | -------------------- |
-| `POST`   | `/suit/new`        | ✅   | Upload new suit      |
-| `GET`    | `/suit/all`        | ❌   | Get all suit details |
-| `GET`    | `/suit/homeReview` | ❌   | Homepage reviews     |
-| `GET`    | `/suit/:id`        | ❌   | Get a single suit    |
-| `DELETE` | `/suit/:id`        | ✅   | Delete a suit        |
+## Users — `/users`
 
-### Review — `/suit/:id`
+> Authenticated user profile management.
 
-| Method   | Route                     | Auth | Description             |
-| -------- | ------------------------- | ---- | ----------------------- |
-| `POST`   | `/suit/:id/review`        | ✅   | Post a review           |
-| `DELETE` | `/suit/:id/review/:revId` | ✅   | Delete a review         |
-| `POST`   | `/suit/:id/cart`          | ✅   | Add/Update item to Cart |
-| `DELETE` | `/suit/:id/cart`          | ✅   | Remove item from cart   |
-| `DELETE` | `/suit/:id/cartitem`      | ✅   | Decrease item from cart |
+| Method  | Route       | Auth | Description              |
+| ------- | ----------- | ---- | ------------------------ |
+| `GET`   | `/users/me` | ✅   | Get current user profile |
+| `PATCH` | `/users/me` | ✅   | Update profile details   |
+
+---
+
+## Suits — `/suits`
+
+> Product (suit) listing and management.
+
+| Method   | Route                     | Auth | Description          |
+| -------- | ------------------------- | ---- | -------------------- |
+| `GET`    | `/suits`                  | ❌   | Get all suits        |
+| `POST`   | `/suits`                  | ✅   | Upload a new suit    |
+| `GET`    | `/suits/:id`              | ❌   | Get a single suit    |
+| `DELETE` | `/suits/:id`              | ✅   | Delete a suit        |
+| `GET`    | `/suits/featured-reviews` | ❌   | Get homepage reviews |
+
+---
+
+## Reviews — `/suits/:id/reviews`
+
+> Reviews scoped to a specific suit.
+
+| Method   | Route                          | Auth | Description     |
+| -------- | ------------------------------ | ---- | --------------- |
+| `POST`   | `/suits/:id/reviews`           | ✅   | Post a review   |
+| `DELETE` | `/suits/:id/reviews/:reviewId` | ✅   | Delete a review |
+
+---
+
+## Cart — `/cart`
+
+> Cart belongs to the authenticated user, not a product.
+
+| Method   | Route                           | Auth | Description                    |
+| -------- | ------------------------------- | ---- | ------------------------------ |
+| `GET`    | `/cart`                         | ✅   | Get current user's cart        |
+| `POST`   | `/cart/items/:suitId`           | ✅   | Add/Update item to cart        |
+| `DELETE` | `/cart/items/:suitId`           | ✅   | Remove item from cart entirely |
+| `POST`   | `/cart/items/:suitId/decrement` | ✅   | Decrease item quantity by 1    |
 
 ---
 

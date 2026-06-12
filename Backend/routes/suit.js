@@ -7,27 +7,29 @@ const suitController = require("../controllers/suit.js");
 const wrapAsync = require("../services/wrapAsync.js");
 const validationResult = require("../services/validationResult.js");
 
-router.post(
-  "/new",
-  authMiddleware.authUser,
-  upload.array("file", 5),
-  [
-    body("name").notEmpty().withMessage("Name is required"),
-    body("category").notEmpty().withMessage("Category is required"),
-    body("description").notEmpty().withMessage("Description is required"),
-    body("price")
-      .notEmpty()
-      .withMessage("Price is required")
-      .isFloat({ gt: 0 })
-      .withMessage("Price must be a number greater than 0"),
-  ],
-  validationResult,
-  wrapAsync(suitController.uploadNewSuit),
-);
+router
+  .route("/")
+  .get(wrapAsync(suitController.allSuit))
+  .post(
+    authMiddleware.authUser,
+    upload.array("file", 5),
+    [
+      body("name").notEmpty().withMessage("Name is required"),
+      body("category").notEmpty().withMessage("Category is required"),
+      body("description").notEmpty().withMessage("Description is required"),
+      body("price")
+        .notEmpty()
+        .withMessage("Price is required")
+        .isFloat({ gt: 0 })
+        .withMessage("Price must be a number greater than 0"),
+    ],
+    validationResult,
+    wrapAsync(suitController.uploadNewSuit),
+  );
 
-router.get("/all", wrapAsync(suitController.allSuit));
+router.get("/featured-reviews", wrapAsync(suitController.homeReviews));
 
-router.get("/homeReview", wrapAsync(suitController.homeReviews));
+router.get("/single-product/:id", wrapAsync(suitController.getSuit));
 
 router
   .route("/:id")

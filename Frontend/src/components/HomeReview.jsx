@@ -1,64 +1,77 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useContextState,
+  useEffect,
+  useReducer,
+  useRef,
+  useCallback,
+ } from "react";
+import { useQuery } from "@tanstack/react-query";
 import "../styles/HomeReview.css";
 import axios from "axios";
 
+// Custom hook to fetch reviews using react-query
+const useFeaturedReviews = () => {
+  const { data, isLoading } = useQuery({
+    queryKey: ["featuredReviews"],
+    queryFn: async () => {
+      const response = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/suits/featured-reviews`,
+      );
+      return response.data.homeReviews || [];
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes
+    retry: 2,
+  });
+
+  return { reviews: data || [], loading: isLoading };
+};
+
+const initialState = { currentIndex: 0, isTransitioning: false };
+
+function reviewReducer(state, action) {
+  switch (action.type) {
+    case "GOTO":
+      return { currentIndex: action.index, isTransitioning: true };
+    case "TRANSITION_DONE":
+      return { ...state, isTransitioning: false };
+    case "ADVANCE":
+      return { currentIndex: action.nextIndex, isTransitioning: true };
+    default:
+      return state;
+  }
+}
+
 const HomeReview = () => {
-  const fetched = useRef(false);
-
-  const [currentReviewIndex, setCurrentReviewIndex] = useState(0);
-  const [isTransitioning, setIsTransitioning] = useState(false);
-  const [reviews, setReviews] = useState([]);
-
-  useEffect(() => {
-    if (fetched.current) return;
-    fetched.current = true;
-
-    const fetchReviews = async () => {
-      try {
-        //Fetch Five Reviews for Home Page
-        const homeReviews = await axios.get(
-          `${import.meta.env.VITE_BASE_URL}/suit/homeReview`,
-        );
-
-        if (homeReviews.status == 200) {
-          setReviews(homeReviews.data.homeReviews);
-        }
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    fetchReviews();
-  }, []);
+  const [{ currentIndex, isTransitioning }, dispatch] = useReducer(
+    reviewReducer,
+    initialState,
+  );
+  const { reviews, loading } = useFeaturedReviews();
 
   const handleDotClick = (index) => {
-    setIsTransitioning(true);
-    setCurrentReviewIndex(index);
-    setTimeout(() => setIsTransitioning(false), 300);
+    dispatch({ type: "GOTO", index });
+    setTimeout(() => dispatch({ type: "TRANSITION_DONE" }), 300);
   };
 
   useEffect(() => {
     if (reviews.length === 0) return;
-
     const interval = setInterval(() => {
-      setIsTransitioning(true);
-      setCurrentReviewIndex((prev) => (prev + 1) % reviews.length);
-      setTimeout(() => setIsTransitioning(false), 300);
+      const nextIndex = (currentIndex + 1) % reviews.length;
+      dispatch({ type: "ADVANCE", nextIndex });
+      setTimeout(() => dispatch({ type: "TRANSITION_DONE" }), 300);
     }, 2000);
-
     return () => clearInterval(interval);
-  }, [reviews.length]);
+  }, [reviews.length, currentIndex]);
 
-  const currentReview = reviews[currentReviewIndex];
-
-  if (reviews.length === 0) {
+  if (loading || reviews.length === 0) {
     return <p>Loading reviews...</p>;
   }
+
+  const currentReview = reviews[currentIndex];
 
   return (
     <section className="reviews-section">
       <div className="reviews-container">
         <h2 className="reviews-title">Genuine Words From Those Who Wear Us.</h2>
-
         <div
           className={`review-card ${isTransitioning ? "transitioning" : ""}`}
         >
@@ -69,7 +82,6 @@ const HomeReview = () => {
               </span>
             ))}
           </div>
-
           <div className="review-header">
             <h3 className="reviewer-name">
               {currentReview.author.fullname.firstname +
@@ -78,18 +90,18 @@ const HomeReview = () => {
             </h3>
             <span className="verified-badge">✓ Verified Buyer</span>
           </div>
-
           <p className="review-text">{currentReview.about}</p>
         </div>
-
         <div className="review-navigation">
           <div className="pagination-dots">
-            {reviews.map((_, index) => (
+            {reviews.map((review, index) => (
               <button
-                key={index}
-                className={`dot ${index === currentReviewIndex ? "active" : ""}`}
+                type="button"
+                key={review._id || index}
+                className={`dot ${index === currentIndex ? "active" : ""}`}
                 onClick={() => handleDotClick(index)}
-              ></button>
+                aria-label={`Go to review slide ${index + 1}`}
+              />
             ))}
           </div>
         </div>

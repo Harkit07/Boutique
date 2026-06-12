@@ -1,6 +1,12 @@
 const Suit = require("../models/suit.js");
 const Review = require("../models/review.js");
 
+module.exports.allSuit = async (req, res) => {
+  const allSuit = await Suit.find({}).sort({ _id: -1 });
+
+  res.status(200).json({ message: "All Detail getted successful", allSuit });
+};
+
 module.exports.uploadNewSuit = async (req, res) => {
   const { category, description, price, name } = req.body;
 
@@ -39,12 +45,6 @@ module.exports.uploadNewSuit = async (req, res) => {
     message: "Suit uploaded successfully",
     suit,
   });
-};
-
-module.exports.allSuit = async (req, res) => {
-  const allSuit = await Suit.find({}).sort({ _id: -1 });
-
-  res.status(200).json({ message: "All Detail getted successful", allSuit });
 };
 
 module.exports.getSuit = async (req, res) => {

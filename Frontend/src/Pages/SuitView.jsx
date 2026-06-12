@@ -3,325 +3,211 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
-import React, { useState } from "react";
+import React, {
+  useContextState,
+  useCallback,
+  useEffect,
+  useContext,
+  useState,
+} from "react";
 import SuitImgCom from "../components/SuitImgCom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import ReviewForm from "../components/ReviewForm";
-import { useEffect } from "react";
 import axios from "axios";
 import Button from "@mui/material/Button";
 import { toast } from "react-toastify";
 import Skeleton from "@mui/material/Skeleton";
 
+const StarRating = ({ rating, max = 5 }) => {
+  return (
+    <div>
+      {Array.from({ length: max }, (_, i) => (
+        <span key={i}>{i < rating ? "\u2B50" : null}</span>
+      ))}
+    </div>
+  );
+};
+
 const SuitView = () => {
   const { id } = useParams();
   const token = localStorage.getItem("token");
   const navigate = useNavigate();
-  const { user, setUser, setAllSuit, allSuit, setFilteredSuit, setActiveTab } =
-    React.useContext(UserDataContext);
+
+  const { user, setFilteredSuit, setActiveTab } = useContext(UserDataContext);
 
   const [loading, setLoading] = useState(true);
   const [suit, setSuit] = useState(null);
   const [reviewForm, setReviewForm] = useState(false);
-  const [delSuitBtn, setDelSuitBtn] = useState("Delete Suit");
-
-  const fetchSuitDetails = async () => {
+  const fetchSuitDetails = useCallback(async () => {
+    const controller = new AbortController();
     try {
       const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/suit/${id}`,
+        `${import.meta.env.VITE_BASE_URL}/suits/single-product/${id}`,
+        { signal: controller.signal },
       );
       if (response.status === 200) {
+        setSuit(response.data.suit);
         setLoading(false);
-        const data = response.data;
-        setSuit(data.suit);
-        setReviewForm(false);
-        window.scrollTo({ top: 0, behavior: "smooth" }); // <-- scroll to top
       }
     } catch (error) {
-      console.log(error);
+      if (!axios.isCancel(error)) {
+        console.error(error);
+      }
     }
-  };
-
-  useEffect(() => {
-    fetchSuitDetails();
+    return () => controller.abort();
   }, [id]);
 
-  const cartItem = user?.cart?.find(
-    (item) => item.suit?._id?.toString() === suit?._id?.toString(),
-  );
-  const quantity = cartItem?.quantity || 0;
-  const inCart = !!cartItem;
-
-  if (loading) {
-    return <Skeleton />;
-  }
-
-  const deleteReviw = async (revId) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/review/${revId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      if (response.status === 200) {
-        toast.success("Review Deleted Successful!");
-        fetchSuitDetails();
-        const data = response.data;
-        window.scrollTo({ top: 0, behavior: "smooth" }); // <-- scroll to top
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const addToCart = async () => {
-    if (!user) {
-      toast.warning("Please Login First");
-      navigate("/login");
-      return;
-    }
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cart`,
-        null,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      if (response.status === 200) {
-        setUser((prev) => ({
-          ...prev,
-          cart: response.data.user.cart,
-        }));
-        toast.success("Added to Cart!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const removeToCart = async () => {
-    if (!user) {
-      toast.warning("Please Login First");
-      navigate("/login");
-      return;
-    }
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cart`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      if (response.status === 200) {
-        setUser((prev) => ({
-          ...prev,
-          cart: response.data.user.cart,
-        }));
-        toast.success("Delete From Cart!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const decCartCount = async () => {
-    if (!user) {
-      toast.warning("Please Login First");
-      navigate("/login");
-      return;
-    }
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/cartitem`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      if (response.status === 200) {
-        setUser((prev) => ({
-          ...prev,
-          cart: response.data.user.cart,
-        }));
-        toast.success("Removed to Cart!");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  useEffect(() => {
+    const cleanup = fetchSuitDetails();
+    return () => {
+      if (typeof cleanup === "function") cleanup();
+    };
+  }, [fetchSuitDetails]);
 
   const deleteSuit = async () => {
-    setDelSuitBtn("Deleting...");
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/`,
+        `${import.meta.env.VITE_BASE_URL}/suits/delete/${suit._id}`,
         {
           headers: { Authorization: `Bearer ${token}` },
         },
       );
       if (response.status === 200) {
-        toast.success("Suit Deleted Successful!");
-        // Remove deleted suit from context
-        const updatedAllSuit = allSuit.filter((s) => s._id !== suit._id);
-        setAllSuit(updatedAllSuit);
-        setFilteredSuit(updatedAllSuit); // keep filtered in sync
-
-        navigate("/shop");
+        toast.success("Suit deleted successfully!");
+        navigate("/");
       }
     } catch (error) {
-      if (error.response?.status === 404) {
-        toast.error(error.response?.data?.message || "Try again");
+      console.error(error);
+      toast.error("Failed to delete suit");
+    }
+  };
+
+  const deleteReview = async (reviewId) => {
+    try {
+      const response = await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/reviews/delete-review/${reviewId}`,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        },
+      );
+      if (response.status === 200) {
+        toast.success("Review deleted!");
+        fetchSuitDetails();
       }
-      if (error.response?.status === 403) {
-        toast.error(error.response?.data?.message || "Try again");
-      }
-      console.log(error);
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to delete review");
     }
   };
 
   const addRevBtn = () => {
-    if (!user) {
-      toast.warning("Please Login First");
+    if (!token) {
+      toast.error("Please login first!");
       navigate("/login");
+    } else {
+      setReviewForm(!reviewForm);
     }
-    setReviewForm(!reviewForm);
   };
 
-  const StarRating = ({ rating, max = 5 }) => {
-    return (
-      <div>
-        {Array.from({ length: max }, (_, i) => (
-          <span key={i}>{i < rating ? "\u2B50" : null}</span>
-        ))}
-      </div>
-    );
-  };
+  if (loading) {
+    return <Skeleton variant="rectangular" height={400} />;
+  }
+
+  if (!suit) {
+    return <div>Product not found</div>;
+  }
+
+  const reviews = suit.review || [];
 
   return (
-    <div>
-      <>
-        <HeaderCom />
-        <div className="main">
-          <section className="saree-slider-section">
-            <div className="breadcrumb">
-              <Link
-                to="/home"
-                className="nav-link"
-                style={{ background: "transparent" }}
-              >
-                Home
-              </Link>
-              <span>•</span>
-              <br />
-              <b>{suit.name}</b>
+    <>
+      <HeaderCom />
+      <div className="main">
+        <section className="saree-details-section">
+          <div className="saree-details-container">
+            <div className="saree-image-side">
+              <SuitImgCom suit={suit} />
             </div>
-            <SuitImgCom files={suit.file} />
-            {/* PRODUCT DETAILS */}
-            <div className="saree-product-info">
-              <h2 className="saree-product-title">{suit.name}</h2>
 
-              <p className="saree-product-price">
-                Rs.{suit?.price?.toLocaleString()}.00
-              </p>
-
-              <div className="saree-product-viewing">
-                👁 <span>27 peoples are viewing this right now</span>
+            <div className="saree-info-side">
+              <div className="saree-breadcrumb">
+                <Link to="/">Home</Link> / <span>{suit.category}</span>
               </div>
 
-              <div className="saree-product-actions">
-                <button className="saree-product-link">Ask a question</button>
-                <button className="saree-product-link">Share</button>
-              </div>
+              <h1 className="saree-title">{suit.name}</h1>
+              <p className="saree-price">₹{suit.price}</p>
+              <p className="saree-tax-info">MRP Incl. of all taxes</p>
 
-              <div className="saree-product-cart">
-                <div className="saree-qty-box">
-                  <button
-                    className="uc-qty-btn"
-                    onClick={decCartCount}
-                    disabled={!inCart || quantity <= 1}
-                  >
-                    -
-                  </button>
-                  <span>{quantity}</span>
-                  <button className="uc-qty-btn" onClick={addToCart}>
-                    +
-                  </button>
-                </div>
-
-                {inCart ? (
-                  <button onClick={removeToCart} className="saree-add-cart">
-                    Remove To Cart
-                  </button>
-                ) : (
-                  <button onClick={addToCart} className="saree-add-cart">
-                    Add To Cart
-                  </button>
-                )}
-              </div>
-
-              <button className="saree-buy-now">Buy It Now</button>
-              {user && user.role === "admin" ? (
-                <button className="saree-del-now" onClick={deleteSuit}>
-                  {delSuitBtn}
+              <div className="saree-action-buttons">
+                <button type="button" className="add-to-cart-btn">
+                  Add To Cart
                 </button>
-              ) : null}
+                <button type="button" className="buy-now-btn">
+                  Buy Now
+                </button>
+              </div>
+
+              {user && user.role === "admin" && (
+                <div style={{ marginTop: "20px" }}>
+                  <Button
+                    onClick={deleteSuit}
+                    variant="contained"
+                    color="error"
+                    startIcon={<DeleteIcon />}
+                  >
+                    Delete Product
+                  </Button>
+                </div>
+              )}
+
+              <div className="saree-description-box">
+                <h3>Product Description</h3>
+                <p>{suit.description}</p>
+              </div>
             </div>
+          </div>
 
-            {/* PRODUCT DESCRIPTION */}
-            <div className="saree-product-description">
-              <h3 className="saree-desc-title">Description:</h3>
-
-              <h4 className="saree-desc-subtitle">{suit.description}</h4>
-            </div>
-            {/* PRODUCT REVIEWS */}
-            <div className="saree-review-section">
-              <h3 className="saree-review-title">Reviews:</h3>
-
-              <h4 className="saree-review-subtitle">Customer Feedback</h4>
-
-              <ul className="saree-review-list">
-                {[...suit.review].reverse().map((rev) => {
-                  return (
-                    <li className="saree-review-item" key={rev._id}>
-                      <div className="saree-review-stars">
-                        <StarRating rating={rev.rating} />
-                        {(user && rev.author._id == user._id) ||
-                        (user && user.role == "admin") ? (
-                          <Button
-                            onClick={() => deleteReviw(rev._id)}
-                            variant="outlined"
-                            color="error"
-                            size="small"
-                            startIcon={<DeleteIcon />}
-                          >
-                            Delete
-                          </Button>
-                        ) : null}
-                      </div>
-                      <p className="saree-review-text">{rev.about}</p>
-                      <span className="saree-review-author">
-                        — {rev.author.fullname.firstname}{" "}
-                        {rev.author.fullname.lastname}
-                      </span>
-                    </li>
-                  );
-                })}
-              </ul>
-              <button className="address-btn" onClick={addRevBtn}>
-                Add a Review
-              </button>
-            </div>
-            {reviewForm ? (
-              <ReviewForm suit={suit} fetchSuitDetails={fetchSuitDetails} />
-            ) : null}
-          </section>
-        </div>
-        <Footer />
-        <BottomNav activeTab={"shop"} setActiveTab={setActiveTab} />
-      </>
-    </div>
+          <div className="saree-reviews-container">
+            <h2>Customer Reviews</h2>
+            <ul className="saree-reviews-list">
+              {reviews.map((rev) => (
+                <li key={rev._id} className="saree-review-item">
+                  <div className="saree-review-stars">
+                    <StarRating rating={rev.rating} />
+                    {((user && rev.author._id === user._id) ||
+                      (user && user.role === "admin")) && (
+                      <Button
+                        onClick={() => deleteReview(rev._id)}
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        startIcon={<DeleteIcon />}
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </div>
+                  <p className="saree-review-text">{rev.about}</p>
+                  <span className="saree-review-author">
+                    — {rev.author.fullname.firstname}{" "}
+                    {rev.author.fullname.lastname}
+                  </span>
+                </li>
+              ))}
+            </ul>
+            <button type="button" className="address-btn" onClick={addRevBtn}>
+              Add a Review
+            </button>
+          </div>
+          {reviewForm && (
+            <ReviewForm suit={suit} fetchSuitDetails={fetchSuitDetails} />
+          )}
+        </section>
+      </div>
+      <Footer />
+      <BottomNav activeTab={"shop"} setActiveTab={setActiveTab} />
+    </>
   );
 };
 

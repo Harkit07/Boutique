@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContextState, useEffect, useState } from "react";
 import "../styles/Footer.css";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";
@@ -24,18 +24,11 @@ const sections = [
       { label: "Return Policy", path: "/returnpolicy" },
     ],
   },
-  // {
-  //   title: "Best Sellers",
-  //   links: [
-  //     { label: "Sarees", path: "#" },
-  //     { label: "Lehengas", path: "#" },
-  //     { label: "Kurtas", path: "#" },
-  //   ],
-  // },
 ];
 
 const Footer = () => {
   const [open, setOpen] = useState([false, false, false]);
+  const [currentYear] = useState(() => new Date().getFullYear());
 
   const toggleSection = (idx) => {
     setOpen((prev) => prev.map((v, i) => (i === idx ? !v : v)));
@@ -84,6 +77,7 @@ const Footer = () => {
         {sections.map((section, idx) => (
           <div key={section.title} className="footer-section">
             <button
+              type="button"
               className="footer-section-header"
               onClick={() => toggleSection(idx)}
               aria-expanded={open[idx]}
@@ -117,6 +111,7 @@ const Footer = () => {
       </div>
       <div className="footer-bottom">
         <button
+          type="button"
           className="footer-backtotop"
           onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
           aria-label="Back to top"
@@ -124,7 +119,7 @@ const Footer = () => {
           ↑
         </button>
         <span className="footer-copyright">
-          © {new Date().getFullYear()} Ravneet Boutique. All rights reserved.
+          © {currentYear} Ravneet Boutique. All rights reserved.
         </span>
       </div>
       <a

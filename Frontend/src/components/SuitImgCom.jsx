@@ -1,25 +1,75 @@
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, {
+  useContextRef,
+  useState,
+  useEffect,
+  useCallback,
+  useRef,
+} from "react";
 
-const SuitImgCom = ({ files = [] }) => {
+const EMPTY_FILES = [];
+
+const ZoomBadge = ({ scale, onReset }) => (
+  <div style={zoomBadgeStyle}>
+    {Math.round(scale * 100)}%
+    <button type="button" onClick={onReset} style={resetBtnStyle}>
+      ✕ Reset
+    </button>
+  </div>
+);
+
+const NavButton = ({ direction, onClick, disabled, ariaLabel }) => (
+  <button
+    type="button"
+    aria-label={ariaLabel}
+    style={{ ...arrowStyle, [direction]: 8 }}
+    onClick={onClick}
+    disabled={disabled}
+  >
+    {direction === "left" ? "‹" : "›"}
+  </button>
+);
+
+const SliderTrack = ({ current, isZoomed, children, ref }) => (
+  <div
+    ref={ref}
+    className="saree-slider-track"
+    style={{
+      transform: `translateX(-${current * 100}%)`,
+      transition: isZoomed ? "none" : "transform 0.3s ease",
+    }}
+  >
+    {children}
+  </div>
+);
+
+const Dots = ({ files, current, onDotClick }) => (
+  <div className="saree-slider-dots">
+    {files.map((file, index) => (
+      <button
+        type="button"
+        key={file._id || file.url || index}
+        className={`saree-slider-dot ${index === current ? "active" : ""}`}
+        onClick={() => onDotClick(index)}
+        aria-label={`Go to slide ${index + 1}`}
+      />
+    ))}
+  </div>
+);
+
+const SuitImgCom = ({ files = EMPTY_FILES }) => {
   const sliderRef = useRef(null);
   const [current, setCurrent] = useState(0);
   const startX = useRef(0);
   const isDragging = useRef(false);
 
-  // Zoom & pan state
   const [scale, setScale] = useState(1);
   const [pan, setPan] = useState({ x: 0, y: 0 });
 
-  // Refs for gesture tracking
   const containerRef = useRef(null);
-  const lastPan = useRef({ x: 0, y: 0 });
   const isPanning = useRef(false);
   const panStart = useRef({ x: 0, y: 0 });
-
-  // Swipe tracking (only when not zoomed)
   const swipeStart = useRef(null);
 
-  // Pinch tracking
   const lastPinchDist = useRef(null);
   const lastPinchMid = useRef(null);
 
@@ -30,21 +80,17 @@ const SuitImgCom = ({ files = [] }) => {
 
   const handleEnd = (e) => {
     if (!isDragging.current) return;
-
     const endX = e.changedTouches ? e.changedTouches[0].clientX : e.clientX;
-
     const diff = startX.current - endX;
 
-    if (diff > 50 && current < files.length - 1) {
-      setCurrent(current + 1);
-    } else if (diff < -50 && current > 0) {
-      setCurrent(current - 1);
+    if (diff > 50) {
+      setCurrent((prev) => (prev < files.length - 1 ? prev + 1 : prev));
+    } else if (diff < -50) {
+      setCurrent((prev) => (prev > 0 ? prev - 1 : prev));
     }
-
     isDragging.current = false;
   };
 
-  // ── helpers ──────────────────────────────────────────────
   const clampPan = useCallback((x, y, currentScale, el) => {
     if (!el || currentScale <= 1) return { x: 0, y: 0 };
     const maxX = (el.offsetWidth * (currentScale - 1)) / 2;
@@ -66,40 +112,6 @@ const SuitImgCom = ({ files = [] }) => {
       resetZoom();
     },
     [resetZoom],
-  );
-
-  // ── Desktop: wheel to zoom ────────────────────────────────
-  const handleWheel = useCallback(
-    (e) => {
-      if (!e.ctrlKey && scale <= 1) return;
-
-      e.preventDefault();
-      const el = containerRef.current;
-      if (!el) return;
-
-      const rect = el.getBoundingClientRect();
-      const mouseX = e.clientX - rect.left - rect.width / 2;
-      const mouseY = e.clientY - rect.top - rect.height / 2;
-
-      setScale((prev) => {
-        const next = Math.min(
-          4,
-          Math.max(1, prev * (e.deltaY < 0 ? 1.1 : 0.9)),
-        );
-        if (next === 1) {
-          setPan({ x: 0, y: 0 });
-        } else {
-          setPan((p) => {
-            const ratio = next / prev;
-            const nx = mouseX - (mouseX - p.x) * ratio;
-            const ny = mouseY - (mouseY - p.y) * ratio;
-            return clampPan(nx, ny, next, el);
-          });
-        }
-        return next;
-      });
-    },
-    [scale, clampPan],
   );
 
   useEffect(() => {
@@ -135,7 +147,7 @@ const SuitImgCom = ({ files = [] }) => {
 
     const onTouchMove = (e) => {
       if (e.touches.length === 2) {
-        e.preventDefault(); // block page zoom during pinch
+        e.preventDefault();
         const dx = e.touches[0].clientX - e.touches[1].clientX;
         const dy = e.touches[0].clientY - e.touches[1].clientY;
         const dist = Math.sqrt(dx * dx + dy * dy);
@@ -168,7 +180,7 @@ const SuitImgCom = ({ files = [] }) => {
         }
         lastPinchDist.current = dist;
       } else if (e.touches.length === 1 && isPanning.current) {
-        e.preventDefault(); // block page scroll while panning zoomed image
+        e.preventDefault();
         const nx = e.touches[0].clientX - panStart.current.x;
         const ny = e.touches[0].clientY - panStart.current.y;
         setPan(clampPan(nx, ny, scale, el));
@@ -184,7 +196,6 @@ const SuitImgCom = ({ files = [] }) => {
     };
   }, [scale, clampPan]);
 
-  // ── Desktop: double-click to zoom in/out ──────────────────
   const handleDblClick = useCallback(
     (e) => {
       const el = containerRef.current;
@@ -204,11 +215,9 @@ const SuitImgCom = ({ files = [] }) => {
     [scale, resetZoom, clampPan],
   );
 
-  // ── Desktop: drag to pan ──────────────────────────────────
   const handleMouseDown = useCallback(
     (e) => {
       if (scale <= 1) {
-        // track swipe for slide change
         swipeStart.current = { x: e.clientX };
         return;
       }
@@ -243,7 +252,6 @@ const SuitImgCom = ({ files = [] }) => {
     [scale, current, files.length, goTo],
   );
 
-  // ── Mobile: touch gestures ────────────────────────────────
   const handleTouchStart = useCallback(
     (e) => {
       if (e.touches.length === 1) {
@@ -278,8 +286,6 @@ const SuitImgCom = ({ files = [] }) => {
     (e) => {
       lastPinchDist.current = null;
       isPanning.current = false;
-
-      // swipe to next/prev only when not zoomed
       if (scale <= 1 && swipeStart.current && e.changedTouches.length === 1) {
         const diff = swipeStart.current.x - e.changedTouches[0].clientX;
         if (diff > 50 && current < files.length - 1) goTo(current + 1);
@@ -290,7 +296,6 @@ const SuitImgCom = ({ files = [] }) => {
     [scale, current, files.length, goTo],
   );
 
-  // ── Mobile: double-tap to zoom ────────────────────────────
   const lastTap = useRef(0);
   const handleTouchEndDbl = useCallback(
     (e) => {
@@ -315,31 +320,45 @@ const SuitImgCom = ({ files = [] }) => {
     [scale, resetZoom, clampPan, handleTouchEnd],
   );
 
+  const handleAnimationStart = () => {
+    if (sliderRef.current) sliderRef.current.style.willChange = "transform";
+  };
+  const handleAnimationEnd = () => {
+    if (sliderRef.current) sliderRef.current.style.willChange = "auto";
+  };
+
   const isZoomed = scale > 1;
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      handleDblClick(e);
+    }
+  };
 
   return (
     <>
-      {/* Zoom indicator */}
-      {isZoomed && (
-        <div style={zoomBadgeStyle}>
-          {Math.round(scale * 100)}%
-          <button onClick={resetZoom} style={resetBtnStyle}>
-            ✕ Reset
-          </button>
-        </div>
-      )}
+      {isZoomed && <ZoomBadge scale={scale} onReset={resetZoom} />}
 
-      {/* Slider wrapper */}
       <div style={{ position: "relative", overflow: "hidden" }}>
-        <div
+        <button
+          type="button"
           ref={containerRef}
           className="saree-slider-wrapper"
           style={{
+            all: "unset",
+            display: "block",
+            width: "100%",
             cursor: isZoomed ? "grab" : "zoom-in",
             touchAction: isZoomed ? "none" : "pan-y",
             userSelect: "none",
           }}
           onDoubleClick={handleDblClick}
+          onKeyDown={handleKeyDown}
+          aria-label={
+            isZoomed
+              ? "Zoomed image – double‑click or press Enter to reset"
+              : "Image – double‑click or press Enter to zoom"
+          }
           onMouseDown={handleMouseDown}
           onMouseMove={handleMouseMove}
           onMouseUp={handleMouseUp}
@@ -347,16 +366,10 @@ const SuitImgCom = ({ files = [] }) => {
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEndDbl}
         >
-          <div
-            className="saree-slider-track"
-            style={{
-              transform: `translateX(-${current * 100}%)`,
-              transition: isZoomed ? "none" : "transform 0.3s ease",
-            }}
-          >
+          <SliderTrack ref={sliderRef} current={current} isZoomed={isZoomed}>
             {files.map((file, index) => (
               <div
-                key={index}
+                key={file._id || file.url || index}
                 className="saree-slider-image"
                 style={{ overflow: "hidden" }}
               >
@@ -367,11 +380,12 @@ const SuitImgCom = ({ files = [] }) => {
                     autoPlay
                     muted
                     loop
+                    aria-label={`Video demonstration of product view ${index + 1}`}
                   />
                 ) : (
                   <img
                     src={file.url}
-                    alt={`Suit view ${index + 1}`}
+                    alt={`Product view selection ${index + 1}`}
                     className="saree-slider-image"
                     loading={index === 0 ? "eager" : "lazy"}
                     style={{
@@ -387,43 +401,43 @@ const SuitImgCom = ({ files = [] }) => {
                       transition: isPanning.current
                         ? "none"
                         : "transform 0.2s ease",
-                      willChange: "transform",
                     }}
                   />
                 )}
               </div>
             ))}
-          </div>
-        </div>
-        {/* Prev / Next arrows — hidden when zoomed */}
+          </SliderTrack>
+        </button>
         {!isZoomed && current > 0 && (
-          <button
-            style={{ ...arrowStyle, left: 8 }}
-            onClick={() => goTo(current - 1)}
-          >
-            ‹
-          </button>
+          <NavButton
+            direction="left"
+            onClick={() => {
+              handleAnimationStart();
+              goTo(current - 1);
+            }}
+            ariaLabel="Previous image"
+          />
         )}
         {!isZoomed && current < files.length - 1 && (
-          <button
-            style={{ ...arrowStyle, right: 8 }}
-            onClick={() => goTo(current + 1)}
-          >
-            ›
-          </button>
+          <NavButton
+            direction="right"
+            onClick={() => {
+              handleAnimationStart();
+              goTo(current + 1);
+            }}
+            ariaLabel="Next image"
+          />
         )}
       </div>
 
-      {/* Dots */}
-      <div className="saree-slider-dots">
-        {files.map((_, index) => (
-          <span
-            key={index}
-            className={`saree-slider-dot ${index === current ? "active" : ""}`}
-            onClick={() => setCurrent(index)}
-          />
-        ))}
-      </div>
+      <Dots
+        files={files}
+        current={current}
+        onDotClick={(idx) => {
+          handleAnimationStart();
+          setCurrent(idx);
+        }}
+      />
     </>
   );
 };
@@ -442,7 +456,6 @@ const zoomBadgeStyle = {
   alignItems: "center",
   gap: 8,
 };
-
 const resetBtnStyle = {
   background: "rgba(255,255,255,0.2)",
   border: "none",
@@ -452,7 +465,6 @@ const resetBtnStyle = {
   padding: "2px 7px",
   cursor: "pointer",
 };
-
 const arrowStyle = {
   position: "absolute",
   top: "50%",

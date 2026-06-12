@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext  } from "react";
 import "../styles/BottomNav.css";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
@@ -8,7 +8,7 @@ import { Link } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 
 const BottomNav = ({ activeTab, setActiveTab }) => {
-  const { user } = React.useContext(UserDataContext);
+  const { user, setUser } = useContext(UserDataContext);
   const navItems = [
     {
       id: "home",
@@ -56,3 +56,4 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
 };
 
 export default BottomNav;
+

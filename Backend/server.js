@@ -1,15 +1,19 @@
 const dotenv = require("dotenv");
 dotenv.config();
+
 const express = require("express");
 const cors = require("cors");
-const app = express();
 const cookieParser = require("cookie-parser");
-const port = process.env.PORT;
 const mongoose = require("mongoose");
+
+const authRouter = require("./routes/auth.js");
 const userRouter = require("./routes/user.js");
 const suitRouter = require("./routes/suit.js");
 const reviewRouter = require("./routes/review.js");
-// const https = require("https");
+const cartRouter = require("./routes/cart.js");
+
+const app = express();
+const port = process.env.PORT;
 
 main()
   .then(() => {
@@ -41,9 +45,11 @@ app.use((err, req, res, next) => {
     .json({ message: err.message || "Something went wrong" });
 });
 
+app.use("/auth", authRouter);
 app.use("/users", userRouter);
-app.use("/suit", suitRouter);
-app.use("/suit/:id", reviewRouter);
+app.use("/suits", suitRouter);
+app.use("/suits/:id/reviews", reviewRouter);
+app.use("/cart", cartRouter);
 
 // Error handler
 app.use((err, req, res, next) => {
@@ -55,5 +61,4 @@ app.use((err, req, res, next) => {
 
 app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
-  keepAlive();
 });

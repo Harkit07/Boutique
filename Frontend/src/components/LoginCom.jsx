@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
@@ -25,7 +25,7 @@ const validate = (values) => {
 };
 
 const Login = () => {
-  const { user, setUser } = React.useContext(UserDataContext);
+  const { user, setUser } = useContext(UserDataContext);
   const [showPassword, setShowPassword] = useState(false);
 
   const navigate = useNavigate();
@@ -39,7 +39,7 @@ const Login = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/users/login`,
+          `${import.meta.env.VITE_BASE_URL}/auth/login`,
           {
             email: values.email,
             password: values.password,
@@ -73,6 +73,7 @@ const Login = () => {
             loop
             muted
             playsInline
+            aria-label="Background brand video"
           />
           <nav className="login-breadcrumb">
             <span>Home</span>
@@ -92,6 +93,7 @@ const Login = () => {
               name="email"
               type="email"
               placeholder="Your email*"
+              aria-label="Email Address"
               className="login-input"
               onChange={formik.handleChange}
               value={formik.values.email}
@@ -105,12 +107,15 @@ const Login = () => {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password*"
+                aria-label="Password"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.password}
               />
               <VisibilityIcon
                 className="eye"
+                role="button"
+                aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword(!showPassword)}
               />
             </div>
@@ -135,7 +140,7 @@ const Login = () => {
           <br />
           click unsubscribe in our emails.
         </p>
-        <button className="new-customer-btn">
+        <button className="new-customer-btn" type="button">
           <Link
             to="/signup"
             className="nav-link"

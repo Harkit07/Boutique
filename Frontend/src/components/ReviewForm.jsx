@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContextuseState  } from "react";
 import axios from "axios";
 import { useFormik } from "formik";
 import { UserDataContext } from "../context/UserContext";
@@ -25,7 +25,7 @@ const validate = (values) => {
 
 const ReviewForm = ({ suit, fetchSuitDetails }) => {
   const token = localStorage.getItem("token");
-  const { user, setUser } = React.useContext(UserDataContext);
+  const { user } = useContext(UserDataContext);
 
   const formik = useFormik({
     initialValues: {
@@ -36,7 +36,7 @@ const ReviewForm = ({ suit, fetchSuitDetails }) => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/suit/${suit._id}/review`,
+          `${import.meta.env.VITE_BASE_URL}/suits/${suit._id}/reviews`,
           {
             about: values.about,
             rating: values.rating,
@@ -104,3 +104,6 @@ const ReviewForm = ({ suit, fetchSuitDetails }) => {
 };
 
 export default ReviewForm;
+
+
+

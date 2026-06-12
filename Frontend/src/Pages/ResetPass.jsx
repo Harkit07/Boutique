@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import React, { useEffect, useState } from "react";
+import React, { useContextEffect, useState, useRef, useContext  } from "react";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import Skeleton from "../components/Skeleton";
@@ -28,59 +28,41 @@ const validate = (values) => {
 };
 
 const ResetPass = () => {
-  const { setUser, loading } = React.useContext(UserDataContext);
-
-  if (loading) {
-    return <Skeleton />;
-  }
+  const { setUser, loading } = useContext(UserDataContext);
 
   const [showPassword, setShowPassword] = useState(false);
   const [sendMail, setSendMail] = useState(true);
   const [sendingMail, setSendingMail] = useState(false);
-  const [email, setEmail] = useState("");
+
+  const emailRef = useRef("");
 
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/", { replace: true });
+  const handleSendMail = async (e) => {
+    e.preventDefault();
+    if (!emailRef.current) {
+      toast.error("Please enter email");
+      return;
     }
-  }, [navigate]);
-
-  const sendOTP = async () => {
-    if (!email) {
-      errors.email = "Required";
-    } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(email)) {
-      errors.email = "Invalid email address";
-    }
-
     setSendingMail(true);
-
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/users/forgotpassword`,
-        {
-          email: email,
-        },
+        `${import.meta.env.VITE_BASE_URL}/auth/forget-password`,
+        { email: emailRef.current },
       );
-      console.log(response.data);
-      if (response.status === 201) {
-        toast.success("Mail send successful!");
+      if (response.status === 200) {
+        toast.success("OTP sent to your email!");
         setSendMail(false);
       }
     } catch (error) {
-      if (error.response?.status === 404) {
-        toast.error(error.response?.data?.message || "Try again");
-      }
-      // Handle error (e.g., show error message)
-      console.error(error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Something went wrong");
+    } finally {
+      setSendingMail(false);
     }
   };
 
   const formik = useFormik({
     initialValues: {
-      email: "",
       otp: "",
       password: "",
     },
@@ -88,102 +70,91 @@ const ResetPass = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/users/resetpassword`,
+          `${import.meta.env.VITE_BASE_URL}/auth/reset-password`,
           {
-            email: email,
+            email: emailRef.current,
             otp: values.otp,
-            password: values.password,
+            newPassword: values.password,
           },
         );
         if (response.status === 200) {
-          toast.success("Password Reset successful!");
-          const data = response.data;
-          setUser(data.user);
-          localStorage.setItem("token", data.token);
-          navigate("/");
+          toast.success("Password reset successful!");
+          navigate("/login");
         }
       } catch (error) {
-        if (error.response?.status === 404) {
-          toast.error(error.response?.data?.message || "Try again");
-        }
-        if (error.response?.status === 400) {
-          toast.error(error.response?.data?.message || "Invalid OTP");
-        }
-        // Handle error (e.g., show error message)
-        console.error(error.response?.data || error.message);
+        toast.error(error.response?.data?.message || "Invalid OTP or Error");
       }
     },
   });
 
+  if (loading) {
+    return <Skeleton />;
+  }
+
   return (
     <>
       <HeaderCom />
-      <div className="main">
-        <div className="login-bg-container">
-          <div className="login-content">
-            <video
-              className="login-bg-video"
-              src="/logovideo.mp4"
-              autoPlay
-              loop
-              muted
-              playsInline
-            />
-            <nav className="login-breadcrumb">
-              <span>Home</span>
-              <span className="dot">•</span>
-              <span className="active">Reset Password</span>
-            </nav>
-            <h1 className="login-title">Reset Your Password</h1>
-            <p className="login-desc">
-              Enter your email to receive a one-time password (OTP) and reset
-              your password.
-            </p>
-            <form className="login-form" onSubmit={formik.handleSubmit}>
-              <h2 className="login-form-title">Reset Password</h2>
-              <input
-                id="email"
-                name="email"
-                type="email"
-                placeholder="Your email*"
-                className="login-input"
-                onChange={(e) => setEmail(e.target.value)}
-              />
-              {formik.errors.email ? (
-                <div className="error">{formik.errors.email}</div>
-              ) : null}
+      <div className="login-container">
+        <div className="login-box-wrapper">
+          <div className="login-box">
+            <h1 className="login-title">Reset Password</h1>
+            <form onSubmit={sendMail ? handleSendMail : formik.handleSubmit}>
               {sendMail ? (
-                <div className="login-btn mail-btn" onClick={sendOTP}>
-                  {sendingMail ? "Sending..." : "Send Mail"}
-                </div>
+                <>
+                  <input
+                    type="email"
+                    placeholder="Email*"
+                    className="login-input"
+                    aria-label="Email Address"
+                    onChange={(e) => {
+                      emailRef.current = e.target.value;
+                    }}
+                  />
+                  <button
+                    type="submit"
+                    className="login-btn"
+                    disabled={sendingMail}
+                  >
+                    {sendingMail ? "Sending..." : "Send OTP"}
+                  </button>
+                </>
               ) : (
                 <>
                   <input
                     id="otp"
-                    type="number"
                     name="otp"
-                    placeholder="Enter OTP"
+                    type="text"
+                    placeholder="6-Digit OTP*"
                     className="login-input"
+                    aria-label="6 Digit OTP"
                     onChange={formik.handleChange}
                     value={formik.values.otp}
                   />
                   {formik.errors.otp ? (
                     <div className="error">{formik.errors.otp}</div>
                   ) : null}
+
                   <div className="password-wrapper">
                     <input
                       id="password"
                       name="password"
                       type={showPassword ? "text" : "password"}
-                      placeholder="Password*"
+                      placeholder="New Password*"
                       className="login-input"
+                      aria-label="New Password"
                       onChange={formik.handleChange}
                       value={formik.values.password}
                     />
-                    <VisibilityIcon
+                    <button
+                      type="button"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                       className="eye"
                       onClick={() => setShowPassword(!showPassword)}
-                    />
+                    >
+                      <VisibilityIcon />
+                    </button>
                   </div>
                   {formik.errors.password ? (
                     <div className="error">{formik.errors.password}</div>
@@ -196,7 +167,6 @@ const ResetPass = () => {
             </form>
           </div>
         </div>
-        {/* New Customer Section */}
         <div className="new-customer-section">
           <h2 className="new-customer-title">New Customer</h2>
           <p className="new-customer-desc">
@@ -205,7 +175,7 @@ const ResetPass = () => {
             <br />
             click unsubscribe in our emails.
           </p>
-          <button className="new-customer-btn">
+          <button type="button" className="new-customer-btn">
             <Link
               to="/signup"
               className="nav-link"
@@ -222,3 +192,6 @@ const ResetPass = () => {
 };
 
 export default ResetPass;
+
+
+

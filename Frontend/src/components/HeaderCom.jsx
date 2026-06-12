@@ -17,7 +17,7 @@ const Menu = () => {
       </div>
       <div className="logo box">
         <Link to="/" className="nav-link">
-          <img src="/logo.jpg" alt="Image" />
+          <img src="/logo.jpg" alt="Ravneet Boutique Logo" />
         </Link>
       </div>
       <div className="icons box">

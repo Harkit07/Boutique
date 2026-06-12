@@ -58,6 +58,17 @@
   border-radius: 8px;
 }
 
+.uc-cart-item-preview {
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  text-align: left;
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
 .uc-product-info {
   flex: 1;
 }

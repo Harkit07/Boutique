@@ -1,9 +1,8 @@
-import React, { useEffect, useRef } from "react";
+import React, { useContextEffect, useRef, useContext, useEffect } from "react";
 import "../styles/VideosCom.css";
 import { UserDataContext } from "../context/UserContext";
 
-// Plays video ONLY when it enters the viewport
-const LazyVideo = ({ src }) => {
+const LazyVideo = ({ src, name = "Video content" }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -12,9 +11,9 @@ const LazyVideo = ({ src }) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().catch(() => {}); // play when visible
+          video.play().catch(() => {});
         } else {
-          video.pause(); // pause when scrolled away
+          video.pause();
         }
       },
       { threshold: 0.5 },
@@ -31,19 +30,29 @@ const LazyVideo = ({ src }) => {
       muted
       loop
       playsInline
-      preload="none" // don't download until visible
+      preload="none"
+      aria-label={`Video highlight for ${name}`}
     />
   );
 };
 
 const VideosCom = () => {
   const sliderRef = useRef(null);
-  const { allSuit } = React.useContext(UserDataContext);
+  const { allSuit } = useContext(UserDataContext);
 
-  const videoFiles = allSuit
-    .flatMap((suit) => suit.file || [])
-    .filter((file) => file.mediaType === "video")
-    .slice(0, 4);
+  // Converted chained array processing iterations into a unified processing execution pass
+  const videoFiles = [];
+  for (const suit of allSuit) {
+    if (videoFiles.length >= 4) break;
+    if (suit.file) {
+      for (const file of suit.file) {
+        if (file.mediaType === "video") {
+          videoFiles.push(file);
+          if (videoFiles.length >= 4) break;
+        }
+      }
+    }
+  }
 
   return (
     <section className="real-stories-section">
@@ -54,8 +63,11 @@ const VideosCom = () => {
       </h2>
       <div className="stories-slider" ref={sliderRef}>
         {videoFiles.map((video, index) => (
-          <div className="story-card" key={index}>
-            <LazyVideo src={video.url} />
+          <div className="story-card" key={video.url || index}>
+            <LazyVideo
+              src={video.url}
+              name={video.title || `Story element ${index + 1}`}
+            />
           </div>
         ))}
       </div>

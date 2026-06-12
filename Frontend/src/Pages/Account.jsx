@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
@@ -9,14 +9,13 @@ import { UserDataContext } from "../context/UserContext";
 import Skeleton from "../components/Skeleton";
 
 const Account = () => {
-  const { user, setActiveTab, loading } = React.useContext(UserDataContext);
+  const { user, setActiveTab, loading } = useContext(UserDataContext);
   const [address, setAddress] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
 
   if (loading) {
     return <Skeleton />;
   }
-
 
   return (
     <>
@@ -102,7 +101,11 @@ const Account = () => {
               <div className="right">{user.email}</div>
             </div>
           </div>
-          <button className="address-btn" onClick={() => setAddress(!address)}>
+          <button
+            type="button"
+            className="address-btn"
+            onClick={() => setAddress(!address)}
+          >
             View Addresses
           </button>
         </div>
@@ -118,6 +121,7 @@ const Account = () => {
 
               <div className="da-action-group">
                 <button
+                  type="button"
                   className="da-btn da-btn-edit"
                   onClick={() => setEditAddress(!editAddress)}
                 >
@@ -136,3 +140,7 @@ const Account = () => {
 };
 
 export default Account;
+
+
+
+

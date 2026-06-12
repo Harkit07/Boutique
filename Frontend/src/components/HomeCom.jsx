@@ -5,11 +5,11 @@ import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useNavigate } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 import VideosCom from "./VideosCom";
-import React from "react";
+import React, { useContext } from "react";
 
-const Home = () => {
-  const { allSuit, filterSuitsByCategory, filterSuitsByPrice } =
-    React.useContext(UserDataContext);
+const HomeCom = () => {
+  const { allSuit, filterSuitsByCategory, filterSuitsByPrice, loading } =
+    useContext(UserDataContext);
 
   const navigate = useNavigate();
 
@@ -40,6 +40,10 @@ const Home = () => {
       image: "https://via.placeholder.com/150/B8860B/000000?text=Dupattas",
     },
   ];
+
+  if (loading) {
+    return <div className="loading-spinner">Loading...</div>;
+  }
 
   return (
     <div className="home">
@@ -275,4 +279,4 @@ const Home = () => {
   );
 };
 
-export default Home;
+export default HomeCom;

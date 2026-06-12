@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext$( -replace "^,?\s*", "", ) } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
@@ -7,7 +7,7 @@ import "../styles/About.css";
 import Skeleton from "../components/Skeleton";
 
 const About = () => {
-  const { setActiveTab, loading } = React.useContext(UserDataContext);
+  const { setActiveTab, loading } = useContext(UserDataContext);
 
   if (loading) {
     return <Skeleton />;
@@ -59,3 +59,7 @@ const About = () => {
 };
 
 export default About;
+
+
+
+

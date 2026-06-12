@@ -7,7 +7,7 @@ const wrapAsync = require("../services/wrapAsync.js");
 const validationResult = require("../services/validationResult.js");
 
 router.post(
-  "/review",
+  "/",
   authMiddleware.authUser,
   [
     body("rating")
@@ -20,20 +20,9 @@ router.post(
 );
 
 router.delete(
-  "/review/:revId",
+  "/:reviewId",
   authMiddleware.authUser,
   wrapAsync(reviewController.delSuitReview),
-);
-
-router
-  .route("/cart")
-  .post(authMiddleware.authUser, wrapAsync(reviewController.addToCart))
-  .delete(authMiddleware.authUser, wrapAsync(reviewController.removeFromCart));
-
-router.delete(
-  "/cartitem",
-  authMiddleware.authUser,
-  wrapAsync(reviewController.decCartCount),
 );
 
 module.exports = router;

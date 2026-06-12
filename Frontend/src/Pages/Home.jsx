@@ -3,11 +3,11 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
-import React from "react";
+import React, { use } from "react";
 import Skeleton from "../components/Skeleton";
 
 const Home = () => {
-  const { setActiveTab, loading } = React.useContext(UserDataContext);
+  const { setActiveTab, loading } = use(UserDataContext);
 
   if (loading) {
     return <Skeleton />;

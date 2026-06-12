@@ -2,7 +2,7 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
-import React from "react";
+import React, { useContext$( -replace "^,?\s*", "", ) } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -40,24 +40,19 @@ const validate = (values) => {
   return errors;
 };
 
+// Module-scope constant — doesn't depend on component state
+const CATEGORIES = [
+  "AARI Work",
+  "Machine Work",
+  "Handwork",
+  "Punjabi Baby Dress",
+];
+
 const AddNewSuit = () => {
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
-  const { activeTab, setActiveTab, loading } =
-    React.useContext(UserDataContext);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const { activeTab, setActiveTab, loading } = useContext(UserDataContext);
   const [uploadBtn, setUploadBtn] = React.useState("Upload Suit Design");
-
-  if (loading) {
-    return <Skeleton />;
-  }
-
-  const categories = [
-    "AARI Work",
-    "Machine Work",
-    "Handwork",
-    "Punjabi Baby Dress",
-  ];
 
   const formik = useFormik({
     initialValues: {
@@ -70,7 +65,6 @@ const AddNewSuit = () => {
     validate,
     onSubmit: async (values) => {
       const formData = new FormData();
-
       formData.append("name", values.name);
       formData.append("category", values.category);
       formData.append("description", values.description);
@@ -82,7 +76,7 @@ const AddNewSuit = () => {
       setUploadBtn("Uploading...");
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/suit/new`,
+          `${import.meta.env.VITE_BASE_URL}/suits`,
           formData,
           {
             headers: {
@@ -91,15 +85,19 @@ const AddNewSuit = () => {
           },
         );
         if (response.status === 200) {
-          toast.success("Suit Added successful!");
+          toast.success("Suit added successfully!");
           navigate("/shop");
         }
       } catch (error) {
-        // Handle error (e.g., show error message)
         console.error(error.response?.data || error.message);
+        setUploadBtn("Upload Suit Design");
       }
     },
   });
+
+  if (loading) {
+    return <Skeleton />;
+  }
 
   return (
     <>
@@ -108,7 +106,6 @@ const AddNewSuit = () => {
         <div className="ea-page-wrapper">
           <form onSubmit={formik.handleSubmit}>
             <h2 className="ea-card-title">Add a new Suit Design</h2>
-
             <div className="ea-field">
               <label className="ea-label" htmlFor="file">
                 Image
@@ -144,42 +141,25 @@ const AddNewSuit = () => {
               <div className="error">{formik.errors.name}</div>
             ) : null}
 
-            <div className="ea-field category-field">
+            <div className="ea-field">
               <label className="ea-label" htmlFor="category">
                 Category
               </label>
-              <div
-                className="ea-dropdown"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsOpen(!isOpen);
-                }}
-              >
-                <span className="ea-dropdown-value">
-                  {formik.values.category || "Select Category"}
-                </span>
-
-                <span className={`ea-dropdown-icon ${isOpen ? "open" : ""}`}>
-                  ▾
-                </span>
-              </div>
-
-              {isOpen && (
-                <ul className="ea-dropdown-list">
-                  {categories.map((item) => (
-                    <li
-                      key={item}
-                      className="ea-dropdown-item"
-                      onClick={() => {
-                        formik.setFieldValue("category", item);
-                        setIsOpen(false);
-                      }}
-                    >
-                      {item}
-                    </li>
-                  ))}
-                </ul>
-              )}
+              <input
+                className="ea-input"
+                id="category"
+                name="category"
+                list="category-list"
+                placeholder="Select Category"
+                onChange={formik.handleChange}
+                value={formik.values.category}
+                aria-label="Category"
+              />
+              <datalist id="category-list">
+                {CATEGORIES.map((item) => (
+                  <option key={item} value={item} />
+                ))}
+              </datalist>
             </div>
             {formik.errors.category ? (
               <div className="error">{formik.errors.category}</div>
@@ -234,3 +214,7 @@ const AddNewSuit = () => {
 };
 
 export default AddNewSuit;
+
+
+
+

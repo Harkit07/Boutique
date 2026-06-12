@@ -1,12 +1,11 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import "../styles/ImageCom.css";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-
 import { UserDataContext } from "../context/UserContext";
 import { useNavigate } from "react-router-dom";
 
 // Plays video ONLY when it enters the viewport
-const LazyVideo = ({ src }) => {
+const LazyVideo = ({ src, name = "Product variant" }) => {
   const videoRef = useRef(null);
 
   useEffect(() => {
@@ -15,9 +14,9 @@ const LazyVideo = ({ src }) => {
     const observer = new IntersectionObserver(
       ([entry]) => {
         if (entry.isIntersecting) {
-          video.play().catch(() => {}); // play when visible
+          video.play().catch(() => {});
         } else {
-          video.pause(); // pause when scrolled away
+          video.pause();
         }
       },
       { threshold: 0.5 },
@@ -34,41 +33,11 @@ const LazyVideo = ({ src }) => {
       muted
       loop
       playsInline
-      preload="none" // don't download until visible
+      preload="none"
+      aria-label={`Video demonstration of ${name}`}
     />
   );
 };
-
-// const sampleProducts = [
-//   {
-//     name: "Line Weaved Viscose Tissue Organza Saree",
-//     sku: "NN118",
-//     price: 1499,
-//     image: img1,
-//     preOrder: false,
-//   },
-//   {
-//     name: "Traditional Elephant Motifs Design Semi Silk Saree",
-//     sku: "SSN166",
-//     price: 1399,
-//     image: img2,
-//     preOrder: true,
-//   },
-//   {
-//     name: "Designer Embroidered Saree",
-//     sku: "DSR201",
-//     price: 1599,
-//     image: img3,
-//     preOrder: true,
-//   },
-//   {
-//     name: "Classic Red Saree",
-//     sku: "CRS301",
-//     price: 1299,
-//     image: img4,
-//     preOrder: false,
-//   },
-// ];
 
 const DataCard = ({
   id,
@@ -82,20 +51,23 @@ const DataCard = ({
   const navigate = useNavigate();
 
   return (
-    <div className="data-card" onClick={() => navigate(`/suit/${id}`)}>
+    <button
+      type="button"
+      className="data-card"
+      onClick={() => navigate(`/suit/${id}`)}
+    >
       <div className="data-card-img-wrapper">
         {preOrder && <span className="data-card-preorder">Pre-Order</span>}
         {mediaType === "video" ? (
-          <LazyVideo src={image} />
+          <LazyVideo src={image} name={name} />
         ) : (
           <img
             src={image || "Suit IMG"}
-            alt="Image"
+            alt={name || "Suit IMG"}
             className="data-card-img"
             loading="lazy"
           />
         )}
-
         <span className="data-card-wishlist">
           <ShoppingBagIcon
             className="hover"
@@ -108,14 +80,14 @@ const DataCard = ({
         <div className="data-card-sku">| {category}</div>
       </div>
       <div className="data-card-price">Rs. {price.toLocaleString()}.00</div>
-    </div>
+    </button>
   );
 };
 
 const DataGrid = () => {
-  const { sortedSuits } = React.useContext(UserDataContext);
+  const { filteredSuit } = useContext(UserDataContext);
 
-  if (sortedSuits.length === 0) {
+  if (filteredSuit.length === 0) {
     return (
       <div className="data-card-grid">
         <h2>No Suit Yet</h2>
@@ -123,11 +95,11 @@ const DataGrid = () => {
     );
   }
 
-  const isOdd = sortedSuits.length % 2 !== 0;
+  const isOdd = filteredSuit.length % 2 !== 0;
 
   return (
     <div className="data-card-grid">
-      {sortedSuits.map((suit) => (
+      {filteredSuit.map((suit) => (
         <DataCard
           key={suit._id}
           id={suit._id}

@@ -1,9 +1,28 @@
-import React, { useContext, useState } from "react";
+import React, { useContext  } from "react";
 import "../styles/MenuCom.css";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
 import { UserDataContext } from "../context/UserContext";
+
+const CATEGORIES = [
+  "All",
+  "Handwork",
+  "Machine Work",
+  "AARI Work",
+  "Punjabi Baby Dress",
+];
+
+const overlayButtonStyle = {
+  background: "transparent",
+  border: "none",
+  width: "100%",
+  height: "100%",
+  position: "fixed",
+  top: 0,
+  left: 0,
+  zIndex: 999,
+};
 
 const CategoriesDrawer = ({
   isOpen,
@@ -11,41 +30,36 @@ const CategoriesDrawer = ({
   setIsCategoriesOpen,
   setIsOpen,
 }) => {
-  const closeCatCol = () => {
-    setIsCategoriesOpen(false);
-  };
-
+  const closeCatCol = () => setIsCategoriesOpen(false);
   const { filterSuitsByCategory } = useContext(UserDataContext);
   const navigate = useNavigate();
 
   const handleCategoryClick = (category) => {
     setIsCategoriesOpen(false);
     setIsOpen(false);
-
-    // Filter suits locally
     filterSuitsByCategory(category);
-
-    // Update URL (optional)
     navigate(`/shop?category=${encodeURIComponent(category)}`);
   };
 
-  const categories = [
-    "All",
-    "Handwork",
-    "Machine Work",
-    "AARI Work",
-    "Punjabi Baby Dress",
-  ];
+  // Keyboard handler for the overlay button
+  const handleOverlayKeyDown = (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      setIsOpen(false);
+    }
+  };
 
   return (
     <>
-      {/* Overlay */}
-      <div
+      {/* Overlay  */}
+      <button
+        type="button"
         className={`ba-mobile-menu-overlay ${isOpen ? "overlay-show" : ""}`}
         onClick={() => setIsOpen(false)}
+        onKeyDown={handleOverlayKeyDown}
+        aria-label="Close menu"
+        style={overlayButtonStyle}
       />
 
-      {/* Menu Drawer */}
       <div
         className={`ba-mobile-col-drawer ${
           isCategoriesOpen
@@ -54,17 +68,33 @@ const CategoriesDrawer = ({
         }`}
       >
         <div className="ba-collection-header">
-          <span onClick={closeCatCol}>
+          <button
+            type="button"
+            className="ba-header-back-btn"
+            onClick={closeCatCol}
+            aria-label="Back to menu"
+          >
             <KeyboardArrowLeftIcon className="cut-btn-col" /> Categories
-          </span>
-          <span onClick={() => setIsOpen(false)}>
+          </button>
+          <button
+            type="button"
+            className="ba-header-close-btn"
+            onClick={() => setIsOpen(false)}
+            aria-label="Close menu"
+          >
             <CloseIcon className="cut-btn-col" />
-          </span>
+          </button>
         </div>
         <ul className="ba-menu-list">
-          {categories.map((cat) => (
-            <li key={cat} onClick={() => handleCategoryClick(cat)}>
-              {cat}
+          {CATEGORIES.map((cat) => (
+            <li key={cat}>
+              <button
+                type="button"
+                className="ba-category-btn"
+                onClick={() => handleCategoryClick(cat)}
+              >
+                {cat}
+              </button>
             </li>
           ))}
         </ul>
@@ -74,3 +104,6 @@ const CategoriesDrawer = ({
 };
 
 export default CategoriesDrawer;
+
+
+

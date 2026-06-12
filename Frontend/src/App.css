@@ -33,3 +33,7 @@ body {
   margin-top: 70px;
   padding: 0 12px;
 }
+
+button {
+  border: none;
+}

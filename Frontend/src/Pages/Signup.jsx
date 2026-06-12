@@ -1,10 +1,10 @@
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import React, { useEffect, useState } from "react";
+import React, { use, useState } from "react";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 
@@ -33,15 +33,7 @@ const validate = (values) => {
 
 const Signup = () => {
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (token) {
-      navigate("/", { replace: true });
-    }
-  }, [navigate]);
-
-  const { setUser } = React.useContext(UserDataContext);
+  const { setUser } = use(UserDataContext);
   const [showPassword, setShowPassword] = useState(false);
 
   const formik = useFormik({
@@ -55,7 +47,7 @@ const Signup = () => {
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/users/signup`,
+          `${import.meta.env.VITE_BASE_URL}/auth/signup`,
           {
             fullname: {
               firstname: values.firstName,
@@ -77,11 +69,15 @@ const Signup = () => {
         if (error.response?.status === 400) {
           toast.error(error.response?.data?.message || "Signup failed");
         }
-        // Handle error (e.g., show error message)
         console.error(error.response?.data || error.message);
       }
     },
   });
+
+  const token = localStorage.getItem("token");
+  if (token) {
+    return <Navigate to="/" replace />;
+  }
 
   return (
     <>
@@ -89,6 +85,8 @@ const Signup = () => {
       <div className="main">
         <div className="login-bg-container">
           <div className="login-content">
+            {/* FIX (a11y): added aria-label — the video had no accessible
+                label, so screen readers couldn't describe it. */}
             <video
               className="login-bg-video"
               src="/logovideo.mp4"
@@ -96,6 +94,7 @@ const Signup = () => {
               loop
               muted
               playsInline
+              aria-label="Background brand video"
             />
             <nav className="login-breadcrumb">
               <span>Home</span>
@@ -115,6 +114,7 @@ const Signup = () => {
                 name="firstName"
                 type="text"
                 placeholder="Your first name"
+                aria-label="First Name"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.firstName}
@@ -127,6 +127,7 @@ const Signup = () => {
                 name="lastName"
                 type="text"
                 placeholder="Your last name"
+                aria-label="Last Name"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.lastName}
@@ -136,6 +137,7 @@ const Signup = () => {
                 name="email"
                 type="email"
                 placeholder="Your email*"
+                aria-label="Email Address"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.email}
@@ -149,14 +151,27 @@ const Signup = () => {
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password*"
+                  aria-label="Password"
                   className="login-input"
                   onChange={formik.handleChange}
                   value={formik.values.password}
                 />
-                <VisibilityIcon
+                <button
+                  type="button"
                   className="eye"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
-                />
+                  style={{
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                  }}
+                >
+                  <VisibilityIcon />
+                </button>
               </div>
               {formik.errors.password ? (
                 <div className="error">{formik.errors.password}</div>
@@ -167,10 +182,10 @@ const Signup = () => {
             </form>
           </div>
         </div>
-        {/* New Customer Section */}
+        {/* Login prompt */}
         <div className="new-customer-section">
           <p className="new-customer-desc">Log in to manage your account...</p>
-          <button className="new-customer-btn">
+          <button className="new-customer-btn" type="button">
             <Link
               to="/login"
               className="nav-link"

@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "doctor": "npx react-doctor@latest"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -15,6 +16,7 @@
     "@fontsource/roboto": "^5.2.10",
     "@mui/icons-material": "^9.0.1",
     "@mui/material": "^9.0.1",
+    "@tanstack/react-query": "^5.101.0",
     "axios": "^1.16.0",
     "formik": "^2.4.9",
     "react": "^19.2.6",
@@ -31,6 +33,7 @@
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.2",
     "globals": "^17.6.0",
+    "react-doctor": "^0.5.1",
     "vite": "^8.0.11"
   }
 }
