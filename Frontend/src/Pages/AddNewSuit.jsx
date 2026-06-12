@@ -2,7 +2,7 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
-import React, { useContext$( -replace "^,?\s*", "", ) } from "react";
+import React, { useContext } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
@@ -214,7 +214,3 @@ const AddNewSuit = () => {
 };
 
 export default AddNewSuit;
-
-
-
-

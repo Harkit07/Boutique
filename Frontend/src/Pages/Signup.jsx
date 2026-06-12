@@ -4,7 +4,7 @@ import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import React, { use, useState } from "react";
+import React, { useContext, useState } from "react";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 
@@ -33,7 +33,7 @@ const validate = (values) => {
 
 const Signup = () => {
   const navigate = useNavigate();
-  const { setUser } = use(UserDataContext);
+  const { setUser } = useContext(UserDataContext);
   const [showPassword, setShowPassword] = useState(false);
 
   const formik = useFormik({
@@ -85,8 +85,6 @@ const Signup = () => {
       <div className="main">
         <div className="login-bg-container">
           <div className="login-content">
-            {/* FIX (a11y): added aria-label — the video had no accessible
-                label, so screen readers couldn't describe it. */}
             <video
               className="login-bg-video"
               src="/logovideo.mp4"
@@ -196,7 +194,7 @@ const Signup = () => {
           </button>
         </div>
       </div>
-      <BottomNav />
+      <BottomNav activeTab="account" setActiveTab={() => {}} />
     </>
   );
 };

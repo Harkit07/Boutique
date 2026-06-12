@@ -1,4 +1,4 @@
-import React, { useContextEffect, useRef, useCallback  } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
@@ -34,9 +34,8 @@ const useLogout = (token, navigate) => {
 
   useEffect(() => {
     performLogout();
-    const currentIsMounted = isMounted;
     return () => {
-      currentIsMounted.current = false;
+      isMounted.current = false;
     };
   }, [performLogout]);
 

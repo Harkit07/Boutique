@@ -1,8 +1,8 @@
-import React, { useContextEffect  } from "react";
+import React from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import LoginCom from "../components/LoginCom";
-import { useNavigate, Navigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 const Login = () => {
   const token = localStorage.getItem("token");
@@ -15,7 +15,7 @@ const Login = () => {
       <div className="main">
         <LoginCom />
       </div>
-      <BottomNav />
+      <BottomNav activeTab="account" setActiveTab={() => {}} />
     </>
   );
 };

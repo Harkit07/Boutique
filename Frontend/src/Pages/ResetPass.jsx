@@ -4,7 +4,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import React, { useContextEffect, useState, useRef, useContext  } from "react";
+import React, { useState, useRef, useContext } from "react";
 import { UserDataContext } from "../context/UserContext";
 import { toast } from "react-toastify";
 import Skeleton from "../components/Skeleton";
@@ -186,12 +186,9 @@ const ResetPass = () => {
           </button>
         </div>
       </div>
-      <BottomNav />
+      <BottomNav activeTab="account" setActiveTab={() => {}} />
     </>
   );
 };
 
 export default ResetPass;
-
-
-

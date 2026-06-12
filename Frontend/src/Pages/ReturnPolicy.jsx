@@ -1,4 +1,4 @@
-import React, { useContext$( -replace "^,?\s*", "", ) } from "react";
+import React, { useContext } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
@@ -68,7 +68,3 @@ const ReturnPolicy = () => {
 };
 
 export default ReturnPolicy;
-
-
-
-

@@ -3,13 +3,7 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { UserDataContext } from "../context/UserContext";
-import React, {
-  useContextState,
-  useCallback,
-  useEffect,
-  useContext,
-  useState,
-} from "react";
+import React, { useCallback, useEffect, useContext, useState } from "react";
 import SuitImgCom from "../components/SuitImgCom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -39,6 +33,7 @@ const SuitView = () => {
   const [loading, setLoading] = useState(true);
   const [suit, setSuit] = useState(null);
   const [reviewForm, setReviewForm] = useState(false);
+
   const fetchSuitDetails = useCallback(async () => {
     const controller = new AbortController();
     try {
@@ -127,7 +122,8 @@ const SuitView = () => {
         <section className="saree-details-section">
           <div className="saree-details-container">
             <div className="saree-image-side">
-              <SuitImgCom suit={suit} />
+              {/* Fixed: Pass files array instead of suit object */}
+              <SuitImgCom files={suit.file || []} />
             </div>
 
             <div className="saree-info-side">
