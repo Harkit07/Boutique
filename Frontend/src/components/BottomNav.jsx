@@ -8,28 +8,17 @@ import { Link } from "react-router-dom";
 import { UserDataContext } from "../context/UserContext";
 
 const BottomNav = ({ activeTab, setActiveTab }) => {
-  const { user, setUser } = useContext(UserDataContext);
+  const { user } = useContext(UserDataContext);
+
   const navItems = [
-    {
-      id: "home",
-      label: "Home",
-      icon: <HomeIcon />,
-    },
-    {
-      id: "account",
-      label: "Account",
-      icon: <PersonIcon />,
-    },
-    {
-      id: "shop",
-      label: "Shop",
-      icon: <StorefrontIcon />,
-    },
+    { id: "home", label: "Home", icon: <HomeIcon /> },
+    { id: "account", label: "Account", icon: <PersonIcon /> },
+    { id: "shop", label: "Shop", icon: <StorefrontIcon /> },
     {
       id: "cart",
       label: "Cart",
       icon: <ShoppingBagIcon />,
-      badge: user.cart ? user.cart.length : 0,
+      badge: user?.cart?.length ?? 0,
     },
   ];
 

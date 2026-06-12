@@ -76,7 +76,7 @@ function useInitialData() {
       if (token) {
         try {
           const userRes = await axios.get(
-            `${import.meta.env.VITE_BASE_URL}/user/profile`,
+            `${import.meta.env.VITE_BASE_URL}/users/me`,
             {
               headers: { Authorization: `Bearer ${token}` },
             },

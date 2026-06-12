@@ -1,4 +1,4 @@
-import React, { useContext, useState   } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/MenuCom.css";
 import PersonIcon from "@mui/icons-material/Person";
 import CloseIcon from "@mui/icons-material/Close";
@@ -10,6 +10,14 @@ import { UserDataContext } from "../context/UserContext";
 const MenuCom = ({ isOpen, setIsOpen }) => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
   const { user } = useContext(UserDataContext);
+
+  const getUserDisplayName = () => {
+    if (!user) return "";
+    const firstName = user.fullname?.firstname || "";
+    const lastName = user.fullname?.lastname || "";
+    if (firstName || lastName) return `${firstName} ${lastName}`.trim();
+    return user.email || "User";
+  };
 
   return (
     <>
@@ -88,7 +96,7 @@ const MenuCom = ({ isOpen, setIsOpen }) => {
                   onClick={() => setIsOpen(false)}
                 >
                   <PersonIcon id="ba-person-icon" />
-                  {`${user.fullname.firstname} ${user.fullname.lastname}`}
+                  {getUserDisplayName()}
                 </Link>
               </li>
               <li id="ba-menu-footer">

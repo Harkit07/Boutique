@@ -1,9 +1,221 @@
-.saree-slider-section {
-  width: 100%;
-  max-width: 420px;
+/* Main layout */
+.saree-details-section {
+  max-width: 1200px;
+  margin: 0 auto;
   padding: 20px;
 }
 
+.saree-details-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 40px;
+  margin-bottom: 60px;
+}
+
+.saree-image-side {
+  flex: 1;
+  min-width: 280px;
+}
+
+.saree-info-side {
+  flex: 1;
+  min-width: 280px;
+}
+
+/* Breadcrumb */
+.saree-breadcrumb {
+  font-size: 14px;
+  color: #666;
+  margin-bottom: 16px;
+}
+
+.saree-breadcrumb a {
+  color: #666;
+  text-decoration: none;
+}
+
+.saree-breadcrumb span {
+  color: #000;
+  font-weight: 500;
+}
+
+/* Title & Price */
+.saree-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 0 0 12px 0;
+  color: #1a1a1a;
+}
+
+.saree-price {
+  font-size: 24px;
+  font-weight: 600;
+  color: #d0473e;
+  margin: 8px 0 4px;
+}
+
+.saree-tax-info {
+  font-size: 13px;
+  color: #666;
+  margin-bottom: 24px;
+}
+
+/* Action buttons (Add to Cart / Buy Now) - each takes half width */
+.saree-action-buttons {
+  display: flex;
+  gap: 16px;
+  margin-bottom: 16px;
+  flex-wrap: wrap;
+}
+
+.add-to-cart-btn,
+.buy-now-btn {
+  flex: 1; /* both take equal remaining space */
+  min-width: 0; /* prevent overflow */
+  padding: 14px 12px;
+  font-size: 16px;
+  font-weight: 500;
+  border: none;
+  border-radius: 40px;
+  cursor: pointer;
+  transition: 0.2s ease;
+  text-align: center;
+  white-space: nowrap;
+}
+
+/* For very small screens, allow text to wrap */
+@media (max-width: 480px) {
+  .add-to-cart-btn,
+  .buy-now-btn {
+    white-space: normal;
+    padding: 12px 8px;
+    font-size: 14px;
+  }
+}
+
+.add-to-cart-btn {
+  background-color: #000;
+  color: #fff;
+}
+
+.add-to-cart-btn:hover {
+  background-color: #333;
+}
+
+.buy-now-btn {
+  background-color: #d6453d;
+  color: #fff;
+}
+
+.buy-now-btn:hover {
+  background-color: #b53a33;
+}
+
+/* Delete Product button – full width below */
+.saree-info-side > div:has(> .MuiButton-root),
+.saree-info-side > div:has(> button[class*="MuiButton"]) {
+  margin-top: 0;
+}
+
+/* Style the Material‑UI Delete button to be full width */
+.saree-info-side .MuiButton-root,
+.saree-info-side button[class*="MuiButton-root"] {
+  width: 100%;
+  margin-top: 8px;
+  margin-bottom: 16px;
+  border-radius: 40px;
+  padding: 10px 0;
+}
+
+/* Description box */
+.saree-description-box {
+  margin-top: 8px;
+  padding-top: 24px;
+  border-top: 1px solid #eee;
+}
+
+.saree-description-box h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.saree-description-box p {
+  font-size: 15px;
+  line-height: 1.6;
+  color: #444;
+}
+
+/* Reviews section */
+.saree-reviews-container {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 1px solid #eee;
+}
+
+.saree-reviews-container h2 {
+  font-size: 22px;
+  font-weight: 600;
+  margin-bottom: 20px;
+}
+
+.saree-reviews-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.saree-review-item {
+  background: #f9f9f9;
+  padding: 16px;
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.saree-review-stars {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.saree-review-text {
+  font-size: 14px;
+  line-height: 1.5;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.saree-review-author {
+  font-size: 13px;
+  color: #666;
+  font-style: italic;
+}
+
+/* Address button (for Add a Review) */
+.address-btn {
+  background: #000;
+  color: #fff;
+  border: none;
+  padding: 12px 28px;
+  font-size: 14px;
+  border-radius: 50px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.address-btn:hover {
+  background: #333;
+}
+
+/* Make slider fit nicely inside saree-image-side */
+.saree-image-side .saree-slider-wrapper {
+  width: 100%;
+  border-radius: 16px;
+  overflow: hidden;
+}
+
+/* Slider elements (from your original CSS, kept for compatibility) */
 .saree-slider-wrapper {
   overflow: hidden;
   border-radius: 12px;
@@ -16,26 +228,11 @@
   transition: transform 0.35s ease-in-out;
 }
 
-.breadcrumb > b {
-  font-size: 18px;
-}
-
 .saree-slider-image {
   width: 100%;
   flex-shrink: 0;
   height: 520px;
   object-fit: cover;
-}
-
-.address-btn {
-  background: #000;
-  color: #fff;
-  border: none;
-  padding: 16px 35px;
-  font-size: 16px;
-  border-radius: 50px;
-  cursor: pointer;
-  transition: 0.3s ease;
 }
 
 .saree-slider-dots {
@@ -57,194 +254,18 @@
   background: #000;
 }
 
-.saree-product-info {
-  padding: 16px 0;
-}
+/* Responsive */
+@media (max-width: 768px) {
+  .saree-details-container {
+    flex-direction: column;
+    gap: 24px;
+  }
 
-.saree-product-title {
-  margin-top: 20px;
-  font-size: 25px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
+  .saree-title {
+    font-size: 24px;
+  }
 
-.saree-product-price {
-  margin-top: 20px;
-  font-size: 25px;
-  font-weight: 600;
-  color: #d0473e;
-  margin-bottom: 8px;
-}
-
-.saree-product-viewing {
-  font-size: 13px;
-  color: #444;
-  margin-bottom: 12px;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.saree-product-actions {
-  margin-top: 20px;
-  display: flex;
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.saree-product-link {
-  background: none;
-  border: none;
-  color: #555;
-  font-size: 13px;
-  cursor: pointer;
-  padding: 0;
-}
-
-.saree-product-cart {
-  margin-top: 25px;
-  display: flex;
-  gap: 10px;
-  margin-bottom: 12px;
-}
-
-.saree-qty-box {
-  height: 50px;
-  display: flex;
-  align-items: center;
-  border: 1px solid #ddd;
-  border-radius: 20px;
-  overflow: hidden;
-}
-
-.saree-qty-box button {
-  border: none;
-  background: none;
-  padding: 8px 12px;
-  cursor: pointer;
-}
-
-.saree-qty-box span {
-  padding: 0 12px;
-}
-
-.saree-add-cart {
-  height: 50px;
-  font-size: 16px;
-  flex: 1;
-  background: #000;
-  color: #fff;
-  border: none;
-  border-radius: 20px;
-  padding: 10px;
-  cursor: pointer;
-}
-
-.saree-buy-now {
-  height: 50px;
-  font-size: 17px;
-  width: 100%;
-  background: #d6453d;
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 10px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.saree-del-now {
-  margin-top: 5px;
-  height: 50px;
-  font-size: 17px;
-  width: 100%;
-  background: #000;
-  color: #fff;
-  border: none;
-  border-radius: 24px;
-  padding: 10px;
-  font-size: 15px;
-  cursor: pointer;
-}
-
-.saree-product-description {
-  padding: 16px 0;
-  border-top: 1px solid #eee;
-  margin-top: 20px;
-}
-
-.saree-desc-title {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.saree-desc-subtitle {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 6px;
-}
-
-.saree-desc-list {
-  padding-left: 18px;
-  font-size: 13px;
-  color: #444;
-}
-
-.saree-desc-list li {
-  margin-bottom: 6px;
-  line-height: 1.5;
-}
-
-.saree-review-section {
-  padding: 16px 0;
-  border-top: 1px solid #eee;
-  margin-top: 20px;
-}
-
-.saree-review-title {
-  font-size: 15px;
-  font-weight: 600;
-  margin-bottom: 8px;
-}
-
-.saree-review-subtitle {
-  font-size: 14px;
-  font-weight: 600;
-  margin-bottom: 10px;
-}
-
-.saree-review-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.saree-review-item {
-  padding: 12px;
-  border: 1px solid #eee;
-  border-radius: 10px;
-  margin-bottom: 12px;
-}
-
-.saree-review-stars {
-  display: flex;
-  font-size: 13px;
-  margin-bottom: 6px;
-}
-
-.saree-review-stars > button {
-  margin-left: 50px;
-}
-
-.saree-review-text {
-  font-size: 13px;
-  color: #444;
-  line-height: 1.5;
-  margin-bottom: 6px;
-}
-
-.saree-review-author {
-  font-size: 12px;
-  color: #666;
+  .saree-price {
+    font-size: 20px;
+  }
 }

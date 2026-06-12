@@ -15,10 +15,9 @@ const handleCheckout = () => {
   toast.info("Checkout functionality coming soon!");
 };
 
-// Plays video ONLY when it enters the viewport
+// LazyVideo component (unchanged)
 const LazyVideo = ({ src, name = "Product" }) => {
   const videoRef = useRef(null);
-
   useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
@@ -35,7 +34,6 @@ const LazyVideo = ({ src, name = "Product" }) => {
     observer.observe(video);
     return () => observer.disconnect();
   }, []);
-
   return (
     <video
       ref={videoRef}
@@ -53,13 +51,22 @@ const LazyVideo = ({ src, name = "Product" }) => {
 const Cart = () => {
   const { user, setUser, activeTab, setActiveTab, loading } =
     useContext(UserDataContext);
-
   const navigate = useNavigate();
   const token = localStorage.getItem("token");
 
   if (loading) {
     return <Skeleton />;
   }
+
+  const updateCartState = (responseData) => {
+    const newCart =
+      responseData.user?.cart ?? responseData.cart ?? responseData?.cart ?? [];
+    setUser((prev) => ({
+      ...prev,
+      cart: newCart,
+    }));
+    return newCart;
+  };
 
   const addToCart = async (suit) => {
     try {
@@ -69,11 +76,12 @@ const Cart = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
-        setUser((prev) => ({ ...prev, cart: response.data.user.cart }));
+        updateCartState(response.data);
         toast.success("Added to cart!");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Failed to add item");
     }
   };
 
@@ -84,11 +92,12 @@ const Cart = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
-        setUser((prev) => ({ ...prev, cart: response.data.user.cart }));
+        updateCartState(response.data);
         toast.success("Removed from cart!");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Failed to remove item");
     }
   };
 
@@ -100,19 +109,16 @@ const Cart = () => {
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
-        setUser((prev) => ({ ...prev, cart: response.data.user.cart }));
+        updateCartState(response.data);
         toast.success("Quantity decreased!");
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      toast.error("Failed to update quantity");
     }
   };
 
-  const handleItemKeyDown = (e, suitId) => {
-    if (e.key === "Enter" || e.key === " ") {
-      navigate(`/suit/${suitId}`);
-    }
-  };
+  const cartItems = user?.cart ?? [];
 
   return (
     <>
@@ -130,38 +136,38 @@ const Cart = () => {
             Enjoy a seamless shopping experience!
           </p>
 
-          {!user || !user.cart || user.cart.length === 0 ? (
-            <div>No Item in the Cart</div>
+          {cartItems.length === 0 ? (
+            <div className="empty-cart-message">No Item in the Cart</div>
           ) : (
-            user.cart.map((item) => {
+            cartItems.map((item) => {
               const quantity = item.quantity;
               const inCart = quantity > 0;
-              const type = item.suit.file?.[0]?.mediaType;
+              const type = item.suit?.file?.[0]?.mediaType;
 
               return (
                 <div key={item._id} className="uc-cart-item">
                   <button
                     type="button"
                     className="uc-cart-item-preview"
-                    aria-label={`View details for ${item.suit.name}`}
-                    onClick={() => navigate(`/suit/${item.suit._id}`)}
+                    aria-label={`View details for ${item.suit?.name}`}
+                    onClick={() => navigate(`/suit/${item.suit?._id}`)}
                   >
                     {type === "image" ? (
                       <img
-                        src={item.suit.file?.[0]?.url}
-                        alt={item.suit.name}
+                        src={item.suit?.file?.[0]?.url}
+                        alt={item.suit?.name}
                         className="uc-product-img"
                         loading="lazy"
                       />
                     ) : (
                       <LazyVideo
-                        src={item.suit.file?.[0]?.url}
-                        name={item.suit.name}
+                        src={item.suit?.file?.[0]?.url}
+                        name={item.suit?.name}
                       />
                     )}
 
                     <div className="uc-product-info">
-                      <h3 className="uc-product-name">{item.suit.name}</h3>
+                      <h3 className="uc-product-name">{item.suit?.name}</h3>
                       <p className="uc-product-size">Size: M</p>
                       <p className="uc-product-price">
                         Rs. {item.suit?.price?.toLocaleString?.() ?? "0"}.00
@@ -214,7 +220,6 @@ const Cart = () => {
                 vary. Please allow extra time for remote locations.
               </p>
             </div>
-
             <div className="ud-info-section">
               <h3 className="ud-info-heading">Exclusive Offers</h3>
               <p className="ud-info-text">
