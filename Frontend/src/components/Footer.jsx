@@ -1,4 +1,4 @@
-import React, { useContextState, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../styles/Footer.css";
 import InstagramIcon from "@mui/icons-material/Instagram";
 import FacebookIcon from "@mui/icons-material/Facebook";

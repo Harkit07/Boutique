@@ -1,4 +1,4 @@
-import React, { useContextState, useContext, useState } from "react";
+import React, { useContext, useState } from "react";
 import "../styles/FilterCom.css";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import { UserDataContext } from "../context/UserContext";

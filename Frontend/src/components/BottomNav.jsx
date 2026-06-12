@@ -1,4 +1,4 @@
-import React, { useContext  } from "react";
+import React, { useContext } from "react";
 import "../styles/BottomNav.css";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonIcon from "@mui/icons-material/Person";
@@ -29,7 +29,7 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
       id: "cart",
       label: "Cart",
       icon: <ShoppingBagIcon />,
-      badge: user ? user.cart.length : 0,
+      badge: user.cart ? user.cart.length : 0,
     },
   ];
 
@@ -56,4 +56,3 @@ const BottomNav = ({ activeTab, setActiveTab }) => {
 };
 
 export default BottomNav;
-

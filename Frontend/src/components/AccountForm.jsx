@@ -8,8 +8,8 @@ const AccountForm = () => {
   const { user, setUser } = useContext(UserDataContext);
   const [updateBtn, setUpdateBtn] = useState("Update Address");
   const [formData, setFormData] = useState({
-    firstname: user.fullname.firstname,
-    lastname: user.fullname.lastname || "",
+    firstname: user?.fullname?.firstname || "",
+    lastname: user?.fullname?.lastname || "",
     address: user.address || "",
     city: user.city || "",
     phone: user.phone || "",
