@@ -29,8 +29,6 @@ router
 
 router.get("/featured-reviews", wrapAsync(suitController.homeReviews));
 
-router.get("/single-product/:id", wrapAsync(suitController.getSuit));
-
 router
   .route("/:id")
   .get(wrapAsync(suitController.getSuit))

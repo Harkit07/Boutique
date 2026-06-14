@@ -31,31 +31,40 @@ const SuitView = memo(() => {
   const [suit, setSuit] = useState(null);
   const [reviewForm, setReviewForm] = useState(false);
 
-  const fetchSuitDetails = useCallback(async () => {
-    const controller = new AbortController();
-    try {
-      const response = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/suits/single-product/${id}`,
-        { signal: controller.signal },
-      );
-      if (response.status === 200) {
-        setSuit(response.data.suit);
-        setLoading(false);
+  const fetchSuitDetails = useCallback(
+    async (abortSignal) => {
+      try {
+        const cacheBuster = Math.random();
+        const response = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/suits/${id}?cb=${cacheBuster}`,
+          { signal: abortSignal },
+        );
+        if (response.status === 200) {
+          setSuit(response.data.suit);
+          setLoading(false);
+        }
+      } catch (error) {
+        if (!axios.isCancel(error)) console.error(error);
       }
-    } catch (error) {
-      if (!axios.isCancel(error)) console.error(error);
-    }
-    return () => controller.abort();
-  }, [id]);
+    },
+    [id],
+  );
 
   useEffect(() => {
-    fetchSuitDetails();
-  }, [fetchSuitDetails]);
+    const controller = new AbortController();
 
+    // Pass the active token down into Axios
+    fetchSuitDetails(controller.signal);
+
+    // Return the cleanup function to React's native cycle hook
+    return () => {
+      controller.abort();
+    };
+  }, [fetchSuitDetails]);
   const deleteSuit = useCallback(async () => {
     try {
       const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/suits/delete/${suit._id}`,
+        `${import.meta.env.VITE_BASE_URL}/suits/${suit._id}`,
         { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
@@ -127,7 +136,7 @@ const SuitView = memo(() => {
                     onClick={deleteSuit}
                     variant="contained"
                     color="error"
-                    startIcon={<DeleteIcon />}
+                    startIcon={<DeleteIcon className="del-btn-suit" />}
                   >
                     Delete Product
                   </Button>

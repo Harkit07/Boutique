@@ -18,7 +18,10 @@ router
       body("fullname.lastname").optional(),
       body("address").optional(),
       body("city").optional(),
-      body("phone").optional().isMobilePhone("any"),
+      body("phone")
+        .optional()
+        .isNumeric()
+        .withMessage("Phone must contain only digits"),
     ],
     validationResult,
     wrapAsync(userController.updateUser),

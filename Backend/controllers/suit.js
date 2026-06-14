@@ -55,6 +55,10 @@ module.exports.getSuit = async (req, res) => {
       path: "author",
     },
   });
+
+  if (!suit) {
+    return res.status(404).json({ message: "Suit not found" });
+  }
   res.status(200).json({ message: "Suit found successful", suit });
 };
 

@@ -1,6 +1,6 @@
-# 🛍️ Boutique — Full Stack E-Commerce Platform
+# 🛍️ Ravneet Boutique — Full Stack E-Commerce Platform
 
-A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image storage, and a fully responsive UI — frontend deployed on Render, backend deployed on Vercel.
+A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image/video storage, and a fully responsive mobile-first UI — frontend deployed on Render, backend deployed on Vercel.
 
 🔗 **Live Demo:** [boutiquefrontend-ymww.onrender.com](https://boutiquefrontend-ymww.onrender.com/) · **GitHub:** [github.com/Harkit07/Boutique](https://github.com/Harkit07/Boutique.git)
 
@@ -23,16 +23,17 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 
 ## ✨ Features
 
-- 🔐 **JWT Authentication** — Secure signup, login, and session handling with JSON Web Tokens
-- 🔑 **Password Reset Flow** — Email-based password reset for reliable account recovery
-- 👤 **Profile Management** — Users can update their profile details and avatar
-- 🛒 **Shopping Cart** — Dynamic cart with real-time state updates and quantity management
-- 📦 **Product Management** — Full CRUD for products with multi-image upload support
-- ⭐ **Customer Reviews** — Authenticated users can post and manage reviews on products
-- 🖼️ **Cloud Image Storage** — Product images stored and served via Cloudinary
-- 📱 **Fully Responsive UI** — Optimized for mobile, tablet, and desktop devices
-- 🛡️ **Protected API Routes** — Backend routes secured with JWT middleware
-- 🚀 **Independent Deployment** — Frontend deployed on Render, backend deployed on Vercel (serverless)
+- 🔐 **JWT Authentication** — Secure signup/login with token blacklisting on logout
+- 🔑 **Password Reset Flow** — Email-based OTP with 5‑minute expiry for reliable account recovery
+- 👤 **Profile Management** — Update name, address, city, and phone number
+- 🛒 **Shopping Cart** — Add/remove items, quantity controls, persisted in database
+- 📦 **Product Management** — Full CRUD for suits with multiple image/video uploads via Cloudinary
+- ⭐ **Customer Reviews** — Star rating + text; users can delete their own, admins can delete any
+- 🖼️ **Cloud Storage** — Images and videos stored and optimised via Cloudinary
+- 📱 **Fully Responsive UI** — Mobile‑first design with grids that adapt from 1 to 5 columns
+- ⚡ **Performance Optimisations** — React.lazy code splitting, React.memo, useCallback/useMemo, context splitting (Auth, UI, Suits, Filter)
+- 🛡️ **Protected API Routes** — JWT middleware with role‑based access (admin/user)
+- 🔁 **Server‑Side Enhancements** — Rate limiting, Helmet security headers, Gzip compression, Morgan logging, file type validation (images/videos, max 50 MB)
 
 ---
 
@@ -40,25 +41,33 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 
 ### Frontend
 
-| Technology        | Purpose                     |
-| ----------------- | --------------------------- |
-| React.js          | UI framework                |
-| Material UI       | Component library & styling |
-| Tailwind CSS      | Utility-first CSS           |
-| Formik            | Form handling & validation  |
-| React Context API | Global state management     |
-| Axios             | HTTP client for API calls   |
+| Technology        | Purpose                           |
+| ----------------- | --------------------------------- |
+| React 18          | UI framework                      |
+| Vite              | Build tool & dev server           |
+| React Router v6   | Client‑side routing               |
+| Material‑UI (MUI) | Icons (DeleteIcon, etc.)          |
+| Axios             | HTTP client with abort controller |
+| React Query       | Server state (suits, reviews)     |
+| Formik            | Form handling & validation        |
+| React Context API | Global state (auth, UI, filters)  |
+| React Toastify    | Notifications                     |
+| Custom CSS        | Mobile‑first responsive styling   |
 
 ### Backend
 
-| Technology             | Purpose                          |
-| ---------------------- | -------------------------------- |
-| Node.js + Express.js   | Web server & REST API            |
-| MongoDB + Mongoose ODM | Database & schema modeling       |
-| JWT (jsonwebtoken)     | Authentication & authorization   |
-| Bcrypt                 | Password hashing                 |
-| Cloudinary + Multer    | Image upload & cloud storage     |
-| Nodemailer             | Email service for password reset |
+| Technology          | Purpose                                 |
+| ------------------- | --------------------------------------- |
+| Node.js + Express 5 | REST API server                         |
+| MongoDB + Mongoose  | Database & schema modeling              |
+| JWT (jsonwebtoken)  | Authentication & authorization          |
+| Bcrypt              | Password hashing                        |
+| Cloudinary + Multer | Image/video upload, storage & filtering |
+| Nodemailer          | Send OTP emails for password reset      |
+| Express Rate Limit  | Brute‑force protection (5 req/15 min)   |
+| Helmet              | Security headers (XSS, etc.)            |
+| Compression         | Gzip response compression               |
+| Morgan              | HTTP request logging (combined format)  |
 
 ---
 
@@ -68,45 +77,78 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 Boutique/
 ├── Backend/
 │   ├── controllers/
-│   │   ├── suit.js          # suit operations
-│   │   ├── reviews.js       # Review create & delete
-│   │   └── user.js          # Profile management
-│   │
+│   │   ├── auth.js
+│   │   ├── cart.js
+│   │   ├── review.js
+│   │   ├── suit.js
+│   │   └── user.js
+│   ├── middleware.js              # JWT auth + token blacklist check
 │   ├── models/
-│   │   ├── user.js          # User schema (hashed password, profile)
-│   │   ├── blacklistToken.js       # Blacklist Token
-│   │   ├── suit.js          # Suit schema (items, quantities)
-│   │   └── review.js        # Review schema (rating, comment, author)
-│   │
+│   │   ├── blacklistToken.js
+│   │   ├── review.js
+│   │   ├── suit.js
+│   │   └── user.js
 │   ├── routes/
-│   │   ├── suit.js          # /api/suit routes
-│   │   ├── reviews.js       # /api/reviews routes
-│   │   └── user.js          # /api/user routes
-│   │
-│   ├── middleware/
-│   │   └── auth.js          # JWT verification middleware
-│   │
+│   │   ├── auth.js
+│   │   ├── cart.js
+│   │   ├── review.js
+│   │   ├── suit.js
+│   │   └── user.js
 │   ├── services/
-│   │   ├── cloudConfig.js            # Cloudinary & Multer config
-│   │   ├── user.js                   # Create User
-│   │   ├── validationResult.js       # Express validation
-│   │   └── cloudinary.js             # Cloudinary & Multer config
-│   │
-│   ├── middleware.js          # Auth routing config
-│   │
-│   ├── vercel.json          # Vercel routing config
-│   │
-│   └── server.js               # Express app
+│   │   ├── cloudConfig.js        # Cloudinary + Multer (fileFilter & size limit)
+│   │   ├── user.js
+│   │   ├── validationResult.js
+│   │   └── wrapAsync.js
+│   ├── .env
+│   ├── server.js                 # Entry point (compression, helmet, morgan, rate limiting)
+│   └── vercel.json               # Vercel serverless config
 │
 └── Frontend/
-    ├── src/
-    │   ├── components/      # Reusable UI components
-    │   ├── pages/           # Route-level page components
-    │   ├── context/         # React Context for auth & cart state
-    │   ├── styles/          # React Css Styling
-    │   └── main.jsx         # React DOM entry point
-    │
-    └── index.html
+    ├── public/                   # Static images & videos (logo, dummy images, category thumbnails)
+    └── src/
+        ├── components/
+        │   ├── AccountForm.jsx
+        │   ├── BottomNav.jsx
+        │   ├── CategoriesDrawer.jsx
+        │   ├── FilterCom.jsx
+        │   ├── Footer.jsx
+        │   ├── HeaderCom.jsx
+        │   ├── HomeCom.jsx
+        │   ├── HomeReview.jsx
+        │   ├── ImageCom.jsx
+        │   ├── LoginCom.jsx
+        │   ├── MenuCom.jsx
+        │   ├── ReviewForm.jsx
+        │   ├── ScrollToTop.jsx
+        │   ├── Skeleton.jsx
+        │   ├── SuitImgCom.jsx    # Image/video slider with pinch/zoom
+        │   ├── UserProtectedWrapper.jsx
+        │   └── VideosCom.jsx
+        ├── context/
+        │   ├── AuthContext.jsx   # token, user, loading
+        │   ├── FilterContext.jsx # category, price, sort
+        │   ├── MyContext.jsx     # barrel export
+        │   ├── SuitsContext.jsx  # all suits data (react-query)
+        │   └── UiContext.jsx     # activeTab for bottom nav
+        ├── pages/                # lazy‑loaded route components
+        │   ├── About.jsx
+        │   ├── Account.jsx
+        │   ├── AddNewSuit.jsx
+        │   ├── Cart.jsx
+        │   ├── Home.jsx
+        │   ├── Login.jsx
+        │   ├── Logout.jsx
+        │   ├── Policy.jsx
+        │   ├── ResetPass.jsx
+        │   ├── ReturnPolicy.jsx
+        │   ├── Shop.jsx
+        │   ├── Signup.jsx
+        │   ├── SuitView.jsx
+        │   └── TermConditions.jsx
+        ├── styles/               # component‑specific CSS (responsive)
+        ├── App.jsx               # routes with Suspense + lazy
+        ├── index.css             # global reset & responsive helpers
+        └── main.jsx              # providers (QueryClient, Auth, Ui, Suits, Filter)
 ```
 
 ---
@@ -118,8 +160,8 @@ Boutique/
 - **Node.js** v18+
 - **npm** v9+
 - A **MongoDB** database ([MongoDB Atlas](https://www.mongodb.com/atlas) recommended)
-- A **Cloudinary** account for image uploads
-- An email account / SMTP service for password reset emails
+- A **Cloudinary** account for image/video uploads
+- A **Gmail** account with App Password for OTP emails
 
 ---
 
@@ -133,7 +175,7 @@ cd Backend
 npm install
 
 # 3. Create your environment file
-touch .env
+cp .env.example .env
 # Fill in the required variables (see Environment Variables below)
 
 # 4. Start the backend server
@@ -154,8 +196,8 @@ cd Frontend
 npm install
 
 # 3. Create your environment file
-touch .env
-# Set VITE_API_URL to your backend URL
+cp .env.example .env
+# Set VITE_BASE_URL to your backend URL
 
 # 4. Start the development server
 npm run dev
@@ -170,8 +212,9 @@ Frontend will be available at `http://localhost:5173`.
 ### Backend `.env`
 
 ```env
-# MongoDB
-MONGO_URI=mongodb+srv://<username>:<password>@cluster.mongodb.net/boutique
+# Server
+PORT=4000
+DB_URL=mongodb+srv://<username>:<password>@cluster.mongodb.net/boutique
 
 # JWT
 JWT_SECRET=your_jwt_secret_key
@@ -181,18 +224,20 @@ CLOUD_NAME=your_cloud_name
 CLOUD_API_KEY=your_cloudinary_api_key
 CLOUD_API_SECRET=your_cloudinary_api_secret
 
-# Email (for password reset)
+# Email (for OTP)
 EMAIL_USER=your_email@gmail.com
-EMAIL_PASS=your_email_app_password
+EMAIL_PASS=your_gmail_app_password
 
-# Server
-PORT=4000
+# Frontend URL for CORS
+CLIENT_URL=http://localhost:5173   # or production URL
 ```
 
 ### Frontend `.env`
 
 ```env
-VITE_API_URL=https://your-vercel-project.vercel.app/api
+VITE_BASE_URL=http://localhost:4000
+# For production:
+# VITE_BASE_URL=https://your-backend.vercel.app/api
 ```
 
 ---
@@ -203,13 +248,13 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 > Session and credential operations. No authentication required unless noted.
 
-| Method | Route                   | Auth | Description               |
-| ------ | ----------------------- | ---- | ------------------------- |
-| `POST` | `/auth/signup`          | ❌   | Register a new user       |
-| `POST` | `/auth/login`           | ❌   | Login and receive JWT     |
-| `POST` | `/auth/logout`          | ✅   | Logout current user       |
-| `POST` | `/auth/forgot-password` | ❌   | Send password reset email |
-| `POST` | `/auth/reset-password`  | ❌   | Reset password with token |
+| Method | Route                   | Auth | Description                     |
+| ------ | ----------------------- | ---- | ------------------------------- |
+| `POST` | `/auth/signup`          | ❌   | Register a new user             |
+| `POST` | `/auth/login`           | ❌   | Login and receive JWT           |
+| `POST` | `/auth/logout`          | ❌   | Logout (blacklist token)        |
+| `POST` | `/auth/forgot-password` | ❌   | Send 6‑digit OTP to email       |
+| `POST` | `/auth/reset-password`  | ❌   | Verify OTP and set new password |
 
 ---
 
@@ -217,10 +262,10 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 > Authenticated user profile management.
 
-| Method  | Route       | Auth | Description              |
-| ------- | ----------- | ---- | ------------------------ |
-| `GET`   | `/users/me` | ✅   | Get current user profile |
-| `PATCH` | `/users/me` | ✅   | Update profile details   |
+| Method  | Route       | Auth | Description                          |
+| ------- | ----------- | ---- | ------------------------------------ |
+| `GET`   | `/users/me` | ✅   | Get profile + populated cart items   |
+| `PATCH` | `/users/me` | ✅   | Update profile (name, address, etc.) |
 
 ---
 
@@ -228,13 +273,13 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 > Product (suit) listing and management.
 
-| Method   | Route                     | Auth | Description          |
-| -------- | ------------------------- | ---- | -------------------- |
-| `GET`    | `/suits`                  | ❌   | Get all suits        |
-| `POST`   | `/suits`                  | ✅   | Upload a new suit    |
-| `GET`    | `/suits/:id`              | ❌   | Get a single suit    |
-| `DELETE` | `/suits/:id`              | ✅   | Delete a suit        |
-| `GET`    | `/suits/featured-reviews` | ❌   | Get homepage reviews |
+| Method   | Route                     | Auth | Description                         |
+| -------- | ------------------------- | ---- | ----------------------------------- |
+| `GET`    | `/suits`                  | ❌   | Get all suits                       |
+| `POST`   | `/suits`                  | ✅   | Upload new suit (admin only)        |
+| `GET`    | `/suits/:id`              | ❌   | Get single suit + populated reviews |
+| `DELETE` | `/suits/:id`              | ✅   | Delete a suit (admin only)          |
+| `GET`    | `/suits/featured-reviews` | ❌   | Get random reviews for homepage     |
 
 ---
 
@@ -242,10 +287,10 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 > Reviews scoped to a specific suit.
 
-| Method   | Route                          | Auth | Description     |
-| -------- | ------------------------------ | ---- | --------------- |
-| `POST`   | `/suits/:id/reviews`           | ✅   | Post a review   |
-| `DELETE` | `/suits/:id/reviews/:reviewId` | ✅   | Delete a review |
+| Method   | Route                        | Auth | Description               |
+| -------- | ---------------------------- | ---- | ------------------------- |
+| `POST`   | `/suits/:id/reviews`         | ✅   | Add a review to a suit    |
+| `DELETE` | `/reviews/delete-review/:id` | ✅   | Delete a review by its ID |
 
 ---
 
@@ -253,12 +298,12 @@ VITE_API_URL=https://your-vercel-project.vercel.app/api
 
 > Cart belongs to the authenticated user, not a product.
 
-| Method   | Route                           | Auth | Description                    |
-| -------- | ------------------------------- | ---- | ------------------------------ |
-| `GET`    | `/cart`                         | ✅   | Get current user's cart        |
-| `POST`   | `/cart/items/:suitId`           | ✅   | Add/Update item to cart        |
-| `DELETE` | `/cart/items/:suitId`           | ✅   | Remove item from cart entirely |
-| `POST`   | `/cart/items/:suitId/decrement` | ✅   | Decrease item quantity by 1    |
+| Method   | Route                           | Auth | Description                   |
+| -------- | ------------------------------- | ---- | ----------------------------- |
+| `GET`    | `/cart`                         | ✅   | Get current user's cart       |
+| `POST`   | `/cart/items/:suitId`           | ✅   | Add item or increase quantity |
+| `DELETE` | `/cart/items/:suitId`           | ✅   | Remove item entirely          |
+| `POST`   | `/cart/items/:suitId/decrement` | ✅   | Decrease quantity by 1        |
 
 ---
 
@@ -268,25 +313,7 @@ Frontend and backend are deployed independently — frontend on **Render**, back
 
 **Backend (Vercel — Serverless)**
 
-Vercel runs Express as a serverless function. Three small additions are needed:
-
-1. **`server.js`** — Create this file inside `Backend/`:
-
-```js
-const app = require("../app");
-module.exports = app;
-```
-
-2. **`server.js`** — Export the app and guard the `listen` call:
-
-```js
-if (require.main === module) {
-  app.listen(process.env.PORT || 4000);
-}
-module.exports = app;
-```
-
-3. **`vercel.json`** — Place in `Backend/` root:
+Vercel runs Express as a serverless function. Ensure `vercel.json` exists in `Backend/`:
 
 ```json
 {
@@ -303,10 +330,10 @@ module.exports = app;
 
 - Build command: `npm run build`
 - Publish directory: `dist`
-- Set `VITE_API_URL` to your deployed Vercel backend URL:
+- Set `VITE_BASE_URL` to your deployed Vercel backend URL:
 
 ```env
-VITE_API_URL=https://your-vercel-project.vercel.app/api
+VITE_BASE_URL=https://your-backend.vercel.app/api
 ```
 
 ---

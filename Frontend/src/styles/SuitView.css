@@ -68,6 +68,12 @@
   flex-wrap: wrap;
 }
 
+.del-btn-suit {
+  fill: #000 !important; /* Force white color for the SVG */
+  background-color: transparent;
+  font-size: 24px;
+}
+
 .add-to-cart-btn,
 .buy-now-btn {
   flex: 1; /* both take equal remaining space */
