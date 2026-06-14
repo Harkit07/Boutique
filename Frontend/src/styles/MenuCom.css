@@ -44,17 +44,31 @@
   padding: 16px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
   font-weight: bold;
 }
 
 .ba-menu-header > span {
   background-color: transparent;
   color: #fff;
+  font-size: 18px;
+}
+
+/* Close button - make the icon white */
+.ba-close-btn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 4px;
 }
 
 .cut-btn {
+  fill: #ffffff !important; /* Force white color for the SVG */
   background-color: transparent;
-  color: #fff;
+  font-size: 24px;
 }
 
 .ba-list-more {
@@ -67,13 +81,29 @@
 .ba-menu-list {
   list-style: none;
   padding: 0;
-  padding: 0 10px;
+  margin: 0;
+  flex: 1;
+  overflow-y: auto;
 }
 
 .ba-menu-list li {
   font-weight: 700;
   padding: 14px 16px;
   border-bottom: 1px solid #eee;
+}
+
+/* Collections button */
+.ba-collections-btn {
+  background: none;
+  border: none;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
 }
 
 /* Sale Badge */
@@ -96,8 +126,10 @@
 
 #ba-person-icon {
   margin-right: 10px;
+  fill: #333;
 }
 
+/* Categories Drawer */
 .ba-mobile-col-drawer {
   position: fixed;
   top: 0;
@@ -129,13 +161,50 @@
   font-weight: bold;
 }
 
-.ba-collection-header > span {
+.ba-header-back-btn {
+  background: none;
+  border: none;
   display: flex;
-  justify-content: center;
-  background-color: transparent;
+  align-items: center;
+  gap: 4px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+.ba-header-close-btn {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
 }
 
 .cut-btn-col {
+  fill: #111;
   background-color: transparent;
-  color: #111;
+}
+
+/* Category buttons */
+.ba-category-btn {
+  background: none;
+  border: none;
+  width: 100%;
+  text-align: left;
+  font-size: 16px;
+  padding: 12px 0;
+  cursor: pointer;
+}
+
+/* Responsive: on larger screens, limit drawer width */
+@media (min-width: 768px) {
+  .ba-mobile-menu-drawer {
+    width: 320px;
+    left: auto;
+    transform: translateX(-100%);
+  }
+  .ba-mobile-col-drawer {
+    width: 320px;
+    left: auto;
+    transform: translateX(100%);
+  }
 }

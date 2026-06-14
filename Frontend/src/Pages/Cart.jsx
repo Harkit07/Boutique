@@ -1,7 +1,7 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useCallback, memo } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
-import { UserDataContext } from "../context/UserContext";
+import { useAuth, useUi } from "../context/MyContext";
 import "../styles/Cart.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Footer from "../components/Footer";
@@ -11,24 +11,14 @@ import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
 import Skeleton from "../components/Skeleton";
 
-const handleCheckout = () => {
-  toast.info("Checkout functionality coming soon!");
-};
-
-// LazyVideo component (unchanged)
 const LazyVideo = ({ src, name = "Product" }) => {
-  const videoRef = useRef(null);
-  useEffect(() => {
+  const videoRef = React.useRef(null);
+  React.useEffect(() => {
     const video = videoRef.current;
     if (!video) return;
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
-      },
+      ([entry]) =>
+        entry.isIntersecting ? video.play().catch(() => {}) : video.pause(),
       { threshold: 0.5 },
     );
     observer.observe(video);
@@ -43,81 +33,87 @@ const LazyVideo = ({ src, name = "Product" }) => {
       loop
       playsInline
       preload="none"
-      aria-label={`Video preview of ${name}`}
     />
   );
 };
 
-const Cart = () => {
-  const { user, setUser, activeTab, setActiveTab, loading } =
-    useContext(UserDataContext);
+const Cart = memo(() => {
+  const { user, setUser, loading, token } = useAuth();
+  const { setActiveTab } = useUi();
   const navigate = useNavigate();
-  const token = localStorage.getItem("token");
 
-  if (loading) {
-    return <Skeleton />;
-  }
+  const updateCartState = useCallback(
+    (responseData) => {
+      const newCart = responseData.user?.cart ?? responseData.cart ?? [];
+      setUser((prev) => ({ ...prev, cart: newCart }));
+      return newCart;
+    },
+    [setUser],
+  );
 
-  const updateCartState = (responseData) => {
-    const newCart =
-      responseData.user?.cart ?? responseData.cart ?? responseData?.cart ?? [];
-    setUser((prev) => ({
-      ...prev,
-      cart: newCart,
-    }));
-    return newCart;
-  };
-
-  const addToCart = async (suit) => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
-        null,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      if (response.status === 200) {
-        updateCartState(response.data);
-        toast.success("Added to cart!");
+  const addToCart = useCallback(
+    async (suit) => {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
+          null,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        if (response.status === 200) {
+          updateCartState(response.data);
+          toast.success("Added to cart!");
+        }
+      } catch (error) {
+        toast.error("Failed to add item");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to add item");
-    }
-  };
+    },
+    [token, updateCartState],
+  );
 
-  const removeToCart = async (suit) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      if (response.status === 200) {
-        updateCartState(response.data);
-        toast.success("Removed from cart!");
+  const removeToCart = useCallback(
+    async (suit) => {
+      try {
+        const response = await axios.delete(
+          `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        if (response.status === 200) {
+          updateCartState(response.data);
+          toast.success("Removed from cart!");
+        }
+      } catch (error) {
+        toast.error("Failed to remove item");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to remove item");
-    }
-  };
+    },
+    [token, updateCartState],
+  );
 
-  const decCartCount = async (suit) => {
-    try {
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}/decrement`,
-        {},
-        { headers: { Authorization: `Bearer ${token}` } },
-      );
-      if (response.status === 200) {
-        updateCartState(response.data);
-        toast.success("Quantity decreased!");
+  const decCartCount = useCallback(
+    async (suit) => {
+      try {
+        const response = await axios.post(
+          `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}/decrement`,
+          {},
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          },
+        );
+        if (response.status === 200) {
+          updateCartState(response.data);
+          toast.success("Quantity decreased!");
+        }
+      } catch (error) {
+        toast.error("Failed to update quantity");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to update quantity");
-    }
-  };
+    },
+    [token, updateCartState],
+  );
 
+  if (loading) return <Skeleton />;
   const cartItems = user?.cart ?? [];
 
   return (
@@ -128,14 +124,12 @@ const Cart = () => {
           <div className="uc-breadcrumb">
             Home · <span>Your Shopping Cart</span>
           </div>
-
           <h1 className="uc-cart-title">Shopping Cart</h1>
           <p className="uc-cart-subtitle">
             Review your selected items before purchase.
             <br />
             Enjoy a seamless shopping experience!
           </p>
-
           {cartItems.length === 0 ? (
             <div className="empty-cart-message">No Item in the Cart</div>
           ) : (
@@ -143,13 +137,11 @@ const Cart = () => {
               const quantity = item.quantity;
               const inCart = quantity > 0;
               const type = item.suit?.file?.[0]?.mediaType;
-
               return (
                 <div key={item._id} className="uc-cart-item">
                   <button
                     type="button"
                     className="uc-cart-item-preview"
-                    aria-label={`View details for ${item.suit?.name}`}
                     onClick={() => navigate(`/suit/${item.suit?._id}`)}
                   >
                     {type === "image" ? (
@@ -165,7 +157,6 @@ const Cart = () => {
                         name={item.suit?.name}
                       />
                     )}
-
                     <div className="uc-product-info">
                       <h3 className="uc-product-name">{item.suit?.name}</h3>
                       <p className="uc-product-size">Size: M</p>
@@ -174,7 +165,6 @@ const Cart = () => {
                       </p>
                     </div>
                   </button>
-
                   <div className="cart-count">
                     <Button
                       onClick={() => removeToCart(item.suit)}
@@ -191,7 +181,6 @@ const Cart = () => {
                         className="uc-qty-btn"
                         onClick={() => decCartCount(item.suit)}
                         disabled={!inCart || quantity <= 1}
-                        aria-label="Decrease quantity"
                       >
                         -
                       </button>
@@ -200,7 +189,6 @@ const Cart = () => {
                         type="button"
                         className="uc-qty-btn"
                         onClick={() => addToCart(item.suit)}
-                        aria-label="Increase quantity"
                       >
                         +
                       </button>
@@ -210,31 +198,26 @@ const Cart = () => {
               );
             })
           )}
-
           <div className="ud-info-wrapper">
             <div className="ud-info-section">
               <h3 className="ud-info-heading">Delivery Information</h3>
               <p className="ud-info-text">
-                We process orders within 1–3 business days. Domestic deliveries
-                take 3–7 business days, while international shipping times may
-                vary. Please allow extra time for remote locations.
+                We process orders within 1–3 business days...
               </p>
             </div>
             <div className="ud-info-section">
               <h3 className="ud-info-heading">Exclusive Offers</h3>
               <p className="ud-info-text">
-                Explore limited-time offers and special discounts at Aham
-                Designer Boutique. Take advantage of these deals before they're
-                gone!
+                Explore limited-time offers and special discounts...
               </p>
             </div>
           </div>
         </div>
         <Footer />
       </div>
-      <BottomNav activeTab={"cart"} setActiveTab={setActiveTab} />
+      <BottomNav activeTab="cart" />
     </>
   );
-};
+});
 
 export default Cart;

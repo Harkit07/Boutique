@@ -3,135 +3,78 @@ import "../styles/ImageCom.css";
 import HomeReview from "./HomeReview";
 import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
 import { useNavigate } from "react-router-dom";
-import { UserDataContext } from "../context/UserContext";
+import { useSuits, useFilter } from "../context/MyContext";
 import VideosCom from "./VideosCom";
-import React, { useContext } from "react";
+import React, { useCallback, useMemo, memo } from "react";
 
-const HomeCom = () => {
-  const { allSuit, filterSuitsByCategory, filterSuitsByPrice, loading } =
-    useContext(UserDataContext);
+// Map category names to actual image filenames in public folder
+const categoryImageMap = {
+  Handwork: "Handwork.jpg",
+  "Machine Work": "Machinework.jpg",
+  "AARI Work": "AARIwork.jpg", // ensure your file is named AARIwork.jpg
+  All: "dummy1.jpg",
+};
 
+const HomeCom = memo(() => {
+  const { allSuit, loading } = useSuits();
+  const { filterByCategory, filterByPrice } = useFilter();
   const navigate = useNavigate();
 
-  const collections = [
-    {
-      id: 1,
-      name: "Sarees",
-      image: "/dummy1.jpg",
+  const handleCategoryClick = useCallback(
+    (category) => {
+      filterByCategory(category);
+      navigate(`/shop?category=${encodeURIComponent(category)}`);
     },
-    {
-      id: 2,
-      name: "Salwar Sets",
-      image: "https://via.placeholder.com/150/D2B48C/000000?text=Salwar+Sets",
-    },
-    {
-      id: 3,
-      name: "Kurtas",
-      image: "https://via.placeholder.com/150/CD853F/000000?text=Kurtas",
-    },
-    {
-      id: 4,
-      name: "Lehengas",
-      image: "https://via.placeholder.com/150/DAA520/000000?text=Lehengas",
-    },
-    {
-      id: 5,
-      name: "Dupattas",
-      image: "https://via.placeholder.com/150/B8860B/000000?text=Dupattas",
-    },
-  ];
+    [filterByCategory, navigate],
+  );
 
-  if (loading) {
-    return <div className="loading-spinner">Loading...</div>;
-  }
+  const handlePriceClick = useCallback(
+    (min, max) => {
+      filterByPrice(min, max);
+      navigate(max ? `/shop?price=${min}-${max}` : `/shop?price=${min}+`);
+    },
+    [filterByPrice, navigate],
+  );
+
+  const bestSellers = useMemo(
+    () =>
+      allSuit
+        .filter((suit) => suit.file?.[0]?.mediaType === "image")
+        .slice(0, 4),
+    [allSuit],
+  );
+
+  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
     <div className="home">
-      {/* Premium Banner Section */}
       <section className="premium-banner">
         <div className="banner-image">
           <img src="/dummy.png" alt="Premium Collection" />
         </div>
       </section>
 
-      {/* Top Collections Section */}
-      {/* <section className="top-collections">
-        <h2>Top Collections</h2>
-        <p className="section-subtitle">
-          Curated collections crafted for comfort, tradition, and family
-          moments.
-        </p>
-        <div className="collections-container">
-          <div className="collections-carousel">
-            {collections.map((collection) => (
-              <div key={collection.id} className="collection-card">
-                <img
-                  src={dummy1}
-                  alt={collection.name}
-                  className="collection-image"
-                />
-                <p className="collection-name">{collection.name}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section> */}
-
-      {/* Dress the Moment Section */}
       <section className="dress-moment">
         <h2>Dress the Moment</h2>
         <p className="section-subtitle">
           Sarees, sets, and handpicked trends made for joyful celebrations.
         </p>
         <div className="moment-grid">
-          <div
-            className="moment-card"
-            onClick={() => {
-              filterSuitsByCategory("Handwork");
-              navigate(`/shop?category=${encodeURIComponent("Handwork")}`);
-            }}
-          >
-            <img src="/Handwork.jpg" alt="Best Sellers" loading="lazy" />
-            <div className="moment-label">HAND WORK</div>
-          </div>
-          <div
-            className="moment-card"
-            onClick={() => {
-              filterSuitsByCategory("Machine Work");
-              navigate(`/shop?category=${encodeURIComponent("Machine Work")}`);
-            }}
-          >
-            <img
-              src="/Machinework.jpg"
-              alt="Dinu's Collections"
-              loading="lazy"
-            />
-            <div className="moment-label">MACHINE WORK</div>
-          </div>
-          <div
-            className="moment-card"
-            onClick={() => {
-              filterSuitsByCategory("AARI Work");
-              navigate(`/shop?category=${encodeURIComponent("AARI Work")}`);
-            }}
-          >
-            <img src="/AARIwork.jpg" alt="Premium Collections" loading="lazy" />
-            <div className="moment-label">AARI WORK</div>
-          </div>
-          <div
-            className="moment-card"
-            onClick={() => {
-              filterSuitsByCategory("All");
-              navigate(`/shop?category=${encodeURIComponent("All")}`);
-            }}
-          >
-            <img src="/dummy1.jpg" alt="New Arrivals" loading="lazy" />
-            <div className="moment-label">NEW ARRIVALS</div>
-          </div>
+          {["Handwork", "Machine Work", "AARI Work", "All"].map((cat) => (
+            <div
+              key={cat}
+              className="moment-card"
+              onClick={() => handleCategoryClick(cat)}
+            >
+              <img src={`/${categoryImageMap[cat]}`} alt={cat} loading="lazy" />
+              <div className="moment-label">
+                {cat === "All" ? "NEW ARRIVALS" : cat.toUpperCase()}
+              </div>
+            </div>
+          ))}
         </div>
       </section>
 
-      {/* Best Sellers Section */}
       <section className="best-sellers">
         <h2>Best Sellers</h2>
         <p className="section-subtitle">
@@ -140,52 +83,46 @@ const HomeCom = () => {
           customers for quality, style, and value!
         </p>
         <div className="data-card-grid">
-          {allSuit
-            .filter((suit) => suit.file?.[0]?.mediaType === "image")
-            .slice(0, 4)
-            .map((suit) => (
-              <div
-                className="data-card"
-                key={suit._id}
-                onClick={() => navigate(`/suit/${suit._id}`)}
-              >
-                <div className="data-card-img-wrapper">
-                  <img
-                    src={suit.file?.[0]?.url}
-                    alt={suit.name}
-                    className="data-card-img"
-                    loading="lazy"
+          {bestSellers.map((suit) => (
+            <div
+              className="data-card"
+              key={suit._id}
+              onClick={() => navigate(`/suit/${suit._id}`)}
+            >
+              <div className="data-card-img-wrapper">
+                <img
+                  src={suit.file?.[0]?.url}
+                  alt={suit.name}
+                  className="data-card-img"
+                  loading="lazy"
+                />
+                <span className="data-card-wishlist">
+                  <ShoppingBagIcon
+                    className="hover"
+                    style={{ background: "transparent" }}
                   />
-                  <span className="data-card-wishlist">
-                    <ShoppingBagIcon
-                      className="hover"
-                      style={{ background: "transparent" }}
-                    />
-                  </span>
-                </div>
-                <div className="data-card-title">
-                  <div className="data-card-name">{suit.name}</div>
-                  <div className="data-card-sku">| {suit.category}</div>
-                </div>
-                <div className="data-card-price">
-                  Rs. {suit.price.toLocaleString()}.00
-                </div>
+                </span>
               </div>
-            ))}
+              <div className="data-card-title">
+                <div className="data-card-name">{suit.name}</div>
+                <div className="data-card-sku">| {suit.category}</div>
+              </div>
+              <div className="data-card-price">
+                Rs. {suit.price.toLocaleString()}.00
+              </div>
+            </div>
+          ))}
         </div>
         <button
           className="view-all-btn"
-          onClick={() => {
-            filterSuitsByCategory("All");
-            navigate(`/shop?category=${encodeURIComponent("All")}`);
-          }}
+          onClick={() => handleCategoryClick("All")}
         >
           View All
         </button>
       </section>
+
       <VideosCom />
 
-      {/* Categories Section */}
       <section className="categories">
         <div className="categories-grid">
           <div className="category-card">
@@ -204,16 +141,12 @@ const HomeCom = () => {
               </p>
               <button
                 className="explore-btn"
-                onClick={() => {
-                  filterSuitsByPrice(400, 800);
-                  navigate("/shop?price=400-800");
-                }}
+                onClick={() => handlePriceClick(400, 800)}
               >
                 Explore
               </button>
             </div>
           </div>
-
           <div className="category-card">
             <div
               className="category-background"
@@ -230,10 +163,7 @@ const HomeCom = () => {
               </p>
               <button
                 className="explore-btn"
-                onClick={() => {
-                  filterSuitsByPrice(500, null);
-                  navigate("/shop?price=500+");
-                }}
+                onClick={() => handlePriceClick(500, null)}
               >
                 Explore
               </button>
@@ -242,7 +172,6 @@ const HomeCom = () => {
         </div>
       </section>
 
-      {/* Inside Ravneet Section */}
       <section className="inside-ravneet">
         <video
           className="ravneet-background-video"
@@ -250,7 +179,6 @@ const HomeCom = () => {
           muted
           loop
           playsInline
-          controls={false}
         >
           <source src="/logovideo.mp4" type="video/mp4" />
         </video>
@@ -264,19 +192,17 @@ const HomeCom = () => {
             </h2>
             <button
               className="shop-all-btn"
-              onClick={() => {
-                filterSuitsByCategory("All");
-                navigate(`/shop?category=${encodeURIComponent("All")}`);
-              }}
+              onClick={() => handleCategoryClick("All")}
             >
               Shop All
             </button>
           </div>
         </div>
       </section>
+
       <HomeReview />
     </div>
   );
-};
+});
 
 export default HomeCom;

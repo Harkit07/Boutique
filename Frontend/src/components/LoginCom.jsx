@@ -1,65 +1,54 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import "../styles/Login.css";
 import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import { UserDataContext } from "../context/UserContext";
+import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
 
 const validate = (values) => {
   const errors = {};
-  if (!values.email) {
-    errors.email = "Required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+  if (!values.email) errors.email = "Required";
+  else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email))
     errors.email = "Invalid email address";
-  }
-
-  if (!values.password) {
-    errors.password = "Required";
-  } else if (values.password.length < 8) {
+  if (!values.password) errors.password = "Required";
+  else if (values.password.length < 8)
     errors.password = "Password must be at least 8 characters";
-  }
-
   return errors;
 };
 
-const Login = () => {
-  const { user, setUser } = useContext(UserDataContext);
+const LoginCom = memo(() => {
+  const { setUser, setToken } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-
   const navigate = useNavigate();
 
   const formik = useFormik({
-    initialValues: {
-      email: "",
-      password: "",
-    },
+    initialValues: { email: "", password: "" },
     validate,
-    onSubmit: async (values) => {
-      try {
-        const response = await axios.post(
-          `${import.meta.env.VITE_BASE_URL}/auth/login`,
-          {
-            email: values.email,
-            password: values.password,
-          },
-        );
-        if (response.status === 200) {
-          toast.success("Login successful!");
-          const data = response.data;
-          setUser(data.user);
-          localStorage.setItem("token", data.token);
-          navigate("/home");
+    onSubmit: useCallback(
+      async (values) => {
+        try {
+          const response = await axios.post(
+            `${import.meta.env.VITE_BASE_URL}/auth/login`,
+            values,
+          );
+          if (response.status === 200) {
+            toast.success("Login successful!");
+            const data = response.data;
+            localStorage.setItem("token", data.token);
+            setToken(data.token);
+            setUser(data.user);
+            navigate("/home");
+          }
+        } catch (error) {
+          if (error.response?.status === 401)
+            toast.error(error.response?.data?.message || "Login failed");
+          console.error(error.response?.data || error.message);
         }
-      } catch (error) {
-        if (error.response?.status === 401) {
-          toast.error(error.response?.data?.message || "Login failed");
-        }
-        // Handle error (e.g., show error message)
-        console.error(error.response?.data || error.message);
-      }
-    },
+      },
+      [setToken, setUser, navigate],
+    ),
   });
 
   return (
@@ -73,7 +62,6 @@ const Login = () => {
             loop
             muted
             playsInline
-            aria-label="Background brand video"
           />
           <nav className="login-breadcrumb">
             <span>Home</span>
@@ -93,21 +81,19 @@ const Login = () => {
               name="email"
               type="email"
               placeholder="Your email*"
-              aria-label="Email Address"
               className="login-input"
               onChange={formik.handleChange}
               value={formik.values.email}
             />
-            {formik.errors.email ? (
+            {formik.errors.email && (
               <div className="error">{formik.errors.email}</div>
-            ) : null}
+            )}
             <div className="password-wrapper">
               <input
                 id="password"
                 name="password"
                 type={showPassword ? "text" : "password"}
                 placeholder="Password*"
-                aria-label="Password"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.password}
@@ -115,13 +101,12 @@ const Login = () => {
               <VisibilityIcon
                 className="eye"
                 role="button"
-                aria-label={showPassword ? "Hide password" : "Show password"}
                 onClick={() => setShowPassword(!showPassword)}
               />
             </div>
-            {formik.errors.password ? (
+            {formik.errors.password && (
               <div className="error">{formik.errors.password}</div>
-            ) : null}
+            )}
             <div className="login-forgot">
               <Link to="/resetpass">Forgot your password?</Link>
             </div>
@@ -131,7 +116,6 @@ const Login = () => {
           </form>
         </div>
       </div>
-      {/* New Customer Section */}
       <div className="new-customer-section">
         <h2 className="new-customer-title">New Customer</h2>
         <p className="new-customer-desc">
@@ -152,6 +136,6 @@ const Login = () => {
       </div>
     </>
   );
-};
+});
 
-export default Login;
+export default LoginCom;

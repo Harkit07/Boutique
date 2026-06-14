@@ -2,18 +2,17 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import ImageCom from "../components/ImageCom";
 import Footer from "../components/Footer";
-import { UserDataContext } from "../context/UserContext";
-import React, { useContext } from "react";
+import { useAuth, useUi } from "../context/MyContext";
+import React, { memo } from "react";
 import FilterCom from "../components/FilterCom";
 import Skeleton from "../components/Skeleton";
 import "../styles/Cart.css";
 
-const Shop = () => {
-  const { setActiveTab, loading } = useContext(UserDataContext);
+const Shop = memo(() => {
+  const { loading } = useAuth();
+  const { setActiveTab } = useUi();
 
-  if (loading) {
-    return <Skeleton />;
-  }
+  if (loading) return <Skeleton />;
 
   return (
     <>
@@ -23,7 +22,6 @@ const Shop = () => {
           <div className="uc-breadcrumb">
             Home · <span>Product</span>
           </div>
-
           <h1 className="uc-cart-title">Products</h1>
           <p className="uc-cart-subtitle">
             Review your selected items before purchase.
@@ -35,9 +33,9 @@ const Shop = () => {
         <ImageCom />
       </div>
       <Footer />
-      <BottomNav activeTab={"shop"} setActiveTab={setActiveTab} />
+      <BottomNav activeTab="shop" />
     </>
   );
-};
+});
 
 export default Shop;

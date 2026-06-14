@@ -4,45 +4,32 @@ import { Link, useNavigate, Navigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import React, { useContext, useState } from "react";
-import { UserDataContext } from "../context/UserContext";
+import React, { useState, memo } from "react";
+import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
 
 const validate = (values) => {
   const errors = {};
-  if (!values.firstName) {
-    errors.firstName = "Required";
-  } else if (values.firstName.length > 15) {
+  if (!values.firstName) errors.firstName = "Required";
+  else if (values.firstName.length > 15)
     errors.firstName = "Must be 15 characters or less";
-  }
-
-  if (!values.email) {
-    errors.email = "Required";
-  } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email)) {
+  if (!values.email) errors.email = "Required";
+  else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(values.email))
     errors.email = "Invalid email address";
-  }
-
-  if (!values.password) {
-    errors.password = "Password is required";
-  } else if (values.password.length < 8) {
+  if (!values.password) errors.password = "Password is required";
+  else if (values.password.length < 8)
     errors.password = "Password must be at least 8 characters";
-  }
-
   return errors;
 };
 
-const Signup = () => {
+const Signup = memo(() => {
   const navigate = useNavigate();
-  const { setUser } = useContext(UserDataContext);
+  const { setUser } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
+  const token = localStorage.getItem("token");
 
   const formik = useFormik({
-    initialValues: {
-      firstName: "",
-      lastName: "",
-      email: "",
-      password: "",
-    },
+    initialValues: { firstName: "", lastName: "", email: "", password: "" },
     validate,
     onSubmit: async (values) => {
       try {
@@ -57,7 +44,6 @@ const Signup = () => {
             password: values.password,
           },
         );
-
         if (response.status === 200) {
           toast.success("Signup successful!");
           const data = response.data;
@@ -66,18 +52,14 @@ const Signup = () => {
           navigate("/");
         }
       } catch (error) {
-        if (error.response?.status === 400) {
+        if (error.response?.status === 400)
           toast.error(error.response?.data?.message || "Signup failed");
-        }
         console.error(error.response?.data || error.message);
       }
     },
   });
 
-  const token = localStorage.getItem("token");
-  if (token) {
-    return <Navigate to="/" replace />;
-  }
+  if (token) return <Navigate to="/" replace />;
 
   return (
     <>
@@ -92,7 +74,6 @@ const Signup = () => {
               loop
               muted
               playsInline
-              aria-label="Background brand video"
             />
             <nav className="login-breadcrumb">
               <span>Home</span>
@@ -112,20 +93,18 @@ const Signup = () => {
                 name="firstName"
                 type="text"
                 placeholder="Your first name"
-                aria-label="First Name"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.firstName}
               />
-              {formik.errors.firstName ? (
+              {formik.errors.firstName && (
                 <div className="error">{formik.errors.firstName}</div>
-              ) : null}
+              )}
               <input
                 id="lastName"
                 name="lastName"
                 type="text"
                 placeholder="Your last name"
-                aria-label="Last Name"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.lastName}
@@ -135,21 +114,19 @@ const Signup = () => {
                 name="email"
                 type="email"
                 placeholder="Your email*"
-                aria-label="Email Address"
                 className="login-input"
                 onChange={formik.handleChange}
                 value={formik.values.email}
               />
-              {formik.errors.email ? (
+              {formik.errors.email && (
                 <div className="error">{formik.errors.email}</div>
-              ) : null}
+              )}
               <div className="password-wrapper">
                 <input
                   id="password"
                   name="password"
                   type={showPassword ? "text" : "password"}
                   placeholder="Password*"
-                  aria-label="Password"
                   className="login-input"
                   onChange={formik.handleChange}
                   value={formik.values.password}
@@ -157,30 +134,20 @@ const Signup = () => {
                 <button
                   type="button"
                   className="eye"
-                  aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword(!showPassword)}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    padding: 0,
-                    display: "flex",
-                    alignItems: "center",
-                  }}
                 >
                   <VisibilityIcon />
                 </button>
               </div>
-              {formik.errors.password ? (
+              {formik.errors.password && (
                 <div className="error">{formik.errors.password}</div>
-              ) : null}
+              )}
               <button type="submit" className="login-btn">
                 Create Account
               </button>
             </form>
           </div>
         </div>
-        {/* Login prompt */}
         <div className="new-customer-section">
           <p className="new-customer-desc">Log in to manage your account...</p>
           <button className="new-customer-btn" type="button">
@@ -194,9 +161,9 @@ const Signup = () => {
           </button>
         </div>
       </div>
-      <BottomNav activeTab="account" setActiveTab={() => {}} />
+      <BottomNav activeTab="account" />
     </>
   );
-};
+});
 
 export default Signup;

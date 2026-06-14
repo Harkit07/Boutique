@@ -2,8 +2,8 @@ import "../styles/SuitView.css";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import { UserDataContext } from "../context/UserContext";
-import React, { useCallback, useEffect, useContext, useState } from "react";
+import { useAuth, useUi } from "../context/MyContext";
+import React, { useCallback, useEffect, useState, memo } from "react";
 import SuitImgCom from "../components/SuitImgCom";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Link, useNavigate, useParams } from "react-router-dom";
@@ -13,23 +13,20 @@ import Button from "@mui/material/Button";
 import { toast } from "react-toastify";
 import Skeleton from "@mui/material/Skeleton";
 
-const StarRating = ({ rating, max = 5 }) => {
-  return (
-    <div>
-      {Array.from({ length: max }, (_, i) => (
-        <span key={i}>{i < rating ? "\u2B50" : null}</span>
-      ))}
-    </div>
-  );
-};
+const StarRating = ({ rating, max = 5 }) => (
+  <div>
+    {Array.from(
+      { length: max },
+      (_, i) => i < rating && <span key={i}>⭐</span>,
+    )}
+  </div>
+);
 
-const SuitView = () => {
+const SuitView = memo(() => {
   const { id } = useParams();
-  const token = localStorage.getItem("token");
+  const { token, user } = useAuth();
+  const { setActiveTab } = useUi();
   const navigate = useNavigate();
-
-  const { user, setFilteredSuit, setActiveTab } = useContext(UserDataContext);
-
   const [loading, setLoading] = useState(true);
   const [suit, setSuit] = useState(null);
   const [reviewForm, setReviewForm] = useState(false);
@@ -46,72 +43,57 @@ const SuitView = () => {
         setLoading(false);
       }
     } catch (error) {
-      if (!axios.isCancel(error)) {
-        console.error(error);
-      }
+      if (!axios.isCancel(error)) console.error(error);
     }
     return () => controller.abort();
   }, [id]);
 
   useEffect(() => {
-    const cleanup = fetchSuitDetails();
-    return () => {
-      if (typeof cleanup === "function") cleanup();
-    };
+    fetchSuitDetails();
   }, [fetchSuitDetails]);
 
-  const deleteSuit = async () => {
+  const deleteSuit = useCallback(async () => {
     try {
       const response = await axios.delete(
         `${import.meta.env.VITE_BASE_URL}/suits/delete/${suit._id}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
+        { headers: { Authorization: `Bearer ${token}` } },
       );
       if (response.status === 200) {
         toast.success("Suit deleted successfully!");
         navigate("/");
       }
     } catch (error) {
-      console.error(error);
       toast.error("Failed to delete suit");
     }
-  };
+  }, [suit, token, navigate]);
 
-  const deleteReview = async (reviewId) => {
-    try {
-      const response = await axios.delete(
-        `${import.meta.env.VITE_BASE_URL}/reviews/delete-review/${reviewId}`,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        },
-      );
-      if (response.status === 200) {
-        toast.success("Review deleted!");
-        fetchSuitDetails();
+  const deleteReview = useCallback(
+    async (reviewId) => {
+      try {
+        const response = await axios.delete(
+          `${import.meta.env.VITE_BASE_URL}/reviews/delete-review/${reviewId}`,
+          { headers: { Authorization: `Bearer ${token}` } },
+        );
+        if (response.status === 200) {
+          toast.success("Review deleted!");
+          fetchSuitDetails();
+        }
+      } catch (error) {
+        toast.error("Failed to delete review");
       }
-    } catch (error) {
-      console.error(error);
-      toast.error("Failed to delete review");
-    }
-  };
+    },
+    [token, fetchSuitDetails],
+  );
 
-  const addRevBtn = () => {
+  const addRevBtn = useCallback(() => {
     if (!token) {
       toast.error("Please login first!");
       navigate("/login");
-    } else {
-      setReviewForm(!reviewForm);
-    }
-  };
+    } else setReviewForm((prev) => !prev);
+  }, [token, navigate]);
 
-  if (loading) {
-    return <Skeleton variant="rectangular" height={400} />;
-  }
-
-  if (!suit) {
-    return <div>Product not found</div>;
-  }
+  if (loading) return <Skeleton variant="rectangular" height={400} />;
+  if (!suit) return <div>Product not found</div>;
 
   const reviews = suit.review || [];
 
@@ -122,19 +104,15 @@ const SuitView = () => {
         <section className="saree-details-section">
           <div className="saree-details-container">
             <div className="saree-image-side">
-              {/* Fixed: Pass files array instead of suit object */}
               <SuitImgCom files={suit.file || []} />
             </div>
-
             <div className="saree-info-side">
               <div className="saree-breadcrumb">
                 <Link to="/">Home</Link> / <span>{suit.category}</span>
               </div>
-
               <h1 className="saree-title">{suit.name}</h1>
               <p className="saree-price">₹{suit.price}</p>
               <p className="saree-tax-info">MRP Incl. of all taxes</p>
-
               <div className="saree-action-buttons">
                 <button type="button" className="add-to-cart-btn">
                   Add To Cart
@@ -143,7 +121,6 @@ const SuitView = () => {
                   Buy Now
                 </button>
               </div>
-
               {user && user.role === "admin" && (
                 <div style={{ marginTop: "20px" }}>
                   <Button
@@ -156,14 +133,12 @@ const SuitView = () => {
                   </Button>
                 </div>
               )}
-
               <div className="saree-description-box">
                 <h3>Product Description</h3>
                 <p>{suit.description}</p>
               </div>
             </div>
           </div>
-
           <div className="saree-reviews-container">
             <h2>Customer Reviews</h2>
             <ul className="saree-reviews-list">
@@ -202,9 +177,9 @@ const SuitView = () => {
         </section>
       </div>
       <Footer />
-      <BottomNav activeTab={"shop"} setActiveTab={setActiveTab} />
+      <BottomNav activeTab="shop" />
     </>
   );
-};
+});
 
 export default SuitView;

@@ -1,6 +1,6 @@
-import React, { useContextEffect, useRef, useContext, useEffect } from "react";
+import React, { useRef, useEffect } from "react";
 import "../styles/VideosCom.css";
-import { UserDataContext } from "../context/UserContext";
+import { useSuits } from "../context/MyContext";
 
 const LazyVideo = ({ src, name = "Video content" }) => {
   const videoRef = useRef(null);
@@ -10,11 +10,8 @@ const LazyVideo = ({ src, name = "Video content" }) => {
     if (!video) return;
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting) {
-          video.play().catch(() => {});
-        } else {
-          video.pause();
-        }
+        if (entry.isIntersecting) video.play().catch(() => {});
+        else video.pause();
       },
       { threshold: 0.5 },
     );
@@ -38,9 +35,8 @@ const LazyVideo = ({ src, name = "Video content" }) => {
 
 const VideosCom = () => {
   const sliderRef = useRef(null);
-  const { allSuit } = useContext(UserDataContext);
+  const { allSuit } = useSuits();
 
-  // Converted chained array processing iterations into a unified processing execution pass
   const videoFiles = [];
   for (const suit of allSuit) {
     if (videoFiles.length >= 4) break;

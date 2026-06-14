@@ -1,9 +1,8 @@
-import React, { useContext, useState } from "react";
+import React, { useState, useCallback, memo } from "react";
 import "../styles/FilterCom.css";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import { UserDataContext } from "../context/UserContext";
+import { useFilter } from "../context/MyContext";
 
-// Lifted to module scope to avoid reference recreation on every render
 const FILTER_OPTIONS = [
   "All",
   "Alphabetically, A-Z",
@@ -14,30 +13,31 @@ const FILTER_OPTIONS = [
   "Date, new to old",
 ];
 
-const FilterCom = () => {
+const FilterCom = memo(() => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState("Featured");
-  const { setSortType, filterSuitsByCategory } = useContext(UserDataContext);
+  const { setSortType, filterByCategory } = useFilter();
 
-  const handleSelect = (option) => {
-    setSelected(option);
-    if (option === "All") {
-      setSortType("");
-      filterSuitsByCategory("All");
-    } else {
-      setSortType(option);
-    }
-    setOpen(false);
-  };
+  const handleSelect = useCallback(
+    (option) => {
+      setSelected(option);
+      if (option === "All") {
+        setSortType("");
+        filterByCategory("All");
+      } else {
+        setSortType(option);
+      }
+      setOpen(false);
+    },
+    [setSortType, filterByCategory],
+  );
 
   return (
     <section className="product-toolbar-ux">
       <div className="product-toolbar-left">
         <button type="button" className="toolbar-filter-btn">
-          <FilterAltIcon className="filter-icon" />
-          Filter
+          <FilterAltIcon className="filter-icon" /> Filter
         </button>
-
         <button
           type="button"
           className="sort-trigger-btn"
@@ -45,14 +45,10 @@ const FilterCom = () => {
         >
           Sort by
         </button>
-
         {open && (
           <div
             className="sort-overlay"
             onClick={() => setOpen(false)}
-            onKeyDown={(e) => {
-              if (e.key === "Escape") setOpen(false);
-            }}
             role="presentation"
           >
             <div
@@ -75,6 +71,6 @@ const FilterCom = () => {
       </div>
     </section>
   );
-};
+});
 
 export default FilterCom;

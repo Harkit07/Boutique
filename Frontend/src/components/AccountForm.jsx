@@ -1,27 +1,23 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import axios from "axios";
-import { UserDataContext } from "../context/UserContext";
+import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
 
-const AccountForm = () => {
+function AccountForm() {
   const token = localStorage.getItem("token");
-  const { user, setUser } = useContext(UserDataContext);
+  const { user, setUser } = useAuth();
   const [updateBtn, setUpdateBtn] = useState("Update Address");
   const [formData, setFormData] = useState({
     firstname: user?.fullname?.firstname || "",
     lastname: user?.fullname?.lastname || "",
-    address: user.address || "",
-    city: user.city || "",
-    phone: user.phone || "",
+    address: user?.address || "",
+    city: user?.city || "",
+    phone: user?.phone || "",
   });
 
-  // Handle input change
   function handleChange(e) {
     const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   }
 
   const handleSubmit = async (e) => {
@@ -38,15 +34,12 @@ const AccountForm = () => {
         city: formData.city,
         phone: formData.phone,
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      },
+      { headers: { Authorization: `Bearer ${token}` } },
     );
     if (response.status === 200) {
       toast.success("Account updated!");
       setUser(response.data.user);
+      setUpdateBtn("Update Address");
     }
   };
 
@@ -133,12 +126,13 @@ const AccountForm = () => {
             value={formData.phone}
           />
         </div>
+
         <button type="submit" className="login-btn">
           {updateBtn}
         </button>
       </form>
     </div>
   );
-};
+}
 
 export default AccountForm;

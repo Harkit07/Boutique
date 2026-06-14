@@ -33,11 +33,7 @@ router.post(
   wrapAsync(authController.loginUser),
 );
 
-router.post(
-  "/logout",
-  authMiddleware.authUser,
-  wrapAsync(authController.logoutUser),
-);
+router.post("/logout", wrapAsync(authController.logoutUser));
 
 router.post(
   "/forgot-password",

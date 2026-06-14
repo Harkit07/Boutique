@@ -1,15 +1,15 @@
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import "../styles/MenuCom.css";
 import PersonIcon from "@mui/icons-material/Person";
 import CloseIcon from "@mui/icons-material/Close";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import CategoriesDrawer from "./CategoriesDrawer";
 import { Link } from "react-router-dom";
-import { UserDataContext } from "../context/UserContext";
+import { useAuth } from "../context/MyContext";
 
 const MenuCom = ({ isOpen, setIsOpen }) => {
   const [isCategoriesOpen, setIsCategoriesOpen] = useState(false);
-  const { user } = useContext(UserDataContext);
+  const { user } = useAuth();
 
   const getUserDisplayName = () => {
     if (!user) return "";
@@ -27,7 +27,6 @@ const MenuCom = ({ isOpen, setIsOpen }) => {
         onClick={() => setIsOpen(false)}
         aria-label="Close menu"
       />
-
       <div className={`ba-mobile-menu-drawer ${isOpen ? "menu-open" : ""}`}>
         <div className="ba-menu-header">
           <span>Menu</span>
@@ -40,7 +39,6 @@ const MenuCom = ({ isOpen, setIsOpen }) => {
             <CloseIcon className="cut-btn" />
           </button>
         </div>
-
         <ul className="ba-menu-list">
           <li>
             <Link to="/" className="nav-link" onClick={() => setIsOpen(false)}>

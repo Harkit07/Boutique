@@ -1,7 +1,7 @@
-import React, { useContext, useState } from "react";
+import React from "react";
 import axios from "axios";
 import { useFormik } from "formik";
-import { UserDataContext } from "../context/UserContext";
+import { useAuth } from "../context/MyContext";
 import Rating from "@mui/material/Rating";
 import Typography from "@mui/material/Typography";
 import { toast } from "react-toastify";
@@ -11,60 +11,47 @@ const validate = (values) => {
   if (!values.about) {
     errors.about = "Required";
   } else if (values.about.length < 2) {
-    errors.about = "Reviw too Short";
+    errors.about = "Review too short";
   }
-
   if (!values.rating) {
     errors.rating = "Required";
   } else if (values.rating < 1 || values.rating > 5) {
     errors.rating = "Enter a rating between 1 to 5";
   }
-
   return errors;
 };
 
 const ReviewForm = ({ suit, fetchSuitDetails }) => {
-  const token = localStorage.getItem("token");
-  const { user } = useContext(UserDataContext);
+  const { token } = useAuth(); // ✅ get token from context instead of localStorage
 
   const formik = useFormik({
-    initialValues: {
-      about: "",
-      rating: 1,
-    },
+    initialValues: { about: "", rating: 1 },
     validate,
     onSubmit: async (values) => {
       try {
         const response = await axios.post(
           `${import.meta.env.VITE_BASE_URL}/suits/${suit._id}/reviews`,
-          {
-            about: values.about,
-            rating: values.rating,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+          { about: values.about, rating: values.rating },
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         if (response.status === 201) {
           toast.success("Review Added successful!");
-          const data = response.data;
           fetchSuitDetails();
+          formik.resetForm();
         }
       } catch (error) {
-        // Handle error (e.g., show error message)
         console.error(error.response?.data || error.message);
       }
     },
   });
+
   return (
     <div className="ea-page-wrapper">
       <form onSubmit={formik.handleSubmit}>
         <h2 className="ea-card-title">REVIEW: add new Review</h2>
 
         <div className="ea-field">
-          <Typography component="legend">Controlled</Typography>
+          <Typography component="legend">Rating</Typography>
           <Rating
             name="rating"
             id="rating"
@@ -74,9 +61,9 @@ const ReviewForm = ({ suit, fetchSuitDetails }) => {
             }}
           />
         </div>
-        {formik.errors.rating ? (
+        {formik.errors.rating && (
           <div className="error">{formik.errors.rating}</div>
-        ) : null}
+        )}
 
         <div className="ea-field">
           <label className="ea-label" htmlFor="about">
@@ -91,9 +78,9 @@ const ReviewForm = ({ suit, fetchSuitDetails }) => {
             value={formik.values.about}
           />
         </div>
-        {formik.errors.about ? (
+        {formik.errors.about && (
           <div className="error">{formik.errors.about}</div>
-        ) : null}
+        )}
 
         <button type="submit" className="login-btn">
           Add Review

@@ -1,17 +1,16 @@
-import React, { useContext } from "react";
+import React, { memo } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import { UserDataContext } from "../context/UserContext";
+import { useAuth, useUi } from "../context/MyContext";
 import "../styles/Policy.css";
 import Skeleton from "../components/Skeleton";
 
-const Policy = () => {
-  const { setActiveTab, loading } = useContext(UserDataContext);
+const Policy = memo(() => {
+  const { loading } = useAuth();
+  const { setActiveTab } = useUi();
 
-  if (loading) {
-    return <Skeleton />;
-  }
+  if (loading) return <Skeleton />;
 
   return (
     <>
@@ -22,10 +21,7 @@ const Policy = () => {
           <p className="policy-subtitle">
             Ravneet Boutique – Transparency & Customer Care
           </p>
-
           <div className="policy-divider"></div>
-
-          {/* Privacy Policy */}
           <div className="policy-block">
             <h2>Privacy Policy</h2>
             <p>
@@ -39,8 +35,6 @@ const Policy = () => {
               parties without your consent.
             </p>
           </div>
-
-          {/* Shipping Policy */}
           <div className="policy-block">
             <h2>Shipping Policy</h2>
             <ul>
@@ -54,11 +48,10 @@ const Policy = () => {
           </div>
         </div>
       </section>
-
       <Footer />
-      <BottomNav activeTab={"account"} setActiveTab={setActiveTab} />
+      <BottomNav activeTab="account" />
     </>
   );
-};
+});
 
 export default Policy;

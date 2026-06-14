@@ -4,46 +4,32 @@ import { Link, useNavigate } from "react-router-dom";
 import { useFormik } from "formik";
 import axios from "axios";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import React, { useState, useRef, useContext } from "react";
-import { UserDataContext } from "../context/UserContext";
+import React, { useState, useRef, memo } from "react";
+import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
 import Skeleton from "../components/Skeleton";
 
 const validate = (values) => {
   const errors = {};
-
-  if (!values.otp) {
-    errors.otp = "Required";
-  } else if (values.otp.length !== 6) {
-    errors.otp = "OTP must be 6 digits";
-  }
-
-  if (!values.password) {
-    errors.password = "Password is required";
-  } else if (values.password.length < 8) {
+  if (!values.otp) errors.otp = "Required";
+  else if (values.otp.length !== 6) errors.otp = "OTP must be 6 digits";
+  if (!values.password) errors.password = "Password is required";
+  else if (values.password.length < 8)
     errors.password = "Password must be at least 8 characters";
-  }
-
   return errors;
 };
 
-const ResetPass = () => {
-  const { setUser, loading } = useContext(UserDataContext);
-
+const ResetPass = memo(() => {
+  const { loading } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [sendMail, setSendMail] = useState(true);
   const [sendingMail, setSendingMail] = useState(false);
-
   const emailRef = useRef("");
-
   const navigate = useNavigate();
 
   const handleSendMail = async (e) => {
     e.preventDefault();
-    if (!emailRef.current) {
-      toast.error("Please enter email");
-      return;
-    }
+    if (!emailRef.current) return toast.error("Please enter email");
     setSendingMail(true);
     try {
       const response = await axios.post(
@@ -62,10 +48,7 @@ const ResetPass = () => {
   };
 
   const formik = useFormik({
-    initialValues: {
-      otp: "",
-      password: "",
-    },
+    initialValues: { otp: "", password: "" },
     validate,
     onSubmit: async (values) => {
       try {
@@ -87,9 +70,7 @@ const ResetPass = () => {
     },
   });
 
-  if (loading) {
-    return <Skeleton />;
-  }
+  if (loading) return <Skeleton />;
 
   return (
     <>
@@ -105,7 +86,6 @@ const ResetPass = () => {
                     type="email"
                     placeholder="Email*"
                     className="login-input"
-                    aria-label="Email Address"
                     onChange={(e) => {
                       emailRef.current = e.target.value;
                     }}
@@ -126,14 +106,12 @@ const ResetPass = () => {
                     type="text"
                     placeholder="6-Digit OTP*"
                     className="login-input"
-                    aria-label="6 Digit OTP"
                     onChange={formik.handleChange}
                     value={formik.values.otp}
                   />
-                  {formik.errors.otp ? (
+                  {formik.errors.otp && (
                     <div className="error">{formik.errors.otp}</div>
-                  ) : null}
-
+                  )}
                   <div className="password-wrapper">
                     <input
                       id="password"
@@ -141,7 +119,6 @@ const ResetPass = () => {
                       type={showPassword ? "text" : "password"}
                       placeholder="New Password*"
                       className="login-input"
-                      aria-label="New Password"
                       onChange={formik.handleChange}
                       value={formik.values.password}
                     />
@@ -156,9 +133,9 @@ const ResetPass = () => {
                       <VisibilityIcon />
                     </button>
                   </div>
-                  {formik.errors.password ? (
+                  {formik.errors.password && (
                     <div className="error">{formik.errors.password}</div>
-                  ) : null}
+                  )}
                   <button type="submit" className="login-btn">
                     Reset Password
                   </button>
@@ -186,9 +163,9 @@ const ResetPass = () => {
           </button>
         </div>
       </div>
-      <BottomNav activeTab="account" setActiveTab={() => {}} />
+      <BottomNav activeTab="account" />
     </>
   );
-};
+});
 
 export default ResetPass;

@@ -1,9 +1,9 @@
-import React, { useContext  } from "react";
+import React from "react";
 import "../styles/MenuCom.css";
 import CloseIcon from "@mui/icons-material/Close";
 import { useNavigate } from "react-router-dom";
 import KeyboardArrowLeftIcon from "@mui/icons-material/KeyboardArrowLeft";
-import { UserDataContext } from "../context/UserContext";
+import { useFilter } from "../context/MyContext";
 
 const CATEGORIES = [
   "All",
@@ -30,27 +30,24 @@ const CategoriesDrawer = ({
   setIsCategoriesOpen,
   setIsOpen,
 }) => {
-  const closeCatCol = () => setIsCategoriesOpen(false);
-  const { filterSuitsByCategory } = useContext(UserDataContext);
+  const { filterByCategory } = useFilter(); // ✅ fixed function name
   const navigate = useNavigate();
+
+  const closeCatCol = () => setIsCategoriesOpen(false);
 
   const handleCategoryClick = (category) => {
     setIsCategoriesOpen(false);
     setIsOpen(false);
-    filterSuitsByCategory(category);
+    filterByCategory(category); // ✅ fixed call
     navigate(`/shop?category=${encodeURIComponent(category)}`);
   };
 
-  // Keyboard handler for the overlay button
   const handleOverlayKeyDown = (e) => {
-    if (e.key === "Enter" || e.key === " ") {
-      setIsOpen(false);
-    }
+    if (e.key === "Enter" || e.key === " ") setIsOpen(false);
   };
 
   return (
     <>
-      {/* Overlay  */}
       <button
         type="button"
         className={`ba-mobile-menu-overlay ${isOpen ? "overlay-show" : ""}`}
@@ -59,7 +56,6 @@ const CategoriesDrawer = ({
         aria-label="Close menu"
         style={overlayButtonStyle}
       />
-
       <div
         className={`ba-mobile-col-drawer ${
           isCategoriesOpen
@@ -104,6 +100,3 @@ const CategoriesDrawer = ({
 };
 
 export default CategoriesDrawer;
-
-
-
