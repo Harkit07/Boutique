@@ -287,10 +287,10 @@ VITE_BASE_URL=http://localhost:4000
 
 > Reviews scoped to a specific suit.
 
-| Method   | Route                        | Auth | Description               |
-| -------- | ---------------------------- | ---- | ------------------------- |
-| `POST`   | `/suits/:id/reviews`         | ✅   | Add a review to a suit    |
-| `DELETE` | `/reviews/delete-review/:id` | ✅   | Delete a review by its ID |
+| Method   | Route                          | Auth | Description               |
+| -------- | ------------------------------ | ---- | ------------------------- |
+| `POST`   | `/suits/:id/reviews`           | ✅   | Add a review to a suit    |
+| `DELETE` | `/suits/:id/reviews/:reviewId` | ✅   | Delete a review by its ID |
 
 ---
 
