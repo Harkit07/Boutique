@@ -61,6 +61,7 @@ const SuitView = memo(() => {
       controller.abort();
     };
   }, [fetchSuitDetails]);
+
   const deleteSuit = useCallback(async () => {
     try {
       const response = await axios.delete(
@@ -78,16 +79,25 @@ const SuitView = memo(() => {
 
   const deleteReview = useCallback(
     async (reviewId) => {
+      if (!token) {
+        toast.error("You must be logged in");
+        return;
+      }
       try {
         const response = await axios.delete(
-          `${import.meta.env.VITE_BASE_URL}/reviews/delete-review/${reviewId}`,
+          `${import.meta.env.VITE_BASE_URL}/suits/${suit._id}/reviews/${reviewId}`,
           { headers: { Authorization: `Bearer ${token}` } },
         );
         if (response.status === 200) {
           toast.success("Review deleted!");
           fetchSuitDetails();
         }
+        console.log(response);
       } catch (error) {
+        console.error(
+          "Delete review error:",
+          error.response?.data || error.message,
+        );
         toast.error("Failed to delete review");
       }
     },
@@ -136,7 +146,6 @@ const SuitView = memo(() => {
                     onClick={deleteSuit}
                     variant="contained"
                     color="error"
-                    startIcon={<DeleteIcon className="del-btn-suit" />}
                   >
                     Delete Product
                   </Button>
