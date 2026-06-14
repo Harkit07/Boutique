@@ -7,11 +7,10 @@ import { useSuits, useFilter } from "../context/MyContext";
 import VideosCom from "./VideosCom";
 import React, { useCallback, useMemo, memo } from "react";
 
-// Map category names to actual image filenames in public folder
 const categoryImageMap = {
   Handwork: "Handwork.jpg",
   "Machine Work": "Machinework.jpg",
-  "AARI Work": "AARIwork.jpg", // ensure your file is named AARIwork.jpg
+  "AARI Work": "AARIwork.jpg",
   All: "dummy1.jpg",
 };
 
@@ -43,8 +42,6 @@ const HomeCom = memo(() => {
         .slice(0, 4),
     [allSuit],
   );
-
-  if (loading) return <div className="loading-spinner">Loading...</div>;
 
   return (
     <div className="home">

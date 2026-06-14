@@ -2,6 +2,7 @@ import React, { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
+import Skeleton from "./Skeleton.jsx";
 
 const UserProtectedWrapper = ({ children }) => {
   const navigate = useNavigate();
@@ -16,7 +17,7 @@ const UserProtectedWrapper = ({ children }) => {
     }
   }, [loading, user, navigate]);
 
-  if (loading) return null;
+  if (loading) return <Skeleton />;
   if (!user) return null;
   return <>{children}</>;
 };
