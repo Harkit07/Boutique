@@ -2,14 +2,12 @@ import React, { memo } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import { useUi } from "../context/MyContext";
 import "../styles/About.css";
 import Skeleton from "../components/Skeleton";
 import { useAuth } from "../context/MyContext";
 
 const About = memo(() => {
   const { loading } = useAuth();
-  const { setActiveTab } = useUi();
 
   if (loading) return <Skeleton />;
 

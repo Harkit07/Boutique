@@ -88,7 +88,7 @@ module.exports.getUploadSignature = async (req, res) => {
       cloudName: process.env.CLOUD_NAME,
       apiKey: process.env.CLOUD_API_KEY,
       folder,
-      maxBytes: 50 * 1024 * 1024, // you can still send this to frontend (it's not signed)
+      maxBytes: 50 * 1024 * 1024,
       allowedFormats: paramsToSign.allowed_formats,
     });
   } catch (error) {

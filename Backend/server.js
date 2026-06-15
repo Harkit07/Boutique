@@ -57,6 +57,8 @@ const authLimiter = rateLimit({
 });
 
 // Apply only to the sensitive auth routes
+app.use("/auth/login", authLimiter);
+app.use("/auth/signup", authLimiter);
 app.use("/auth/forgot-password", authLimiter);
 app.use("/auth/reset-password", authLimiter);
 

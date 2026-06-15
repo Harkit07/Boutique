@@ -2,7 +2,7 @@ import "../styles/SuitView.css";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import { useAuth, useUi } from "../context/MyContext";
+import { useAuth } from "../context/MyContext";
 import React, { useCallback, useEffect, useState, memo } from "react";
 import SuitImgCom from "../components/SuitImgCom";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -24,8 +24,7 @@ const StarRating = ({ rating, max = 5 }) => (
 
 const SuitView = memo(() => {
   const { id } = useParams();
-  const { token, user } = useAuth();
-  const { setActiveTab } = useUi();
+  const { token, user, setUser } = useAuth();
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [suit, setSuit] = useState(null);
@@ -76,6 +75,29 @@ const SuitView = memo(() => {
       toast.error("Failed to delete suit");
     }
   }, [suit, token, navigate]);
+
+  const addToCart = useCallback(async () => {
+    if (!token) {
+      toast.error("Please login first!");
+      navigate("/login");
+      return;
+    }
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
+        null,
+        { headers: { Authorization: `Bearer ${token}` } },
+      );
+      if (response.status === 200) {
+        toast.success("Added to cart!");
+        // Optionally update user cart in context
+        const newCart = response.data.user?.cart ?? response.data.cart ?? [];
+        setUser((prev) => ({ ...prev, cart: newCart }));
+      }
+    } catch (error) {
+      toast.error("Failed to add item");
+    }
+  }, [token, suit, navigate, setUser]);
 
   const deleteReview = useCallback(
     async (reviewId) => {
@@ -133,7 +155,11 @@ const SuitView = memo(() => {
               <p className="saree-price">₹{suit.price}</p>
               <p className="saree-tax-info">MRP Incl. of all taxes</p>
               <div className="saree-action-buttons">
-                <button type="button" className="add-to-cart-btn">
+                <button
+                  type="button"
+                  className="add-to-cart-btn"
+                  onClick={addToCart}
+                >
                   Add To Cart
                 </button>
                 <button type="button" className="buy-now-btn">

@@ -24,9 +24,8 @@ const validate = (values) => {
 
 const Signup = memo(() => {
   const navigate = useNavigate();
-  const { setUser } = useAuth();
+  const { setUser, token, setToken } = useAuth();
   const [showPassword, setShowPassword] = useState(false);
-  const token = localStorage.getItem("token");
 
   const formik = useFormik({
     initialValues: { firstName: "", lastName: "", email: "", password: "" },
@@ -48,7 +47,7 @@ const Signup = memo(() => {
           toast.success("Signup successful!");
           const data = response.data;
           setUser(data.user);
-          localStorage.setItem("token", data.token);
+          setToken(data.token);
           navigate("/");
         }
       } catch (error) {

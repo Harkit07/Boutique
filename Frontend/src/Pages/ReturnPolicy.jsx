@@ -2,13 +2,13 @@ import React, { memo } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import { useAuth, useUi } from "../context/MyContext";
+import { useAuth } from "../context/MyContext";
 import "../styles/Policy.css";
 import Skeleton from "../components/Skeleton";
+import PrivacyPolicy from "../components/PrivacyPolicy";
 
 const ReturnPolicy = memo(() => {
   const { loading } = useAuth();
-  const { setActiveTab } = useUi();
 
   if (loading) return <Skeleton />;
 
@@ -23,17 +23,7 @@ const ReturnPolicy = memo(() => {
           </p>
           <div className="policy-divider"></div>
           <div className="policy-block">
-            <h2>Privacy Policy</h2>
-            <p>
-              At Ravneet Boutique, we respect your privacy. Any personal
-              information you share with us such as name, contact details, and
-              address is used only to process your orders and improve your
-              shopping experience.
-            </p>
-            <p>
-              We do not sell or share your personal information with third
-              parties without your consent.
-            </p>
+            <PrivacyPolicy />
           </div>
           <div className="policy-block">
             <h2>Return & Exchange Policy</h2>

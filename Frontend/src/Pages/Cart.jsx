@@ -1,7 +1,7 @@
 import React, { useCallback, memo } from "react";
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
-import { useAuth, useUi } from "../context/MyContext";
+import { useAuth } from "../context/MyContext";
 import "../styles/Cart.css";
 import DeleteIcon from "@mui/icons-material/Delete";
 import Footer from "../components/Footer";
@@ -39,7 +39,6 @@ const LazyVideo = ({ src, name = "Product" }) => {
 
 const Cart = memo(() => {
   const { user, setUser, loading, token } = useAuth();
-  const { setActiveTab } = useUi();
   const navigate = useNavigate();
 
   const updateCartState = useCallback(

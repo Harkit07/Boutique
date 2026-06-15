@@ -4,22 +4,35 @@ import "../styles/Skeleton.css";
 function Skeleton() {
   return (
     <div className="rxo-skeleton-wrapper">
-      {/* Header */}
+      {/* Header skeleton */}
       <div className="rxo-skeleton-header">
         <div className="rxo-skeleton-menu"></div>
-        <div className="rxo-skeleton-menu"></div>
+        <div className="rxo-skeleton-logo"></div>
         <div className="rxo-skeleton-cart"></div>
       </div>
 
-      {/* Banner */}
+      {/* Banner skeleton */}
       <div className="rxo-skeleton-banner"></div>
 
-      {/* Bottom Nav */}
+      {/* Category grid skeleton (4 cards) */}
+      <div className="rxo-skeleton-category-grid">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rxo-skeleton-category-card"></div>
+        ))}
+      </div>
+
+      {/* Product grid skeleton (4 cards) */}
+      <div className="rxo-skeleton-product-grid">
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rxo-skeleton-product-card"></div>
+        ))}
+      </div>
+
+      {/* Bottom nav skeleton */}
       <div className="rxo-skeleton-nav">
-        <div className="rxo-skeleton-menu"></div>
-        <div className="rxo-skeleton-menu"></div>
-        <div className="rxo-skeleton-menu"></div>
-        <div className="rxo-skeleton-menu"></div>
+        {[...Array(4)].map((_, i) => (
+          <div key={i} className="rxo-skeleton-menu"></div>
+        ))}
       </div>
     </div>
   );

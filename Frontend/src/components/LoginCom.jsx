@@ -36,7 +36,6 @@ const LoginCom = memo(() => {
           if (response.status === 200) {
             toast.success("Login successful!");
             const data = response.data;
-            localStorage.setItem("token", data.token);
             setToken(data.token);
             setUser(data.user);
             navigate("/home");

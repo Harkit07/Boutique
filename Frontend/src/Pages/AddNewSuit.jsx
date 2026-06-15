@@ -1,7 +1,7 @@
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
-import { useAuth, useUi } from "../context/MyContext";
+import { useAuth } from "../context/MyContext";
 import React, { useCallback, memo, useState } from "react";
 import { useFormik } from "formik";
 import axios from "axios";
@@ -43,7 +43,6 @@ const uploadFileToCloudinary = async (file, signatureData, onProgress) => {
   formData.append("max_bytes", signatureData.maxBytes);
   formData.append("unique_filename", "true");
   formData.append("overwrite", "false");
-  // ❌ Do NOT append "resource_type" or "upload_preset"
 
   const response = await axios.post(
     `https://api.cloudinary.com/v1_1/${signatureData.cloudName}/upload`,
@@ -59,7 +58,6 @@ const uploadFileToCloudinary = async (file, signatureData, onProgress) => {
 const AddNewSuit = memo(() => {
   const navigate = useNavigate();
   const { token, loading } = useAuth();
-  const { setActiveTab } = useUi();
   const [uploadBtn, setUploadBtn] = useState("Upload Suit Design");
   const [uploadProgress, setUploadProgress] = useState({});
 
@@ -165,7 +163,7 @@ const AddNewSuit = memo(() => {
 
             <div className="ea-field">
               <label className="ea-label" htmlFor="file">
-                Images / Videos (max 10 MB each)
+                Images / Videos (max 50 MB each)
               </label>
               <input
                 className="ea-input"

@@ -5,12 +5,11 @@ import Footer from "../components/Footer";
 import "../styles/Account.css";
 import { Link } from "react-router-dom";
 import AccountForm from "../components/AccountForm";
-import { useAuth, useUi } from "../context/MyContext";
+import { useAuth } from "../context/MyContext";
 import Skeleton from "../components/Skeleton";
 
 const Account = memo(() => {
   const { user, loading } = useAuth();
-  const { setActiveTab } = useUi();
   const [address, setAddress] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
 

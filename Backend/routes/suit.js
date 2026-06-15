@@ -7,8 +7,6 @@ const suitController = require("../controllers/suit.js");
 const wrapAsync = require("../services/wrapAsync.js");
 const validationResult = require("../services/validationResult.js");
 
-// ========== Static routes ==========
-
 router.get("/", wrapAsync(suitController.allSuit));
 
 router.get("/featured-reviews", wrapAsync(suitController.homeReviews));
@@ -29,7 +27,6 @@ router
     wrapAsync(suitController.createSuitFromMetadata),
   );
 
-// ========== Dynamic route (must be last) ==========
 router
   .route("/:id")
   .get(wrapAsync(suitController.getSuit))

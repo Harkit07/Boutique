@@ -33,7 +33,7 @@ const ResetPass = memo(() => {
     setSendingMail(true);
     try {
       const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/auth/forget-password`,
+        `${import.meta.env.VITE_BASE_URL}/auth/forgot-password`,
         { email: emailRef.current },
       );
       if (response.status === 200) {
@@ -57,7 +57,7 @@ const ResetPass = memo(() => {
           {
             email: emailRef.current,
             otp: values.otp,
-            newPassword: values.password,
+            password: values.password, // ✅ changed from newPassword
           },
         );
         if (response.status === 200) {

@@ -8,7 +8,6 @@ const Logout = () => {
   const { token, setToken, setUser } = useAuth();
 
   useEffect(() => {
-    localStorage.removeItem("token");
     setToken(null);
     setUser(null);
 

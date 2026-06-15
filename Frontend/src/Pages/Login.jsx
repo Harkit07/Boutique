@@ -3,9 +3,10 @@ import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import LoginCom from "../components/LoginCom";
 import { Navigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Login = memo(() => {
-  const token = localStorage.getItem("token");
+  const { token } = useAuth();
   if (token) return <Navigate to="/" replace />;
   return (
     <>

@@ -4,8 +4,7 @@ import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
 
 function AccountForm() {
-  const token = localStorage.getItem("token");
-  const { user, setUser } = useAuth();
+  const { user, setUser, token } = useAuth();
   const [updateBtn, setUpdateBtn] = useState("Update Address");
   const [formData, setFormData] = useState({
     firstname: user?.fullname?.firstname || "",
