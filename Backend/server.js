@@ -51,7 +51,7 @@ app.use(helmet()); // 🛡️ Security headers
 // Create a limiter for auth endpoints
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 requests per window per IP
+  max: 10, // 10 requests per window per IP
   skipSuccessfulRequests: true, // Don't count successful requests (optional)
   message: { message: "Too many attempts, please try again later." },
 });
@@ -79,6 +79,10 @@ app.use((err, req, res, next) => {
     .json({ message: err.message || "Something went wrong" });
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on port ${port}`);
-});
+if (process.env.NODE_ENV !== "production") {
+  app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+  });
+}
+
+module.exports = app;

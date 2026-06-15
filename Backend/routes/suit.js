@@ -7,28 +7,29 @@ const suitController = require("../controllers/suit.js");
 const wrapAsync = require("../services/wrapAsync.js");
 const validationResult = require("../services/validationResult.js");
 
-router
-  .route("/")
-  .get(wrapAsync(suitController.allSuit))
-  .post(
-    authMiddleware.authUser,
-    upload.array("file", 5),
-    [
-      body("name").notEmpty().withMessage("Name is required"),
-      body("category").notEmpty().withMessage("Category is required"),
-      body("description").notEmpty().withMessage("Description is required"),
-      body("price")
-        .notEmpty()
-        .withMessage("Price is required")
-        .isFloat({ gt: 0 })
-        .withMessage("Price must be a number greater than 0"),
-    ],
-    validationResult,
-    wrapAsync(suitController.uploadNewSuit),
-  );
+// ========== Static routes ==========
+
+router.get("/", wrapAsync(suitController.allSuit));
 
 router.get("/featured-reviews", wrapAsync(suitController.homeReviews));
 
+router
+  .route("/upload")
+  .get(authMiddleware.authUser, wrapAsync(suitController.getUploadSignature))
+  .post(
+    authMiddleware.authUser,
+    [
+      body("name").notEmpty(),
+      body("category").notEmpty(),
+      body("description").notEmpty(),
+      body("price").isFloat({ gt: 0 }),
+      body("file").isArray({ min: 1 }),
+    ],
+    validationResult,
+    wrapAsync(suitController.createSuitFromMetadata),
+  );
+
+// ========== Dynamic route (must be last) ==========
 router
   .route("/:id")
   .get(wrapAsync(suitController.getSuit))

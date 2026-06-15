@@ -273,13 +273,22 @@ VITE_BASE_URL=http://localhost:4000
 
 > Product (suit) listing and management.
 
-| Method   | Route                     | Auth | Description                         |
-| -------- | ------------------------- | ---- | ----------------------------------- |
-| `GET`    | `/suits`                  | ❌   | Get all suits                       |
-| `POST`   | `/suits`                  | ✅   | Upload new suit (admin only)        |
-| `GET`    | `/suits/:id`              | ❌   | Get single suit + populated reviews |
-| `DELETE` | `/suits/:id`              | ✅   | Delete a suit (admin only)          |
-| `GET`    | `/suits/featured-reviews` | ❌   | Get random reviews for homepage     |
+| Method   | Route                     | Auth | Description                                                  |
+| -------- | ------------------------- | ---- | ------------------------------------------------------------ |
+| `GET`    | `/suits`                  | ❌   | Get all suits                                                |
+| `GET`    | `/suits/:id`              | ❌   | Get single suit + populated reviews                          |
+| `DELETE` | `/suits/:id`              | ✅   | Delete a suit (admin only)                                   |
+| `GET`    | `/suits/featured-reviews` | ❌   | Get random reviews for homepage                              |
+| `GET`    | `/suits/upload`           | ✅   | Get a signed upload signature for direct Cloudinary upload   |
+| `POST`   | `/suits/upload`           | ✅   | Create a new suit using already‑uploaded Cloudinary metadata |
+
+> **Note:** The `POST /suits/upload` expects a JSON body with `name`, `category`, `description`, `price`, and an array `file` containing `{ url, public_id, mediaType }` from the direct upload.
+
+### Direct Upload Flow
+
+1. Admin calls `GET /suits/upload` (with JWT) to obtain a one‑time signature.
+2. Frontend uploads files directly to Cloudinary using that signature.
+3. After successful upload, frontend sends the returned Cloudinary URLs to `POST /suits/upload` to create the suit.
 
 ---
 

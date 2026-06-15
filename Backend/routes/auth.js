@@ -18,7 +18,7 @@ router.post(
       .withMessage("Password must contain 6 characters"),
   ],
   validationResult,
-  authController.signupUser,
+  wrapAsync(authController.signupUser),
 );
 
 router.post(
@@ -32,8 +32,6 @@ router.post(
   validationResult,
   wrapAsync(authController.loginUser),
 );
-
-router.post("/logout", wrapAsync(authController.logoutUser));
 
 router.post(
   "/forgot-password",
@@ -54,5 +52,7 @@ router.post(
   validationResult,
   wrapAsync(authController.resetPassword),
 );
+
+router.post("/logout", wrapAsync(authController.logoutUser));
 
 module.exports = router;

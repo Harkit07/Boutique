@@ -3,16 +3,15 @@ const userService = require("../services/user.js");
 const BlacklistToken = require("../models/blacklistToken.js");
 const { validationResult } = require("express-validator");
 const nodemailer = require("nodemailer");
-const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 
 module.exports.signupUser = async (req, res) => {
   const { fullname, email, password } = req.body;
 
-  // Check if user already exists
+  // Check if user already exists (unique index also ensures this)
   const isUserAlreadyExist = await User.findOne({ email });
   if (isUserAlreadyExist) {
-    return res.status(400).json({ message: "User already exist" });
+    return res.status(400).json({ message: "User already exists" });
   }
 
   // Hash password
@@ -28,12 +27,12 @@ module.exports.signupUser = async (req, res) => {
 
   const token = user.generateAuthToken();
 
-  // Send token in cookie (optional)
+  // Send token in cookie
   res.cookie("token", token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 24 * 60 * 60 * 1000, // 24 Hours
   });
 
   res.status(200).json({ token, user });
@@ -62,7 +61,7 @@ module.exports.loginUser = async (req, res) => {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "Strict",
-    maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    maxAge: 24 * 60 * 60 * 1000, // 24 Hours
   });
 
   res.status(200).json({ token, user });
@@ -76,7 +75,7 @@ module.exports.logoutUser = async (req, res) => {
       ? req.headers.authorization.split(" ")[1]
       : null);
 
-  // Clear cookie (same options as when set)
+  // Clear cookie
   res.clearCookie("token", {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
@@ -100,17 +99,17 @@ module.exports.forgotPassword = async (req, res) => {
   const user = await User.findOne({ email });
   if (!user) return res.status(404).json({ message: "User not found" });
 
-  // Generate 6 digit OTP
-  const otp = crypto.randomInt(100000, 999999).toString();
+  // Generate 6-digit OTP
+  const otp = Math.floor(100000 + Math.random() * 900000).toString();
 
-  // Hash OTP
+  // Hash OTP before storing
   const hashedOTP = await bcrypt.hash(otp, 10);
 
   user.resetOTP = hashedOTP;
-  user.otpExpire = Date.now() + 5 * 60 * 1000; // 5 min
+  user.otpExpire = Date.now() + 5 * 60 * 1000; // 5 minutes
   await user.save();
 
-  // Send Mail
+  // Send email with plain OTP
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -119,56 +118,60 @@ module.exports.forgotPassword = async (req, res) => {
     },
   });
 
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: "Password Reset OTP",
-    text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
-  });
-
-  res.status(201).json({ message: "OTP sent to email" });
+  try {
+    await transporter.sendMail({
+      from: process.env.EMAIL_USER,
+      to: email,
+      subject: "Password Reset OTP",
+      text: `Your OTP is ${otp}. It will expire in 5 minutes.`,
+    });
+    res.status(201).json({ message: "OTP sent to email" });
+  } catch (emailError) {
+    console.error("Email sending failed:", emailError);
+    // Clean up OTP from database to avoid stale entries
+    user.resetOTP = undefined;
+    user.otpExpire = undefined;
+    await user.save();
+    res
+      .status(500)
+      .json({ message: "Failed to send OTP email. Please try again later." });
+  }
 };
 
 module.exports.resetPassword = async (req, res) => {
-  try {
-    const { email, otp, password } = req.body;
+  const { email, otp, password } = req.body;
 
-    const user = await User.findOne({ email });
-    if (!user) return res.status(404).json({ message: "User not found" });
+  const user = await User.findOne({ email });
+  if (!user) return res.status(404).json({ message: "User not found" });
 
-    // Check OTP expiry
-    if (user.otpExpire < Date.now()) {
-      return res.status(400).json({ message: "OTP expired" });
-    }
-
-    // Compare OTP
-    const isMatch = await bcrypt.compare(String(otp), user.resetOTP);
-    if (!isMatch) {
-      return res.status(400).json({ message: "Invalid OTP" });
-    }
-
-    // Hash new password
-    const hashedPassword = await bcrypt.hash(password, 10);
-    await User.findByIdAndUpdate(user._id, {
-      $set: { password: hashedPassword },
-      $unset: { resetOTP: "", otpExpire: "" }, // ✅ actually removes fields from DB
-    });
-
-    await user.save();
-
-    // Generate new token
-    const token = user.generateAuthToken();
-
-    // Set secure cookie
-    res.cookie("token", token, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "Strict",
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-    });
-
-    res.status(200).json({ message: "Password reset successful", user, token });
-  } catch (error) {
-    res.status(500).json({ error: error.message });
+  // Check OTP expiry
+  if (user.otpExpire < Date.now()) {
+    return res.status(400).json({ message: "OTP expired" });
   }
+
+  // Compare provided OTP with hashed OTP
+  const isOTPValid = await bcrypt.compare(otp, user.resetOTP);
+  if (!isOTPValid) {
+    return res.status(400).json({ message: "Invalid OTP" });
+  }
+
+  // Hash new password
+  const hashedPassword = await User.hashPassword(password);
+  user.password = hashedPassword;
+  user.resetOTP = undefined;
+  user.otpExpire = undefined;
+
+  await user.save();
+
+  // Generate new token (optional: automatically log in the user after reset)
+  const token = user.generateAuthToken();
+
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "Strict",
+    maxAge: 7 * 24 * 60 * 60 * 1000,
+  });
+
+  res.status(200).json({ message: "Password reset successful", user, token });
 };

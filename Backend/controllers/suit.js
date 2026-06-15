@@ -1,50 +1,11 @@
 const Suit = require("../models/suit.js");
 const Review = require("../models/review.js");
+const { cloudinary } = require("../services/cloudConfig.js");
 
 module.exports.allSuit = async (req, res) => {
   const allSuit = await Suit.find({}).sort({ _id: -1 });
 
   res.status(200).json({ message: "All Detail getted successful", allSuit });
-};
-
-module.exports.uploadNewSuit = async (req, res) => {
-  const { category, description, price, name } = req.body;
-
-  // Only admins can upload
-  if (req.user.role !== "admin") {
-    return res.status(403).json({ message: "Not authorized" });
-  }
-
-  // Validate body
-  if (!name || !category || !description || !price) {
-    return res.status(400).json({ message: "All fields are required" });
-  }
-
-  // Validate files
-  if (!req.files || req.files.length === 0) {
-    return res.status(400).json({ message: "At least 1 file is required" });
-  }
-
-  // Create suit
-  const suit = new Suit({
-    owner: req.user._id,
-    name,
-    category,
-    description,
-    price,
-    file: req.files.map((file) => ({
-      url: file.path, // Cloudinary secure_url
-      public_id: file.filename, // Cloudinary public_id
-      mediaType: file.mimetype.startsWith("video") ? "video" : "image",
-    })),
-  });
-
-  await suit.save();
-
-  res.status(200).json({
-    message: "Suit uploaded successfully",
-    suit,
-  });
 };
 
 module.exports.getSuit = async (req, res) => {
@@ -101,4 +62,61 @@ module.exports.homeReviews = async (req, res) => {
     message: "Top reviews fetched successfully",
     homeReviews,
   });
+};
+
+module.exports.getUploadSignature = async (req, res) => {
+  try {
+    const timestamp = Math.round(Date.now() / 1000);
+    const folder = `BOUTIQUE/${req.user._id}`;
+
+    const paramsToSign = {
+      allowed_formats: "jpg,jpeg,png,mp4,mov,webm",
+      folder: folder,
+      overwrite: false,
+      timestamp: timestamp,
+      unique_filename: true,
+    };
+
+    const signature = cloudinary.utils.api_sign_request(
+      paramsToSign,
+      process.env.CLOUD_API_SECRET,
+    );
+
+    res.json({
+      signature,
+      timestamp,
+      cloudName: process.env.CLOUD_NAME,
+      apiKey: process.env.CLOUD_API_KEY,
+      folder,
+      maxBytes: 50 * 1024 * 1024, // you can still send this to frontend (it's not signed)
+      allowedFormats: paramsToSign.allowed_formats,
+    });
+  } catch (error) {
+    console.error("Signature generation error:", error);
+    res.status(500).json({ message: "Failed to generate upload signature" });
+  }
+};
+
+module.exports.createSuitFromMetadata = async (req, res) => {
+  const { name, category, description, price, file } = req.body;
+
+  // Security: verify that all uploaded files belong to this user
+  const expectedPrefix = `BOUTIQUE/${req.user._id}/`;
+  for (const f of file) {
+    if (!f.public_id.startsWith(expectedPrefix)) {
+      return res.status(403).json({ message: "Unauthorized file usage" });
+    }
+  }
+
+  const newSuit = new Suit({
+    owner: req.user._id,
+    name,
+    category,
+    description,
+    price,
+    file, // array of { url, public_id, mediaType }
+  });
+
+  await newSuit.save();
+  res.status(201).json({ message: "Suit created successfully", suit: newSuit });
 };
