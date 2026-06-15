@@ -82,6 +82,11 @@ const SuitView = memo(() => {
       navigate("/login");
       return;
     }
+    // ✅ Guard against null suit
+    if (!suit) {
+      toast.error("Product information missing");
+      return;
+    }
     try {
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/cart/items/${suit._id}`,
@@ -90,19 +95,21 @@ const SuitView = memo(() => {
       );
       if (response.status === 200) {
         toast.success("Added to cart!");
-        // Optionally update user cart in context
-        const newCart = response.data.user?.cart ?? response.data.cart ?? [];
-        setUser((prev) => ({ ...prev, cart: newCart }));
+        fetchSuitDetails();
       }
     } catch (error) {
       toast.error("Failed to add item");
     }
-  }, [token, suit, navigate, setUser]);
+  }, [token, suit, navigate]);
 
   const deleteReview = useCallback(
     async (reviewId) => {
       if (!token) {
         toast.error("You must be logged in");
+        return;
+      }
+      if (!suit) {
+        toast.error("Product information missing");
         return;
       }
       try {
@@ -123,7 +130,7 @@ const SuitView = memo(() => {
         toast.error("Failed to delete review");
       }
     },
-    [token, fetchSuitDetails],
+    [token, fetchSuitDetails, suit],
   );
 
   const addRevBtn = useCallback(() => {
