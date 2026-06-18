@@ -7,7 +7,8 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import React, { useState, useRef, memo } from "react";
 import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
-import Skeleton from "../components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
+import { useBoneyard } from "../utils/boneyard";
 
 const validate = (values) => {
   const errors = {};
@@ -21,6 +22,7 @@ const validate = (values) => {
 
 const ResetPass = memo(() => {
   const { loading } = useAuth();
+  const isBoneyard = useBoneyard();
   const [showPassword, setShowPassword] = useState(false);
   const [sendMail, setSendMail] = useState(true);
   const [sendingMail, setSendingMail] = useState(false);
@@ -57,7 +59,7 @@ const ResetPass = memo(() => {
           {
             email: emailRef.current,
             otp: values.otp,
-            password: values.password, // ✅ changed from newPassword
+            password: values.password,
           },
         );
         if (response.status === 200) {
@@ -70,101 +72,104 @@ const ResetPass = memo(() => {
     },
   });
 
-  if (loading) return <Skeleton />;
-
   return (
-    <>
-      <HeaderCom />
-      <div className="login-container">
-        <div className="login-box-wrapper">
-          <div className="login-box">
-            <h1 className="login-title">Reset Password</h1>
-            <form onSubmit={sendMail ? handleSendMail : formik.handleSubmit}>
-              {sendMail ? (
-                <>
-                  <input
-                    type="email"
-                    placeholder="Email*"
-                    className="login-input"
-                    onChange={(e) => {
-                      emailRef.current = e.target.value;
-                    }}
-                  />
-                  <button
-                    type="submit"
-                    className="login-btn"
-                    disabled={sendingMail}
-                  >
-                    {sendingMail ? "Sending..." : "Send OTP"}
-                  </button>
-                </>
-              ) : (
-                <>
-                  <input
-                    id="otp"
-                    name="otp"
-                    type="text"
-                    placeholder="6-Digit OTP*"
-                    className="login-input"
-                    onChange={formik.handleChange}
-                    value={formik.values.otp}
-                  />
-                  {formik.errors.otp && (
-                    <div className="error">{formik.errors.otp}</div>
-                  )}
-                  <div className="password-wrapper">
+    <BoneyardSkeleton
+      name="reset-password-page"
+      loading={loading || isBoneyard}
+    >
+      <>
+        <HeaderCom />
+        <div className="login-container">
+          <div className="login-box-wrapper">
+            <div className="login-box">
+              <h1 className="login-title">Reset Password</h1>
+              <form onSubmit={sendMail ? handleSendMail : formik.handleSubmit}>
+                {sendMail ? (
+                  <>
                     <input
-                      id="password"
-                      name="password"
-                      type={showPassword ? "text" : "password"}
-                      placeholder="New Password*"
+                      type="email"
+                      placeholder="Email*"
                       className="login-input"
-                      onChange={formik.handleChange}
-                      value={formik.values.password}
+                      onChange={(e) => {
+                        emailRef.current = e.target.value;
+                      }}
                     />
                     <button
-                      type="button"
-                      aria-label={
-                        showPassword ? "Hide password" : "Show password"
-                      }
-                      className="eye"
-                      onClick={() => setShowPassword(!showPassword)}
+                      type="submit"
+                      className="login-btn"
+                      disabled={sendingMail}
                     >
-                      <VisibilityIcon />
+                      {sendingMail ? "Sending..." : "Send OTP"}
                     </button>
-                  </div>
-                  {formik.errors.password && (
-                    <div className="error">{formik.errors.password}</div>
-                  )}
-                  <button type="submit" className="login-btn">
-                    Reset Password
-                  </button>
-                </>
-              )}
-            </form>
+                  </>
+                ) : (
+                  <>
+                    <input
+                      id="otp"
+                      name="otp"
+                      type="text"
+                      placeholder="6-Digit OTP*"
+                      className="login-input"
+                      onChange={formik.handleChange}
+                      value={formik.values.otp}
+                    />
+                    {formik.errors.otp && (
+                      <div className="error">{formik.errors.otp}</div>
+                    )}
+                    <div className="password-wrapper">
+                      <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        placeholder="New Password*"
+                        className="login-input"
+                        onChange={formik.handleChange}
+                        value={formik.values.password}
+                      />
+                      <button
+                        type="button"
+                        aria-label={
+                          showPassword ? "Hide password" : "Show password"
+                        }
+                        className="eye"
+                        onClick={() => setShowPassword(!showPassword)}
+                      >
+                        <VisibilityIcon />
+                      </button>
+                    </div>
+                    {formik.errors.password && (
+                      <div className="error">{formik.errors.password}</div>
+                    )}
+                    <button type="submit" className="login-btn">
+                      Reset Password
+                    </button>
+                  </>
+                )}
+              </form>
+            </div>
+          </div>
+          <div className="new-customer-section">
+            <h2 className="new-customer-title">New Customer</h2>
+            <p className="new-customer-desc">
+              Sign up for early Sale access plus tailored new arrivals, trends
+              and promotions. To opt out,
+              <br />
+              click unsubscribe in our emails.
+            </p>
+            <button type="button" className="new-customer-btn">
+              <Link
+                to="/signup"
+                className="nav-link"
+                style={{ background: "transparent", color: "white" }}
+              >
+                Create Account
+              </Link>
+            </button>
           </div>
         </div>
-        <div className="new-customer-section">
-          <h2 className="new-customer-title">New Customer</h2>
-          <p className="new-customer-desc">
-            Sign up for early Sale access plus tailored new arrivals, trends and
-            promotions. To opt out,
-            <br />
-            click unsubscribe in our emails.
-          </p>
-          <button type="button" className="new-customer-btn">
-            <Link
-              to="/signup"
-              className="nav-link"
-              style={{ background: "transparent", color: "white" }}
-            >
-              Create Account
-            </Link>
-          </button>
-        </div>
-      </div>
-      <BottomNav activeTab="account" />
-    </>
+        <BottomNav activeTab="account" />
+      </>
+    </BoneyardSkeleton>
   );
 });
 

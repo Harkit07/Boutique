@@ -4,7 +4,7 @@ import { lazy, Suspense } from "react";
 import { ToastContainer } from "react-toastify";
 import { Navigate } from "react-router-dom";
 import ScrollToTop from "./components/ScrollToTop";
-import Skeleton from "./components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
 import Login from "./Pages/Login";
 import Home from "./Pages/Home";
 const Account = lazy(() => import("./Pages/Account"));
@@ -25,7 +25,6 @@ import ErrorBoundary from "./components/ErrorBoundary";
 function App() {
   return (
     <>
-      {/* ToastContainer now centered */}
       <ToastContainer
         position="top-center"
         autoClose={2000}
@@ -40,7 +39,7 @@ function App() {
         className="toast-center"
       />
       <ScrollToTop />
-      <Suspense fallback={<Skeleton />}>
+      <Suspense fallback={<BoneyardSkeleton name="app-fallback" />}>
         <ErrorBoundary>
           <Routes>
             <Route path="/login" element={<Login />} />

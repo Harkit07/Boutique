@@ -9,7 +9,8 @@ import axios from "axios";
 import { toast } from "react-toastify";
 import Button from "@mui/material/Button";
 import { useNavigate } from "react-router-dom";
-import Skeleton from "../components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
+import { useBoneyard } from "../utils/boneyard";
 
 const LazyVideo = ({ src, name = "Product" }) => {
   const videoRef = React.useRef(null);
@@ -39,6 +40,7 @@ const LazyVideo = ({ src, name = "Product" }) => {
 
 const Cart = memo(() => {
   const { user, setUser, loading, token } = useAuth();
+  const isBoneyard = useBoneyard();
   const navigate = useNavigate();
 
   const updateCartState = useCallback(
@@ -112,110 +114,111 @@ const Cart = memo(() => {
     [token, updateCartState],
   );
 
-  if (loading) return <Skeleton />;
   const cartItems = user?.cart ?? [];
 
   return (
-    <>
-      <HeaderCom />
-      <div className="main">
-        <div className="uc-cart-wrapper">
-          <div className="uc-breadcrumb">
-            Home · <span>Your Shopping Cart</span>
-          </div>
-          <h1 className="uc-cart-title">Shopping Cart</h1>
-          <p className="uc-cart-subtitle">
-            Review your selected items before purchase.
-            <br />
-            Enjoy a seamless shopping experience!
-          </p>
-          {cartItems.length === 0 ? (
-            <div className="empty-cart-message">No Item in the Cart</div>
-          ) : (
-            cartItems.map((item) => {
-              const quantity = item.quantity;
-              const inCart = quantity > 0;
-              const type = item.suit?.file?.[0]?.mediaType;
-              return (
-                <div key={item._id} className="uc-cart-item">
-                  <button
-                    type="button"
-                    className="uc-cart-item-preview"
-                    onClick={() => navigate(`/suit/${item.suit?._id}`)}
-                  >
-                    {type === "image" ? (
-                      <img
-                        src={item.suit?.file?.[0]?.url}
-                        alt={item.suit?.name}
-                        className="uc-product-img"
-                        loading="lazy"
-                      />
-                    ) : (
-                      <LazyVideo
-                        src={item.suit?.file?.[0]?.url}
-                        name={item.suit?.name}
-                      />
-                    )}
-                    <div className="uc-product-info">
-                      <h3 className="uc-product-name">{item.suit?.name}</h3>
-                      <p className="uc-product-size">Size: M</p>
-                      <p className="uc-product-price">
-                        Rs. {item.suit?.price?.toLocaleString?.() ?? "0"}.00
-                      </p>
-                    </div>
-                  </button>
-                  <div className="cart-count">
-                    <Button
-                      onClick={() => removeToCart(item.suit)}
-                      variant="outlined"
-                      color="error"
-                      size="small"
-                      startIcon={<DeleteIcon />}
+    <BoneyardSkeleton name="cart-page" loading={loading || isBoneyard}>
+      <>
+        <HeaderCom />
+        <div className="main">
+          <div className="uc-cart-wrapper">
+            <div className="uc-breadcrumb">
+              Home · <span>Your Shopping Cart</span>
+            </div>
+            <h1 className="uc-cart-title">Shopping Cart</h1>
+            <p className="uc-cart-subtitle">
+              Review your selected items before purchase.
+              <br />
+              Enjoy a seamless shopping experience!
+            </p>
+            {cartItems.length === 0 ? (
+              <div className="empty-cart-message">No Item in the Cart</div>
+            ) : (
+              cartItems.map((item) => {
+                const quantity = item.quantity;
+                const inCart = quantity > 0;
+                const type = item.suit?.file?.[0]?.mediaType;
+                return (
+                  <div key={item._id} className="uc-cart-item">
+                    <button
+                      type="button"
+                      className="uc-cart-item-preview"
+                      onClick={() => navigate(`/suit/${item.suit?._id}`)}
                     >
-                      Delete
-                    </Button>
-                    <div className="uc-qty-control">
-                      <button
-                        type="button"
-                        className="uc-qty-btn"
-                        onClick={() => decCartCount(item.suit)}
-                        disabled={!inCart || quantity <= 1}
+                      {type === "image" ? (
+                        <img
+                          src={item.suit?.file?.[0]?.url}
+                          alt={item.suit?.name}
+                          className="uc-product-img"
+                          loading="lazy"
+                        />
+                      ) : (
+                        <LazyVideo
+                          src={item.suit?.file?.[0]?.url}
+                          name={item.suit?.name}
+                        />
+                      )}
+                      <div className="uc-product-info">
+                        <h3 className="uc-product-name">{item.suit?.name}</h3>
+                        <p className="uc-product-size">Size: M</p>
+                        <p className="uc-product-price">
+                          Rs. {item.suit?.price?.toLocaleString?.() ?? "0"}.00
+                        </p>
+                      </div>
+                    </button>
+                    <div className="cart-count">
+                      <Button
+                        onClick={() => removeToCart(item.suit)}
+                        variant="outlined"
+                        color="error"
+                        size="small"
+                        startIcon={<DeleteIcon />}
                       >
-                        -
-                      </button>
-                      <span>{quantity}</span>
-                      <button
-                        type="button"
-                        className="uc-qty-btn"
-                        onClick={() => addToCart(item.suit)}
-                      >
-                        +
-                      </button>
+                        Delete
+                      </Button>
+                      <div className="uc-qty-control">
+                        <button
+                          type="button"
+                          className="uc-qty-btn"
+                          onClick={() => decCartCount(item.suit)}
+                          disabled={!inCart || quantity <= 1}
+                        >
+                          -
+                        </button>
+                        <span>{quantity}</span>
+                        <button
+                          type="button"
+                          className="uc-qty-btn"
+                          onClick={() => addToCart(item.suit)}
+                        >
+                          +
+                        </button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              );
-            })
-          )}
-          <div className="ud-info-wrapper">
-            <div className="ud-info-section">
-              <h3 className="ud-info-heading">Delivery Information</h3>
-              <p className="ud-info-text">
-                We process orders within 1–3 business days...
-              </p>
-            </div>
-            <div className="ud-info-section">
-              <h3 className="ud-info-heading">Exclusive Offers</h3>
-              <p className="ud-info-text">
-                Explore limited-time offers and special discounts...
-              </p>
+                );
+              })
+            )}
+            <div className="ud-info-wrapper">
+              <div className="ud-info-section">
+                <h3 className="ud-info-heading">Delivery Information</h3>
+                <p className="ud-info-text">
+                  We process orders within 1–3 business days...
+                </p>
+              </div>
+              <div className="ud-info-section">
+                <h3 className="ud-info-heading">Exclusive Offers</h3>
+                <p className="ud-info-text">
+                  Explore limited-time offers and special discounts...
+                </p>
+              </div>
             </div>
           </div>
+          <Footer />
         </div>
-        <Footer />
-      </div>
-      <BottomNav activeTab="cart" />
-    </>
+        <BottomNav activeTab="cart" />
+      </>
+    </BoneyardSkeleton>
   );
 });
 

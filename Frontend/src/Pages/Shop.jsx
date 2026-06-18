@@ -5,35 +5,37 @@ import Footer from "../components/Footer";
 import { useAuth } from "../context/MyContext";
 import React, { memo } from "react";
 import FilterCom from "../components/FilterCom";
-import Skeleton from "../components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
+import { useBoneyard } from "../utils/boneyard";
 import "../styles/Cart.css";
 
 const Shop = memo(() => {
   const { loading } = useAuth();
-
-  if (loading) return <Skeleton />;
+  const isBoneyard = useBoneyard();
 
   return (
-    <>
-      <HeaderCom />
-      <div className="main shop-page">
-        <div className="uc-cart-wrapper">
-          <div className="uc-breadcrumb">
-            Home · <span>Product</span>
+    <BoneyardSkeleton name="shop-page" loading={loading || isBoneyard}>
+      <>
+        <HeaderCom />
+        <div className="main shop-page">
+          <div className="uc-cart-wrapper">
+            <div className="uc-breadcrumb">
+              Home · <span>Product</span>
+            </div>
+            <h1 className="uc-cart-title">Products</h1>
+            <p className="uc-cart-subtitle">
+              Review your selected items before purchase.
+              <br />
+              Enjoy a seamless shopping experience!
+            </p>
           </div>
-          <h1 className="uc-cart-title">Products</h1>
-          <p className="uc-cart-subtitle">
-            Review your selected items before purchase.
-            <br />
-            Enjoy a seamless shopping experience!
-          </p>
+          <FilterCom />
+          <ImageCom />
         </div>
-        <FilterCom />
-        <ImageCom />
-      </div>
-      <Footer />
-      <BottomNav activeTab="shop" />
-    </>
+        <Footer />
+        <BottomNav activeTab="shop" />
+      </>
+    </BoneyardSkeleton>
   );
 });
 

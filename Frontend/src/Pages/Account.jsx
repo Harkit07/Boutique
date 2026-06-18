@@ -6,10 +6,12 @@ import "../styles/Account.css";
 import { Link } from "react-router-dom";
 import AccountForm from "../components/AccountForm";
 import { useAuth } from "../context/MyContext";
-import Skeleton from "../components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
+import { useBoneyard } from "../utils/boneyard";
 
 const Account = memo(() => {
   const { user, loading } = useAuth();
+  const isBoneyard = useBoneyard();
   const [address, setAddress] = useState(false);
   const [editAddress, setEditAddress] = useState(false);
 
@@ -19,109 +21,113 @@ const Account = memo(() => {
     [],
   );
 
-  if (loading) return <Skeleton />;
-
   return (
-    <>
-      <HeaderCom />
-      <div className="main">
-        <div className="account-container1">
-          <div className="breadcrumb">
-            <Link
-              to="/"
-              className="nav-link"
-              style={{ background: "transparent" }}
-            >
-              Home
-            </Link>
-            <span>•</span>
-            <Link
-              to="/account"
-              className="nav-link"
-              style={{ background: "transparent" }}
-            >
-              Account
-            </Link>
-          </div>
-          <h1 className="title">My Account</h1>
-          <div className="account-card">
-            <div className="account-item">Dashboard</div>
-            <div className="account-item">Your addresses</div>
-            <div className="account-item">
-              {user.role === "user" ? (
-                <Link
-                  to="/cart"
-                  className="nav-link"
-                  style={{ background: "transparent" }}
-                >
-                  Your Card
-                </Link>
-              ) : (
-                <Link
-                  to="/addnewsuit"
-                  className="nav-link"
-                  style={{ background: "transparent" }}
-                >
-                  Add New Suit
-                </Link>
-              )}
-            </div>
-            <div className="account-item logout">
+    <BoneyardSkeleton name="account-page" loading={loading || isBoneyard}>
+      <>
+        <HeaderCom />
+        <div className="main">
+          <div className="account-container1">
+            <div className="breadcrumb">
               <Link
-                to="/logout"
+                to="/"
                 className="nav-link"
                 style={{ background: "transparent" }}
               >
-                Log Out
+                Home
+              </Link>
+              <span>•</span>
+              <Link
+                to="/account"
+                className="nav-link"
+                style={{ background: "transparent" }}
+              >
+                Account
               </Link>
             </div>
-          </div>
-          <p className="welcome-text">
-            Welcome{" "}
-            <strong>{`${user.fullname.firstname} ${user.fullname.lastname}`}</strong>
-            ! (Not? <Link to="/logout">Log Out</Link>)
-          </p>
-        </div>
-        <div className="content">
-          <h2 className="heading">Account details</h2>
-          <div className="details-box">
-            <div className="detail-row">
-              <div className="left">Name</div>
-              <div className="right">{`${user.fullname.firstname} ${user.fullname.lastname}`}</div>
-            </div>
-            <div className="detail-row2">
-              <div className="left">Email</div>
-              <div className="right">{user.email}</div>
-            </div>
-          </div>
-          <button type="button" className="address-btn" onClick={toggleAddress}>
-            View Addresses
-          </button>
-        </div>
-        {address && (
-          <div className="da-page-wrapper">
-            <h2 className="da-page-title">Default addresses</h2>
-            <div className="da-card">
-              <h3 className="da-card-title">Addresses (Default addresses)</h3>
-              <p className="da-email-text">{user.email}</p>
-              <p className="da-country-text">India</p>
-              <div className="da-action-group">
-                <button
-                  type="button"
-                  className="da-btn da-btn-edit"
-                  onClick={toggleEditAddress}
+            <h1 className="title">My Account</h1>
+            <div className="account-card">
+              <div className="account-item">Dashboard</div>
+              <div className="account-item">Your addresses</div>
+              <div className="account-item">
+                {user?.role === "user" ? (
+                  <Link
+                    to="/cart"
+                    className="nav-link"
+                    style={{ background: "transparent" }}
+                  >
+                    Your Card
+                  </Link>
+                ) : (
+                  <Link
+                    to="/addnewsuit"
+                    className="nav-link"
+                    style={{ background: "transparent" }}
+                  >
+                    Add New Suit
+                  </Link>
+                )}
+              </div>
+              <div className="account-item logout">
+                <Link
+                  to="/logout"
+                  className="nav-link"
+                  style={{ background: "transparent" }}
                 >
-                  Edit
-                </button>
+                  Log Out
+                </Link>
               </div>
             </div>
+            <p className="welcome-text">
+              Welcome{" "}
+              <strong>{`${user?.fullname?.firstname ?? ""} ${user?.fullname?.lastname ?? ""}`}</strong>
+              ! (Not? <Link to="/logout">Log Out</Link>)
+            </p>
           </div>
-        )}
-        {editAddress && <AccountForm />}
-      </div>
-      <Footer />
-      <BottomNav activeTab="account" />
-    </>
+          <div className="content">
+            <h2 className="heading">Account details</h2>
+            <div className="details-box">
+              <div className="detail-row">
+                <div className="left">Name</div>
+                <div className="right">{`${user?.fullname?.firstname ?? ""} ${user?.fullname?.lastname ?? ""}`}</div>
+              </div>
+              <div className="detail-row2">
+                <div className="left">Email</div>
+                <div className="right">{user?.email}</div>
+              </div>
+            </div>
+            <button
+              type="button"
+              className="address-btn"
+              onClick={toggleAddress}
+            >
+              View Addresses
+            </button>
+          </div>
+          {address && (
+            <div className="da-page-wrapper">
+              <h2 className="da-page-title">Default addresses</h2>
+              <div className="da-card">
+                <h3 className="da-card-title">Addresses (Default addresses)</h3>
+                <p className="da-email-text">{user?.email}</p>
+                <p className="da-country-text">India</p>
+                <div className="da-action-group">
+                  <button
+                    type="button"
+                    className="da-btn da-btn-edit"
+                    onClick={toggleEditAddress}
+                  >
+                    Edit
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+          {editAddress && <AccountForm />}
+        </div>
+        <Footer />
+        <BottomNav activeTab="account" />
+      </>
+    </BoneyardSkeleton>
   );
 });
 

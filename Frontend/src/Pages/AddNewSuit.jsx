@@ -7,9 +7,10 @@ import { useFormik } from "formik";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import Skeleton from "../components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
+import { useBoneyard } from "../utils/boneyard";
 import "../styles/Account.css";
-import "../styles/AddNewSuit.css"; // ← import the CSS
+import "../styles/AddNewSuit.css";
 
 const CATEGORIES = [
   "AARI Work",
@@ -60,6 +61,7 @@ const uploadFileToCloudinary = async (file, signatureData, onProgress) => {
 const AddNewSuit = memo(() => {
   const navigate = useNavigate();
   const { token, loading } = useAuth();
+  const isBoneyard = useBoneyard();
   const [uploadBtn, setUploadBtn] = useState("Upload Suit Design");
   const [uploadProgress, setUploadProgress] = useState({});
 
@@ -152,144 +154,143 @@ const AddNewSuit = memo(() => {
     ),
   });
 
-  if (loading) return <Skeleton />;
-
   return (
-    <>
-      <HeaderCom />
-      <div className="main add-suit-page">
-        <div className="ea-page-wrapper">
-          <form onSubmit={formik.handleSubmit}>
-            <h2 className="ea-card-title">Add a new Suit Design</h2>
+    <BoneyardSkeleton name="add-suit-page" loading={loading || isBoneyard}>
+      <>
+        <HeaderCom />
+        <div className="main add-suit-page">
+          <div className="ea-page-wrapper">
+            <form onSubmit={formik.handleSubmit}>
+              <h2 className="ea-card-title">Add a new Suit Design</h2>
 
-            <div className="ea-field">
-              <label className="ea-label" htmlFor="file">
-                Images / Videos (max 50 MB each)
-              </label>
-              <input
-                className="ea-input"
-                multiple
-                id="file"
-                name="file"
-                type="file"
-                accept="image/*,video/*"
-                onChange={(e) => {
-                  formik.setFieldValue("file", e.target.files);
-                  setUploadProgress({});
-                }}
-              />
-            </div>
-            {formik.errors.file && (
-              <div className="error">{formik.errors.file}</div>
-            )}
-
-            {Object.keys(uploadProgress).length > 0 && (
-              <div style={{ marginBottom: "1rem" }}>
-                {Object.entries(uploadProgress).map(([name, percent]) => (
-                  <div key={name}>
-                    <small>
-                      {name}: {percent}%
-                    </small>
-                    <progress
-                      value={percent}
-                      max="100"
-                      style={{ width: "100%" }}
-                    />
-                  </div>
-                ))}
+              <div className="ea-field">
+                <label className="ea-label" htmlFor="file">
+                  Images / Videos (max 50 MB each)
+                </label>
+                <input
+                  className="ea-input"
+                  multiple
+                  id="file"
+                  name="file"
+                  type="file"
+                  accept="image/*,video/*"
+                  onChange={(e) => {
+                    formik.setFieldValue("file", e.target.files);
+                    setUploadProgress({});
+                  }}
+                />
               </div>
-            )}
+              {formik.errors.file && (
+                <div className="error">{formik.errors.file}</div>
+              )}
 
-            <div className="ea-field">
-              <label className="ea-label" htmlFor="name">
-                Name
-              </label>
-              <input
-                className="ea-input"
-                id="name"
-                name="name"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.name}
-              />
-            </div>
-            {formik.errors.name && (
-              <div className="error">{formik.errors.name}</div>
-            )}
+              {Object.keys(uploadProgress).length > 0 && (
+                <div style={{ marginBottom: "1rem" }}>
+                  {Object.entries(uploadProgress).map(([name, percent]) => (
+                    <div key={name}>
+                      <small>
+                        {name}: {percent}%
+                      </small>
+                      <progress
+                        value={percent}
+                        max="100"
+                        style={{ width: "100%" }}
+                      />
+                    </div>
+                  ))}
+                </div>
+              )}
 
-            {/* --- Category Dropdown (styled select) --- */}
-            <div className="ea-field">
-              <label className="ea-label" htmlFor="category">
-                Category
-              </label>
-              <select
-                className="ea-input ea-select" // both classes combined
-                id="category"
-                name="category"
-                value={formik.values.category}
-                onChange={formik.handleChange}
-                onBlur={formik.handleBlur}
+              <div className="ea-field">
+                <label className="ea-label" htmlFor="name">
+                  Name
+                </label>
+                <input
+                  className="ea-input"
+                  id="name"
+                  name="name"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.name}
+                />
+              </div>
+              {formik.errors.name && (
+                <div className="error">{formik.errors.name}</div>
+              )}
+
+              <div className="ea-field">
+                <label className="ea-label" htmlFor="category">
+                  Category
+                </label>
+                <select
+                  className="ea-input ea-select"
+                  id="category"
+                  name="category"
+                  value={formik.values.category}
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                >
+                  <option value="">Select a category</option>
+                  {CATEGORIES.map((item) => (
+                    <option key={item} value={item}>
+                      {item}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              {formik.errors.category && (
+                <div className="error">{formik.errors.category}</div>
+              )}
+
+              <div className="ea-field">
+                <label className="ea-label" htmlFor="description">
+                  Description
+                </label>
+                <input
+                  className="ea-input"
+                  id="description"
+                  name="description"
+                  type="text"
+                  onChange={formik.handleChange}
+                  value={formik.values.description}
+                />
+              </div>
+              {formik.errors.description && (
+                <div className="error">{formik.errors.description}</div>
+              )}
+
+              <div className="ea-field">
+                <label className="ea-label" htmlFor="price">
+                  Price (₹)
+                </label>
+                <input
+                  className="ea-input"
+                  id="price"
+                  name="price"
+                  type="number"
+                  step="0.01"
+                  onChange={formik.handleChange}
+                  value={formik.values.price}
+                />
+              </div>
+              {formik.errors.price && (
+                <div className="error">{formik.errors.price}</div>
+              )}
+
+              <button
+                type="submit"
+                className="login-btn"
+                disabled={uploadBtn !== "Upload Suit Design"}
               >
-                <option value="">Select a category</option>
-                {CATEGORIES.map((item) => (
-                  <option key={item} value={item}>
-                    {item}
-                  </option>
-                ))}
-              </select>
-            </div>
-            {formik.errors.category && (
-              <div className="error">{formik.errors.category}</div>
-            )}
-
-            <div className="ea-field">
-              <label className="ea-label" htmlFor="description">
-                Description
-              </label>
-              <input
-                className="ea-input"
-                id="description"
-                name="description"
-                type="text"
-                onChange={formik.handleChange}
-                value={formik.values.description}
-              />
-            </div>
-            {formik.errors.description && (
-              <div className="error">{formik.errors.description}</div>
-            )}
-
-            <div className="ea-field">
-              <label className="ea-label" htmlFor="price">
-                Price (₹)
-              </label>
-              <input
-                className="ea-input"
-                id="price"
-                name="price"
-                type="number"
-                step="0.01"
-                onChange={formik.handleChange}
-                value={formik.values.price}
-              />
-            </div>
-            {formik.errors.price && (
-              <div className="error">{formik.errors.price}</div>
-            )}
-
-            <button
-              type="submit"
-              className="login-btn"
-              disabled={uploadBtn !== "Upload Suit Design"}
-            >
-              {uploadBtn}
-            </button>
-          </form>
+                {uploadBtn}
+              </button>
+            </form>
+          </div>
         </div>
-      </div>
-      <Footer />
-      <BottomNav activeTab="account" />
-    </>
+        <Footer />
+        <BottomNav activeTab="account" />
+      </>
+    </BoneyardSkeleton>
   );
 });
 

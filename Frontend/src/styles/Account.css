@@ -1,26 +1,30 @@
-/* Account.css */
 .account-container1 {
   background: var(--color-surface-white);
   padding: 40px;
   box-sizing: border-box;
 }
+
 .breadcrumb {
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-7);
 }
+
 .breadcrumb a {
   text-decoration: none;
   color: var(--color-text-primary);
 }
+
 .breadcrumb .active {
   color: var(--color-text-secondary);
   font-weight: var(--font-weight-medium);
 }
+
 .title {
   text-align: center;
   font-size: var(--font-size-4xl);
   margin-bottom: var(--space-7);
 }
+
 .account-card {
   border: 1px solid #eee;
   border-radius: var(--radius-xs);
@@ -28,47 +32,58 @@
   margin-bottom: var(--space-8);
   background: var(--color-surface-muted);
 }
+
 .account-item {
   padding: var(--space-6) var(--space-7);
   border-bottom: 1px solid #eee;
   cursor: pointer;
   transition: background var(--motion-duration-instant);
 }
+
 .account-item:hover {
   background: #f0f0f0;
 }
+
 .welcome-text {
   font-size: var(--font-size-md);
   color: var(--color-text-primary);
 }
+
 .welcome-text a {
   color: var(--color-text-secondary);
 }
+
 .logout-link {
   color: var(--color-text-secondary);
   text-decoration: underline;
 }
+
 .heading {
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
   margin-bottom: var(--space-8);
 }
+
 .content {
   padding: 40px;
 }
+
 .details-box {
   border: 1px solid #eee;
   border-radius: var(--radius-xs);
   overflow: hidden;
   margin-bottom: 35px;
 }
+
 .detail-row {
   display: flex;
   border-bottom: 1px solid #eee;
 }
+
 .detail-row:last-child {
   border-bottom: none;
 }
+
 .left {
   width: 35%;
   padding: var(--space-7);
@@ -76,11 +91,13 @@
   font-weight: var(--font-weight-medium);
   color: var(--color-text-secondary);
 }
+
 .right {
   width: 65%;
   padding: var(--space-7);
   color: var(--color-text-secondary);
 }
+
 .address-btn {
   background: var(--color-surface-base);
   color: var(--color-text-tertiary);
@@ -90,35 +107,43 @@
   cursor: pointer;
   transition: opacity var(--motion-duration-instant);
 }
+
 .address-btn:hover {
   opacity: 0.85;
 }
+
 .da-page-wrapper {
   padding: var(--space-7);
 }
+
 .da-page-title {
   margin-bottom: var(--space-4);
   font-size: var(--font-size-2xl);
   font-weight: var(--font-weight-semibold);
 }
+
 .da-card {
   background: var(--color-surface-white);
   border-radius: var(--radius-sm);
   padding: var(--space-7);
   max-width: 420px;
 }
+
 .da-card-title {
   font-size: var(--font-size-md);
   font-weight: var(--font-weight-semibold);
 }
+
 .da-email-text,
 .da-country-text {
   font-size: var(--font-size-sm);
 }
+
 .da-action-group {
   display: flex;
   gap: var(--space-4);
 }
+
 .da-btn {
   background: var(--color-surface-muted);
   border: none;
@@ -128,14 +153,17 @@
   cursor: pointer;
   transition: background var(--motion-duration-instant);
 }
+
 .da-btn:hover {
   background: #e5e5e5;
 }
+
 .ea-page-wrapper {
   padding: var(--space-7);
   display: flex;
   justify-content: center;
 }
+
 .ea-card {
   background: var(--color-surface-white);
   border-radius: var(--radius-sm);
@@ -143,19 +171,23 @@
   width: 100%;
   max-width: 420px;
 }
+
 .ea-card-title {
   font-size: var(--font-size-xl);
   font-weight: var(--font-weight-semibold);
 }
+
 .ea-field {
   display: flex;
   flex-direction: column;
   margin-bottom: var(--space-6);
 }
+
 .ea-label {
   font-size: var(--font-size-sm);
   margin-bottom: var(--space-2);
 }
+
 .ea-input {
   height: 44px;
   padding: 0 16px;
@@ -166,9 +198,11 @@
   outline: none;
   width: 100%;
 }
+
 .ea-input:focus {
   border-color: var(--color-surface-raised);
 }
+
 select.ea-input {
   appearance: none;
 }

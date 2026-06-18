@@ -30,7 +30,7 @@ const CategoriesDrawer = ({
   setIsCategoriesOpen,
   setIsOpen,
 }) => {
-  const { filterByCategory } = useFilter(); // ✅ fixed function name
+  const { filterByCategory } = useFilter();
   const navigate = useNavigate();
 
   const closeCatCol = () => setIsCategoriesOpen(false);
@@ -38,7 +38,7 @@ const CategoriesDrawer = ({
   const handleCategoryClick = (category) => {
     setIsCategoriesOpen(false);
     setIsOpen(false);
-    filterByCategory(category); // ✅ fixed call
+    filterByCategory(category);
     navigate(`/shop?category=${encodeURIComponent(category)}`);
   };
 

@@ -4,22 +4,24 @@ import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
 import { useAuth } from "../context/MyContext";
 import React, { memo } from "react";
-import Skeleton from "../components/Skeleton";
+import { Skeleton as BoneyardSkeleton } from "boneyard-js/react";
+import { useBoneyard } from "../utils/boneyard";
 
 const Home = memo(() => {
   const { loading } = useAuth();
-
-  if (loading) return <Skeleton />;
+  const isBoneyard = useBoneyard();
 
   return (
-    <>
-      <HeaderCom />
-      <div className="main">
-        <HomeCom />
-      </div>
-      <Footer />
-      <BottomNav activeTab="home" />
-    </>
+    <BoneyardSkeleton name="home-page" loading={loading || isBoneyard}>
+      <>
+        <HeaderCom />
+        <div className="main">
+          <HomeCom />
+        </div>
+        <Footer />
+        <BottomNav activeTab="home" />
+      </>
+    </BoneyardSkeleton>
   );
 });
 
