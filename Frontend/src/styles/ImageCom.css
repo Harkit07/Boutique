@@ -95,7 +95,18 @@
 @media (max-width: 480px) {
   .data-card {
     width: 48%;
-    min-width: 195px;
+    min-width: 180px;
+    max-width: 160px;
+  }
+  .data-card-img-wrapper {
+    height: 300px;
+  }
+}
+
+@media (max-width: 415px) {
+  .data-card {
+    width: 48%;
+    min-width: 160px;
     max-width: 160px;
   }
   .data-card-img-wrapper {
