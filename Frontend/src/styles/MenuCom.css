@@ -1,83 +1,54 @@
-/* Overlay */
+/* MenuCom.css */
 .ba-mobile-menu-overlay {
   position: fixed;
-  top: 0;
-  left: 0;
-  height: 100vh;
-  width: 100vw;
+  inset: 0;
   background: rgba(0, 0, 0, 0.4);
   opacity: 0;
   visibility: hidden;
-  transition: opacity 0.3s ease;
+  transition: opacity var(--motion-duration-instant);
   z-index: 998;
-  padding: 0 10px;
 }
-
 .overlay-show {
   opacity: 1;
   visibility: visible;
 }
 
-/* Drawer */
 .ba-mobile-menu-drawer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background: #fff;
+  background: var(--color-surface-white);
   transform: translateX(-100%);
-  transition: transform 0.35s ease-in-out;
+  transition: transform var(--motion-duration-fast);
   z-index: 999;
   display: flex;
   flex-direction: column;
 }
-
-/* Open State */
 .menu-open {
   transform: translateX(0);
 }
 
-/* Header */
 .ba-menu-header {
-  background: #e3b94d;
-  padding: 16px;
+  background: var(--color-surface-raised);
+  padding: var(--space-6);
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
+  color: var(--color-text-tertiary);
 }
-
-.ba-menu-header > span {
-  background-color: transparent;
-  color: #fff;
-  font-size: 18px;
-}
-
-/* Close button - make the icon white */
 .ba-close-btn {
-  background: transparent;
+  background: none;
   border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 4px;
 }
-
 .cut-btn {
-  fill: #ffffff !important; /* Force white color for the SVG */
-  background-color: transparent;
+  fill: var(--color-text-tertiary);
+  background: transparent;
   font-size: 24px;
 }
-
-.ba-list-more {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-/* Menu Items */
 .ba-menu-list {
   list-style: none;
   padding: 0;
@@ -85,14 +56,11 @@
   flex: 1;
   overflow-y: auto;
 }
-
 .ba-menu-list li {
-  font-weight: 700;
-  padding: 14px 16px;
+  font-weight: var(--font-weight-bold);
+  padding: var(--space-4) var(--space-6);
   border-bottom: 1px solid #eee;
 }
-
-/* Collections button */
 .ba-collections-btn {
   background: none;
   border: none;
@@ -100,111 +68,95 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
-  font-size: 16px;
-  font-weight: 700;
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-bold);
   cursor: pointer;
   padding: 0;
 }
-
-/* Sale Badge */
 .sale-badge {
   background: red;
-  color: white;
-  font-size: 10px;
+  color: var(--color-text-tertiary);
+  font-size: var(--font-size-xs);
   padding: 2px 6px;
-  margin-left: 6px;
-  border-radius: 4px;
+  border-radius: var(--radius-xs);
+  margin-left: var(--space-2);
 }
-
-/* Footer */
 #ba-menu-footer {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
-  font-weight: 400;
+  padding: var(--space-6);
 }
-
 #ba-person-icon {
-  margin-right: 10px;
-  fill: #333;
+  margin-right: var(--space-4);
+  fill: var(--color-text-secondary);
 }
 
-/* Categories Drawer */
 .ba-mobile-col-drawer {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100vh;
-  background: #fff;
+  background: var(--color-surface-white);
   transform: translateX(-100%);
-  transition: transform 0.35s ease-in-out;
+  transition: transform var(--motion-duration-fast);
   z-index: 1005;
   display: flex;
   flex-direction: column;
 }
-
 .collections-drawer--hidden {
   transform: translateX(100%);
 }
-
 .collections-drawer--active {
   transform: translateX(0);
 }
 
 .ba-collection-header {
-  background: #f5f5f5;
-  padding: 16px;
+  background: var(--color-surface-muted);
+  padding: var(--space-6);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  font-weight: bold;
+  font-weight: var(--font-weight-bold);
 }
-
 .ba-header-back-btn {
   background: none;
   border: none;
   display: flex;
   align-items: center;
-  gap: 4px;
-  font-size: 16px;
+  gap: var(--space-2);
+  font-size: var(--font-size-md);
   cursor: pointer;
 }
-
 .ba-header-close-btn {
   background: none;
   border: none;
   cursor: pointer;
-  display: flex;
-  align-items: center;
 }
-
 .cut-btn-col {
-  fill: #111;
-  background-color: transparent;
+  fill: var(--color-text-secondary);
+  background: transparent;
 }
-
-/* Category buttons */
 .ba-category-btn {
   background: none;
   border: none;
   width: 100%;
   text-align: left;
-  font-size: 16px;
-  padding: 12px 0;
+  font-size: var(--font-size-md);
+  padding: var(--space-4) 0;
   cursor: pointer;
 }
 
-/* Responsive: on larger screens, limit drawer width */
 @media (min-width: 768px) {
-  .ba-mobile-menu-drawer {
-    width: 320px;
-    left: auto;
-    transform: translateX(-100%);
-  }
+  .ba-mobile-menu-drawer,
   .ba-mobile-col-drawer {
     width: 320px;
     left: auto;
+  }
+  .ba-mobile-menu-drawer {
+    transform: translateX(-100%);
+  }
+  .ba-mobile-col-drawer {
     transform: translateX(100%);
   }
 }

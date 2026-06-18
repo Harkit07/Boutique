@@ -25,7 +25,20 @@ import ErrorBoundary from "./components/ErrorBoundary";
 function App() {
   return (
     <>
-      <ToastContainer position="top-right" autoClose={2000} />
+      {/* ToastContainer now centered */}
+      <ToastContainer
+        position="top-center"
+        autoClose={2000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover
+        theme="light"
+        className="toast-center"
+      />
       <ScrollToTop />
       <Suspense fallback={<Skeleton />}>
         <ErrorBoundary>

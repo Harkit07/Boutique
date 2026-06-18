@@ -1,4 +1,5 @@
 import "../styles/SuitView.css";
+import "../styles/Account.css"; // ← ensures review form styling
 import HeaderCom from "../components/HeaderCom";
 import BottomNav from "../components/BottomNav";
 import Footer from "../components/Footer";
@@ -51,14 +52,8 @@ const SuitView = memo(() => {
 
   useEffect(() => {
     const controller = new AbortController();
-
-    // Pass the active token down into Axios
     fetchSuitDetails(controller.signal);
-
-    // Return the cleanup function to React's native cycle hook
-    return () => {
-      controller.abort();
-    };
+    return () => controller.abort();
   }, [fetchSuitDetails]);
 
   const deleteSuit = useCallback(async () => {
@@ -82,7 +77,6 @@ const SuitView = memo(() => {
       navigate("/login");
       return;
     }
-    // ✅ Guard against null suit
     if (!suit) {
       toast.error("Product information missing");
       return;
@@ -100,7 +94,7 @@ const SuitView = memo(() => {
     } catch (error) {
       toast.error("Failed to add item");
     }
-  }, [token, suit, navigate]);
+  }, [token, suit, navigate, fetchSuitDetails]);
 
   const deleteReview = useCallback(
     async (reviewId) => {
@@ -121,12 +115,8 @@ const SuitView = memo(() => {
           toast.success("Review deleted!");
           fetchSuitDetails();
         }
-        console.log(response);
       } catch (error) {
-        console.error(
-          "Delete review error:",
-          error.response?.data || error.message,
-        );
+        console.error(error);
         toast.error("Failed to delete review");
       }
     },
@@ -173,23 +163,25 @@ const SuitView = memo(() => {
                   Buy Now
                 </button>
               </div>
+
               {user && user.role === "admin" && (
-                <div style={{ marginTop: "20px" }}>
-                  <Button
-                    onClick={deleteSuit}
-                    variant="contained"
-                    color="error"
-                  >
-                    Delete Product
-                  </Button>
-                </div>
+                <button
+                  type="button"
+                  className="delete-btn"
+                  onClick={deleteSuit}
+                >
+                  Delete Product
+                </button>
               )}
+
               <div className="saree-description-box">
                 <h3>Product Description</h3>
                 <p>{suit.description}</p>
               </div>
             </div>
           </div>
+
+          {/* Reviews Section */}
           <div className="saree-reviews-container">
             <h2>Customer Reviews</h2>
             <ul className="saree-reviews-list">
@@ -222,8 +214,11 @@ const SuitView = memo(() => {
               Add a Review
             </button>
           </div>
+
           {reviewForm && (
-            <ReviewForm suit={suit} fetchSuitDetails={fetchSuitDetails} />
+            <div className="review-form-container">
+              <ReviewForm suit={suit} fetchSuitDetails={fetchSuitDetails} />
+            </div>
           )}
         </section>
       </div>

@@ -1,5 +1,130 @@
-body {
-  background-color: #fff;
+:root {
+  /* ---- Typography ---- */
+  --font-family-primary:
+    "Instrument Sans", "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  --font-size-xs: 0.833rem;
+  --font-size-sm: 0.875rem;
+  --font-size-md: 0.9375rem;
+  --font-size-lg: 1rem;
+  --font-size-xl: 1.0625rem;
+  --font-size-2xl: 1.125rem;
+  --font-size-3xl: 1.25rem;
+  --font-size-4xl: 1.75rem;
+
+  --font-weight-base: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --line-height-base: 1.714;
+
+  /* ---- Colors ---- */
+  --color-text-primary: #444444;
+  --color-text-secondary: #111111;
+  --color-text-tertiary: #ffffff;
+  --color-surface-base: #000000;
+  --color-surface-raised: #e3b94d;
+  --color-surface-white: #ffffff;
+  --color-surface-light: #fafafa;
+  --color-surface-muted: #f5f5f5;
+
+  --color-feedback-success: #2e7d32;
+  --color-feedback-error: #c62828;
+  --color-feedback-warning: #ed6c02;
+  --color-feedback-info: #0288d1;
+
+  /* ---- Spacing ---- */
+  --space-1: 1px;
+  --space-2: 5px;
+  --space-3: 8px;
+  --space-4: 10px;
+  --space-5: 15px;
+  --space-6: 16px;
+  --space-7: 20px;
+  --space-8: 25px;
+
+  /* ---- Radius ---- */
+  --radius-xs: 5px;
+  --radius-sm: 10px;
+  --radius-md: 30px;
+  --radius-lg: 50px;
+
+  /* ---- Shadows ---- */
+  --shadow-1: 0 2px 10px rgba(0, 0, 0, 0.3);
+
+  /* ---- Motion ---- */
+  --motion-duration-instant: 300ms;
+  --motion-duration-fast: 400ms;
+}
+
+/* ---- Global Reset ---- */
+* {
   margin: 0;
   padding: 0;
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-family-primary);
+  font-weight: var(--font-weight-base);
+  line-height: var(--line-height-base);
+  background-color: var(--color-surface-light);
+  color: var(--color-text-primary);
+  margin: 0;
+  padding: 0;
+}
+
+#root {
+  width: 100%;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Focus-visible (WCAG 2.2 AA) ---- */
+*:focus-visible {
+  outline: 2px solid var(--color-surface-raised);
+  outline-offset: 2px;
+  border-radius: var(--radius-xs);
+}
+
+/* ---- Utility ---- */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+
+/* ---- Toast container ---- */
+.Toastify__toast-container {
+  margin-top: 70px;
+  padding: 0 12px;
+}
+
+/* ---- Link base ---- */
+a {
+  color: var(--color-text-secondary);
+  text-decoration: none;
+  transition: color var(--motion-duration-instant);
+}
+a:hover {
+  color: var(--color-surface-raised);
+}
+
+/* ---- Buttons base ---- */
+button {
+  border: none;
+  background: none;
+  font: inherit;
+  cursor: pointer;
 }

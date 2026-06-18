@@ -8,6 +8,8 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Skeleton from "../components/Skeleton";
+import "../styles/Account.css";
+import "../styles/AddNewSuit.css"; // ← import the CSS
 
 const CATEGORIES = [
   "AARI Work",
@@ -91,7 +93,6 @@ const AddNewSuit = memo(() => {
         const uploadedFiles = [];
         const filesArray = Array.from(values.file);
 
-        // Sequential uploads for reliability
         for (let i = 0; i < filesArray.length; i++) {
           const file = filesArray[i];
           try {
@@ -111,7 +112,7 @@ const AddNewSuit = memo(() => {
             uploadedFiles.push({
               url: result.secure_url,
               public_id: result.public_id,
-              mediaType: result.resource_type, // "image" or "video"
+              mediaType: result.resource_type,
             });
           } catch (uploadErr) {
             console.error(`Upload failed for ${file.name}:`, uploadErr);
@@ -156,7 +157,7 @@ const AddNewSuit = memo(() => {
   return (
     <>
       <HeaderCom />
-      <div className="main">
+      <div className="main add-suit-page">
         <div className="ea-page-wrapper">
           <form onSubmit={formik.handleSubmit}>
             <h2 className="ea-card-title">Add a new Suit Design</h2>
@@ -216,23 +217,26 @@ const AddNewSuit = memo(() => {
               <div className="error">{formik.errors.name}</div>
             )}
 
+            {/* --- Category Dropdown (styled select) --- */}
             <div className="ea-field">
               <label className="ea-label" htmlFor="category">
                 Category
               </label>
-              <input
-                className="ea-input"
+              <select
+                className="ea-input ea-select" // both classes combined
                 id="category"
                 name="category"
-                list="category-list"
-                onChange={formik.handleChange}
                 value={formik.values.category}
-              />
-              <datalist id="category-list">
+                onChange={formik.handleChange}
+                onBlur={formik.handleBlur}
+              >
+                <option value="">Select a category</option>
                 {CATEGORIES.map((item) => (
-                  <option key={item} value={item} />
+                  <option key={item} value={item}>
+                    {item}
+                  </option>
                 ))}
-              </datalist>
+              </select>
             </div>
             {formik.errors.category && (
               <div className="error">{formik.errors.category}</div>

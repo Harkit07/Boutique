@@ -11,7 +11,7 @@ const Login = memo(() => {
   return (
     <>
       <HeaderCom />
-      <div className="main">
+      <div className="main login-page">
         <LoginCom />
       </div>
       <BottomNav activeTab="account" />

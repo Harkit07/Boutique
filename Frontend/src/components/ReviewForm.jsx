@@ -22,7 +22,7 @@ const validate = (values) => {
 };
 
 const ReviewForm = ({ suit, fetchSuitDetails }) => {
-  const { token } = useAuth(); // ✅ get token from context instead of localStorage
+  const { token } = useAuth();
 
   const formik = useFormik({
     initialValues: { about: "", rating: 1 },

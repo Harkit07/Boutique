@@ -1,38 +1,32 @@
+/* VideosCom.css */
 .real-stories-section {
-  padding: 8px 16px;
+  padding: var(--space-3) var(--space-6);
   text-align: center;
 }
-
 .stories-heading {
-  font-size: 28px;
-  font-weight: 700;
-  margin-bottom: 24px;
+  font-size: var(--font-size-4xl);
+  font-weight: var(--font-weight-bold);
+  margin-bottom: var(--space-7);
 }
-
-/* Slider */
 .stories-slider {
   display: flex;
-  gap: 16px;
+  gap: var(--space-6);
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
+  padding-bottom: var(--space-3);
 }
-
 .stories-slider::-webkit-scrollbar {
   display: none;
 }
-
-/* Card */
 .story-card {
   flex: 0 0 70%;
   max-width: 320px;
-  border-radius: 20px;
+  border-radius: var(--radius-sm);
   overflow: hidden;
   scroll-snap-align: start;
-  background: #000;
+  background: var(--color-surface-base);
 }
-
-/* Video */
 .story-video {
   width: 100%;
   height: 100%;

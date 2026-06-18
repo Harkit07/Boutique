@@ -1,5 +1,5 @@
-/* Animation */
-@keyframes rxoSkeletonLoading {
+/* ---- Shimmer animation ---- */
+@keyframes skeletonShimmer {
   0% {
     background-position: -400px 0;
   }
@@ -8,105 +8,132 @@
   }
 }
 
-/* Wrapper */
-.rxo-skeleton-wrapper {
-  padding: 15px;
-  max-width: 500px;
-  margin: auto;
-}
-
-/* Common Skeleton Style */
-.rxo-skeleton-header div,
-.rxo-skeleton-banner,
-.rxo-skeleton-nav div,
-.rxo-skeleton-img,
-.rxo-skeleton-text,
-.rxo-skeleton-nav-item {
+/* ---- Base skeleton item ---- */
+.skeleton-item {
   background: linear-gradient(90deg, #e0e0e0 25%, #cfcfcf 37%, #e0e0e0 63%);
   background-size: 800px 100%;
-  animation: rxoSkeletonLoading 1.4s infinite linear;
-  border-radius: 8px;
+  animation: skeletonShimmer 1.6s infinite linear;
+  border-radius: var(--radius-xs);
 }
 
-/* Header */
-.rxo-skeleton-header {
-  height: 4.2rem;
+/* ---- Wrapper: fills screen, mimics home page container ---- */
+.skeleton-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-5);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-7);
+  min-height: 100vh;
+  background: var(--color-surface-white);
+  padding-bottom: 90px; /* space for bottom nav */
+}
+
+/* ---- Header ---- */
+.skeleton-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 12px;
+  padding: var(--space-3) var(--space-5);
   border-bottom: 1px solid #eee;
-  box-shadow: 2px 4px 10px #efefdd;
-  position: sticky;
-  top: 0;
-  background-color: #fff;
-  z-index: 100;
+  background: var(--color-surface-white);
 }
 
-.rxo-skeleton-menu,
-.rxo-skeleton-cart {
-  width: 35px;
-  height: 35px;
-}
-
-.rxo-skeleton-logo {
+.skeleton-header .skeleton-logo {
   width: 80px;
-  height: 35px;
+  height: 36px;
+}
+.skeleton-header .skeleton-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: var(--radius-lg);
 }
 
-/* Banner */
-.rxo-skeleton-banner {
+/* ---- Banner ---- */
+.skeleton-banner {
   width: 100%;
-  height: 780px;
+  height: 380px;
+  border-radius: var(--radius-sm);
+}
+@media (max-width: 768px) {
+  .skeleton-banner {
+    height: 220px;
+  }
+}
+@media (max-width: 480px) {
+  .skeleton-banner {
+    height: 160px;
+  }
 }
 
-/* Cards */
-.rxo-skeleton-card-container {
+/* ---- Section title ---- */
+.skeleton-title {
+  width: 200px;
+  height: 28px;
+  margin: var(--space-4) auto;
+  border-radius: var(--radius-xs);
+}
+
+/* ---- Grids: 2 columns on mobile, 4 on desktop ---- */
+.skeleton-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr); /* fixed */
-  gap: 15px;
-  margin-bottom: 25px;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-6);
 }
 
-.rxo-skeleton-card {
+@media (min-width: 768px) {
+  .skeleton-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--space-7);
+  }
+}
+
+/* ---- Card ---- */
+.skeleton-card {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: var(--space-3);
+  background: var(--color-surface-white);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3);
+  box-shadow: var(--shadow-1);
 }
 
-.rxo-skeleton-img {
+.skeleton-card .skeleton-img {
   width: 100%;
-  height: 120px;
+  aspect-ratio: 1;
+  border-radius: var(--radius-xs);
 }
 
-.rxo-skeleton-text {
+.skeleton-card .skeleton-text {
+  height: 14px;
   width: 80%;
-  height: 12px;
+  border-radius: var(--radius-xs);
+}
+.skeleton-card .skeleton-text.short {
+  width: 60%;
+}
+.skeleton-card .skeleton-text.long {
+  width: 95%;
 }
 
-/* Bottom Nav */
-.rxo-skeleton-nav {
-  display: flex;
-  justify-content: space-between;
-}
-
-.rxo-skeleton-nav-item {
-  width: 45px;
-  height: 45px;
-  border-radius: 50%;
-}
-
-.rxo-skeleton-nav {
+/* ---- Bottom navigation ---- */
+.skeleton-bottom-nav {
   position: fixed;
   bottom: 0;
   left: 0;
   right: 0;
-  background-color: #ffffff;
-  border-top: 1px solid #e0e0e0;
   display: flex;
   justify-content: space-around;
   align-items: center;
   height: 70px;
-  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
-  z-index: 1000;
+  background: var(--color-surface-white);
+  border-top: 1px solid #e0e0e0;
+  padding: 0 var(--space-5);
+}
+
+.skeleton-bottom-nav .skeleton-nav-item {
+  width: 44px;
+  height: 44px;
+  border-radius: var(--radius-lg);
 }

@@ -16,7 +16,7 @@ const Shop = memo(() => {
   return (
     <>
       <HeaderCom />
-      <div className="main">
+      <div className="main shop-page">
         <div className="uc-cart-wrapper">
           <div className="uc-breadcrumb">
             Home · <span>Product</span>

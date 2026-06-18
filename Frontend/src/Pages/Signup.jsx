@@ -7,6 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import React, { useState, memo } from "react";
 import { useAuth } from "../context/MyContext";
 import { toast } from "react-toastify";
+import "../styles/Account.css";
 
 const validate = (values) => {
   const errors = {};
@@ -63,7 +64,7 @@ const Signup = memo(() => {
   return (
     <>
       <HeaderCom />
-      <div className="main">
+      <div className="main login-page">
         <div className="login-bg-container">
           <div className="login-content">
             <video

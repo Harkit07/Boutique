@@ -3,35 +3,51 @@ import "../styles/Skeleton.css";
 
 function Skeleton() {
   return (
-    <div className="rxo-skeleton-wrapper">
-      {/* Header skeleton */}
-      <div className="rxo-skeleton-header">
-        <div className="rxo-skeleton-menu"></div>
-        <div className="rxo-skeleton-logo"></div>
-        <div className="rxo-skeleton-cart"></div>
+    <div className="skeleton-wrapper">
+      {/* Header */}
+      <div className="skeleton-header">
+        <div className="skeleton-item skeleton-icon"></div>
+        <div className="skeleton-item skeleton-logo"></div>
+        <div className="skeleton-item skeleton-icon"></div>
       </div>
 
-      {/* Banner skeleton */}
-      <div className="rxo-skeleton-banner"></div>
+      {/* Banner */}
+      <div className="skeleton-item skeleton-banner"></div>
 
-      {/* Category grid skeleton (4 cards) */}
-      <div className="rxo-skeleton-category-grid">
+      {/* Dress the Moment (Category Grid) */}
+      <div
+        className="skeleton-title skeleton-item"
+        style={{ width: "280px" }}
+      ></div>
+      <div className="skeleton-grid">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="rxo-skeleton-category-card"></div>
+          <div key={i} className="skeleton-card">
+            <div className="skeleton-item skeleton-img"></div>
+            <div className="skeleton-item skeleton-text"></div>
+          </div>
         ))}
       </div>
 
-      {/* Product grid skeleton (4 cards) */}
-      <div className="rxo-skeleton-product-grid">
+      {/* Best Sellers (Product Grid) */}
+      <div
+        className="skeleton-title skeleton-item"
+        style={{ width: "220px" }}
+      ></div>
+      <div className="skeleton-grid">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="rxo-skeleton-product-card"></div>
+          <div key={i} className="skeleton-card">
+            <div className="skeleton-item skeleton-img"></div>
+            <div className="skeleton-item skeleton-text"></div>
+            <div className="skeleton-item skeleton-text short"></div>
+            <div className="skeleton-item skeleton-text long"></div>
+          </div>
         ))}
       </div>
 
-      {/* Bottom nav skeleton */}
-      <div className="rxo-skeleton-nav">
+      {/* Bottom Navigation */}
+      <div className="skeleton-bottom-nav">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="rxo-skeleton-menu"></div>
+          <div key={i} className="skeleton-item skeleton-nav-item"></div>
         ))}
       </div>
     </div>
