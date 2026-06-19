@@ -21,6 +21,7 @@ const TermConditions = lazy(() => import("./Pages/TermConditions"));
 const Cart = lazy(() => import("./Pages/Cart"));
 import UserProtectedWrapper from "./components/UserProtectedWrapper";
 import ErrorBoundary from "./components/ErrorBoundary";
+import PageNotFound from "./Pages/PageNotFound";
 
 function App() {
   return (
@@ -78,7 +79,7 @@ function App() {
             <Route path="/policy" element={<Policy />} />
             <Route path="/returnpolicy" element={<ReturnPolicy />} />
             <Route path="/termandconditions" element={<TermConditions />} />
-            <Route path="*" element={<div>Page Not Found</div>} />
+            <Route path="*" element={<PageNotFound />} />
           </Routes>
         </ErrorBoundary>
       </Suspense>
