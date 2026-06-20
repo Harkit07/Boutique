@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+Disallow: /account
+Disallow: /login
+Disallow: /signup
+Disallow: /logout
+Disallow: /reset-password
+Disallow: /add-new-suit
+Disallow: /cart
+
+Sitemap: https://ravneetboutique.qzz.io/sitemap.xml
