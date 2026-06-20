@@ -31,9 +31,12 @@ async function main() {
   await mongoose.connect(process.env.DB_URL);
 }
 
-const allowedOrigins = ["http://localhost:5173", process.env.CLIENT_URL].filter(
-  Boolean,
-);
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://ravneetboutique.qzz.io",
+  "https://www.ravneetboutique.qzz.io",
+  process.env.CLIENT_URL,
+].filter(Boolean);
 
 app.use(
   cors({
