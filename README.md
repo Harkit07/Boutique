@@ -44,12 +44,12 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 
 | Technology        | Purpose                           |
 | ----------------- | --------------------------------- |
-| React 18          | UI framework                      |
+| React 19          | UI framework                      |
 | Vite              | Build tool & dev server           |
-| React Router v6   | Client‑side routing               |
-| Material‑UI (MUI) | Icons (DeleteIcon, etc.)          |
+| React Router v7   | Client‑side routing               |
+| Material‑UI (MUI) | UI components and icons           |
 | Axios             | HTTP client with abort controller |
-| React Query       | Server state (suits, reviews)     |
+| TanStack Query    | Server state (suits, reviews)     |
 | Formik            | Form handling & validation        |
 | React Context API | Global state (auth, UI, filters)  |
 | React Toastify    | Notifications                     |
@@ -134,7 +134,7 @@ Boutique/
         │   ├── MyContext.jsx      # barrel export
         │   ├── SuitsContext.jsx   # all suits data (react-query)
         │   └── UiContext.jsx      # activeTab for bottom nav
-        ├── pages/                 # lazy‑loaded route components
+        ├── Pages/                 # lazy‑loaded route components
         │   ├── About.jsx
         │   ├── Account.jsx
         │   ├── AddNewSuit.jsx
@@ -181,14 +181,14 @@ cd Backend
 npm install
 
 # 3. Create your environment file
-cp .env.example .env
+# Create a new .env file in the Backend folder
 # Fill in the required variables (see Environment Variables below)
 
 # 4. Start the backend server
 node server.js
 ```
 
-Backend will be available at `http://localhost:4000`.
+Backend will be available on the port defined in your `.env` file (commonly `http://localhost:4000`).
 
 ### Frontend Setup
 
@@ -200,7 +200,7 @@ cd Frontend
 npm install
 
 # 3. Create your environment file
-cp .env.example .env
+# Create a new .env file in the Frontend folder
 # Set VITE_BASE_URL to your backend URL
 
 # 4. Start the development server
@@ -254,7 +254,7 @@ CLIENT_URL=http://localhost:5173   # or production URL
 ```env
 VITE_BASE_URL=http://localhost:4000
 # For production:
-# VITE_BASE_URL=https://your-backend.vercel.app/api
+# VITE_BASE_URL=https://your-backend.vercel.app
 ```
 
 ---
@@ -351,7 +351,7 @@ Vercel runs Express as a serverless function. Ensure `vercel.json` exists in `Ba
 - Set `VITE_BASE_URL` to your deployed Vercel backend URL:
 
 ```env
-VITE_BASE_URL=https://your-backend.vercel.app/api
+VITE_BASE_URL=https://your-backend.vercel.app
 ```
 
 ---
