@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="./Frontend/public/logo.jpg" alt="Boutique Logo" width="200"/>
+</p>
+
 # 🛍️ Ravneet Boutique — Full Stack E-Commerce Platform
 
 A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image/video storage, **auto‑generated skeleton screens (boneyard‑js)**, and a fully responsive mobile-first UI — frontend deployed on Render, backend deployed on Vercel.
@@ -75,7 +79,7 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 
 ## 📁 Project Structure
 
-```
+```text
 Boutique/
 ├── Backend/
 │   ├── controllers/
