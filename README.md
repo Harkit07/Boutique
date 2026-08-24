@@ -6,7 +6,7 @@
 
 A production-ready full-stack e-commerce web application built with the MERN stack. Features secure authentication, product management, shopping cart, customer reviews, cloud image/video storage, **auto‑generated skeleton screens (boneyard‑js)**, and a fully responsive mobile-first UI — frontend deployed on Render, backend deployed on Vercel.
 
-🔗 **Live Demo:** [boutiquefrontend-ymww.onrender.com](https://ravneetboutique.qzz.io/) · **GitHub:** [github.com/Harkit07/Boutique](https://github.com/Harkit07/Boutique.git)
+🔗 **Live Demo:** [ravneetboutique.qzz.io](https://ravneetboutique.qzz.io/) · **GitHub:** [github.com/Harkit07/Boutique](https://github.com/Harkit07/Boutique.git)
 
 ---
 
