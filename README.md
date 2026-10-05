@@ -186,8 +186,7 @@ cd Backend
 npm install
 
 # 3. Create your environment file
-# Create a new .env file in the Backend folder
-# Fill in the required variables (see Environment Variables below)
+# Copy .env.example to .env and fill in your credentials
 
 # 4. Start the backend server
 node server.js
@@ -205,8 +204,7 @@ cd Frontend
 npm install
 
 # 3. Create your environment file
-# Create a new .env file in the Frontend folder
-# Set VITE_BASE_URL to your backend URL
+# Copy .env.example to .env and set VITE_BASE_URL to your backend URL
 
 # 4. Start the development server
 npm run dev
@@ -241,6 +239,10 @@ The registry is already imported in `main.jsx`, so no further action is needed.
 ---
 
 ## 🔐 Environment Variables
+
+Copy `Backend/.env.example` to `Backend/.env` and `Frontend/.env.example` to
+`Frontend/.env`. Replace the placeholder values before starting the application.
+The `.env` files are ignored by git; do not commit credentials.
 
 ### Backend `.env`
 
