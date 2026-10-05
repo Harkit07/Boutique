@@ -88,7 +88,7 @@ Boutique/
 │   │   ├── review.js
 │   │   ├── suit.js
 │   │   └── user.js
-│   ├── middleware.js          # JWT auth + token blacklist check
+│   ├── middleware.js          # JWT auth, token blacklist, and admin authorization
 │   ├── models/
 │   │   ├── blacklistToken.js
 │   │   ├── review.js
@@ -117,6 +117,7 @@ Boutique/
         │   └── *.bones.json   # Per‑component skeleton definitions
         ├── components/
         │   ├── AccountForm.jsx
+        │   ├── AdminProtectedWrapper.jsx
         │   ├── BottomNav.jsx
         │   ├── CategoriesDrawer.jsx
         │   ├── FilterCom.jsx
@@ -213,6 +214,17 @@ npm run dev
 
 Frontend will be available at `http://localhost:5173`.
 
+### Admin Access
+
+New accounts have the `user` role by default. To grant an account admin access,
+open the MongoDB Atlas project, select **Browse Collections**, open the `users`
+collection, edit that user's document, and set `role` to `"admin"`.
+
+Only admins can request an upload signature or create a suit through
+`/suits/upload`. The frontend also hides the **Add New Suit** link from
+non-admins and redirects them away from the add-suit page; API authorization is
+enforced on the backend.
+
 #### 💡 Generating Skeleton Data (boneyard-js)
 
 After you make changes to the UI layout, you should regenerate the skeleton data:
@@ -296,16 +308,17 @@ Product (suit) listing and management.
 | GET    | `/suits/:id`              | ❌   | Get single suit + populated reviews                          |
 | DELETE | `/suits/:id`              | ✅   | Delete a suit (admin only)                                   |
 | GET    | `/suits/featured-reviews` | ❌   | Get random reviews for homepage                              |
-| GET    | `/suits/upload`           | ✅   | Get a signed upload signature for direct Cloudinary upload   |
-| POST   | `/suits/upload`           | ✅   | Create a new suit using already‑uploaded Cloudinary metadata |
+| GET    | `/suits/upload`           | ✅ Admin | Get a signed upload signature for direct Cloudinary upload |
+| POST   | `/suits/upload`           | ✅ Admin | Create a new suit using already‑uploaded Cloudinary metadata |
 
 > **Note:** The `POST /suits/upload` expects a JSON body with `name`, `category`, `description`, `price`, and an array `file` containing `{ url, public_id, mediaType }` from the direct upload.
+> Both upload endpoints return `403 Forbidden` with `{ "message": "Admin access required" }` for authenticated non-admin users.
 
 #### Direct Upload Flow
 
-1. Admin calls `GET /suits/upload` (with JWT) to obtain a one‑time signature.
+1. An admin calls `GET /suits/upload` (with JWT) to obtain a signature.
 2. Frontend uploads files directly to Cloudinary using that signature.
-3. After successful upload, frontend sends the returned Cloudinary URLs to `POST /suits/upload` to create the suit.
+3. After successful upload, the frontend sends the returned Cloudinary URLs to `POST /suits/upload` to create the suit. Both requests require an admin account.
 
 ### Reviews — `/suits/:id/reviews`
 

@@ -49,21 +49,21 @@ const Account = memo(() => {
               <div className="account-item">Dashboard</div>
               <div className="account-item">Your addresses</div>
               <div className="account-item">
-                {user?.role === "user" ? (
-                  <Link
-                    to="/cart"
-                    className="nav-link"
-                    style={{ background: "transparent" }}
-                  >
-                    Your Card
-                  </Link>
-                ) : (
+                {user?.role === "admin" ? (
                   <Link
                     to="/addnewsuit"
                     className="nav-link"
                     style={{ background: "transparent" }}
                   >
                     Add New Suit
+                  </Link>
+                ) : (
+                  <Link
+                    to="/cart"
+                    className="nav-link"
+                    style={{ background: "transparent" }}
+                  >
+                    Your Card
                   </Link>
                 )}
               </div>

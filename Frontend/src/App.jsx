@@ -20,6 +20,7 @@ const ReturnPolicy = lazy(() => import("./Pages/ReturnPolicy"));
 const TermConditions = lazy(() => import("./Pages/TermConditions"));
 const Cart = lazy(() => import("./Pages/Cart"));
 import UserProtectedWrapper from "./components/UserProtectedWrapper";
+import AdminProtectedWrapper from "./components/AdminProtectedWrapper";
 import ErrorBoundary from "./components/ErrorBoundary";
 import PageNotFound from "./Pages/PageNotFound";
 
@@ -66,7 +67,9 @@ function App() {
               path="/addnewsuit"
               element={
                 <UserProtectedWrapper>
-                  <AddNewSuit />
+                  <AdminProtectedWrapper>
+                    <AddNewSuit />
+                  </AdminProtectedWrapper>
                 </UserProtectedWrapper>
               }
             />

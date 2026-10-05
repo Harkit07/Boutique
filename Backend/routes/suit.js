@@ -1,6 +1,5 @@
 const express = require("express");
 const router = express.Router();
-const { upload } = require("../services/cloudConfig.js");
 const { body } = require("express-validator");
 const authMiddleware = require("../middleware.js");
 const suitController = require("../controllers/suit.js");
@@ -13,9 +12,14 @@ router.get("/featured-reviews", wrapAsync(suitController.homeReviews));
 
 router
   .route("/upload")
-  .get(authMiddleware.authUser, wrapAsync(suitController.getUploadSignature))
+  .get(
+    authMiddleware.authUser,
+    authMiddleware.isAdmin,
+    wrapAsync(suitController.getUploadSignature),
+  )
   .post(
     authMiddleware.authUser,
+    authMiddleware.isAdmin,
     [
       body("name").notEmpty(),
       body("category").notEmpty(),
