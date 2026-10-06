@@ -70,7 +70,7 @@ A production-ready full-stack e-commerce web application built with the MERN sta
 | Bcrypt              | Password hashing                        |
 | Cloudinary + Multer | Image/video upload, storage & filtering |
 | Nodemailer          | Send OTP emails for password reset      |
-| Express Rate Limit  | Brute‑force protection (5 req/15 min)   |
+| Express Rate Limit  | Auth endpoint protection (10 req/15 min per IP) |
 | Helmet              | Security headers (XSS, etc.)            |
 | Compression         | Gzip response compression               |
 | Morgan              | HTTP request logging (combined format)  |
@@ -291,6 +291,11 @@ Session and credential operations. No authentication required unless noted.
 | POST   | `/auth/forgot-password` | ❌   | Send 6‑digit OTP to email       |
 | POST   | `/auth/reset-password`  | ❌   | Verify OTP and set new password |
 
+`/auth/login`, `/auth/signup`, `/auth/forgot-password`, and `/auth/reset-password`
+are limited to 10 unsuccessful requests per IP in a 15-minute window. Successful
+requests are excluded from the limit. Further attempts receive HTTP `429` with
+`{ "message": "Too many attempts, please try again later." }`.
+
 ### Users — `/users`
 
 Authenticated user profile management.
@@ -308,12 +313,13 @@ Product (suit) listing and management.
 | ------ | ------------------------- | ---- | ------------------------------------------------------------ |
 | GET    | `/suits`                  | ❌   | Get all suits                                                |
 | GET    | `/suits/:id`              | ❌   | Get single suit + populated reviews                          |
-| DELETE | `/suits/:id`              | ✅   | Delete a suit (admin only)                                   |
-| GET    | `/suits/featured-reviews` | ❌   | Get random reviews for homepage                              |
+| DELETE | `/suits/:id`              | ✅   | Delete your own suit, or any suit as an admin                |
+| GET    | `/suits/featured-reviews` | ❌   | Get up to 5 highest-rated reviews (rating above 3)            |
 | GET    | `/suits/upload`           | ✅ Admin | Get a signed upload signature for direct Cloudinary upload |
 | POST   | `/suits/upload`           | ✅ Admin | Create a new suit using already‑uploaded Cloudinary metadata |
 
-> **Note:** The `POST /suits/upload` expects a JSON body with `name`, `category`, `description`, `price`, and an array `file` containing `{ url, public_id, mediaType }` from the direct upload.
+> **Note:** `GET /suits/featured-reviews` sorts reviews by rating and then newest first, and returns at most 5.
+> `POST /suits/upload` expects a JSON body with `name`, `category`, `description`, a positive `price`, and a non-empty `file` array containing `{ url, public_id, mediaType }` entries from the direct upload. Each `public_id` must belong to the requesting admin's `BOUTIQUE/<user-id>/` folder.
 > Both upload endpoints return `403 Forbidden` with `{ "message": "Admin access required" }` for authenticated non-admin users.
 
 #### Direct Upload Flow

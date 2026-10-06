@@ -34,6 +34,10 @@ router
 router
   .route("/:id")
   .get(wrapAsync(suitController.getSuit))
-  .delete(authMiddleware.authUser, wrapAsync(suitController.delSuit));
+  .delete(
+    authMiddleware.authUser,
+    authMiddleware.isAdmin,
+    wrapAsync(suitController.delSuit),
+  );
 
 module.exports = router;
