@@ -168,7 +168,7 @@ Boutique/
 
 ### Prerequisites
 
-- **Node.js** v18+
+- **Node.js** v20.19+ or v22.12+
 - **npm** v9+
 - A **MongoDB** database ([MongoDB Atlas](https://www.mongodb.com/atlas) recommended)
 - A **Cloudinary** account for image/video uploads
