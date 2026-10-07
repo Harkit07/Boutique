@@ -26,10 +26,7 @@ module.exports.getSuit = async (req, res) => {
 module.exports.delSuit = async (req, res) => {
   const { id } = req.params;
 
-  const suit = await Suit.findById(id).populate({
-    path: "review",
-    populate: { path: "author" },
-  });
+  const suit = await Suit.findById(id);
 
   if (!suit) {
     return res.status(404).json({ message: "Suit not found" });
@@ -44,7 +41,7 @@ module.exports.delSuit = async (req, res) => {
       .json({ message: "Not authorized to delete this suit" });
   }
 
-  // Delete the suit itself
+  await Review.deleteMany({ _id: { $in: suit.review } });
   await Suit.findByIdAndDelete(id);
 
   res

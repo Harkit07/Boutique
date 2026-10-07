@@ -14,8 +14,8 @@ router.post(
       .isLength({ min: 3 })
       .withMessage("First name contain 3 characters"),
     body("password")
-      .isLength({ min: 6 })
-      .withMessage("Password must contain 6 characters"),
+      .isLength({ min: 8 })
+      .withMessage("Password must contain 8 characters"),
   ],
   validationResult,
   wrapAsync(authController.signupUser),

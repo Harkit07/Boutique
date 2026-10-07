@@ -1,5 +1,4 @@
 const mongoose = require("mongoose");
-const Review = require("./review.js");
 const User = require("./user.js");
 const { Schema } = mongoose;
 
@@ -52,9 +51,6 @@ const suitSchema = new Schema({
 
 suitSchema.post("findOneAndDelete", async (suit) => {
   if (suit) {
-    // Delete all reviews belonging to this suit
-    await Review.deleteMany({ _id: { $in: suit.review } });
-
     // Remove this suit from all users' carts
     await User.updateMany(
       { "cart.suit": suit._id },
